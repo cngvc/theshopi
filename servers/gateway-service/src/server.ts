@@ -14,6 +14,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { StatusCodes } from 'http-status-codes';
+import { elasticSearch } from './elasticsearch';
 import { log } from './utils/logger.util';
 
 export class GatewayServer {
@@ -27,6 +28,7 @@ export class GatewayServer {
     this.securityMiddleware();
     this.standardMiddleware();
     this.routesMiddleware();
+    this.startElasticSearch();
     this.errorHandler();
     this.startServer();
   }
@@ -58,6 +60,10 @@ export class GatewayServer {
       }
       next();
     });
+  }
+
+  private startElasticSearch(): void {
+    elasticSearch.checkConnection();
   }
 
   private standardMiddleware(): void {

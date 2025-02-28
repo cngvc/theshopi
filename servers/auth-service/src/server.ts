@@ -11,6 +11,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
+import { elasticSearch } from './elasticsearch';
 import { log } from './utils/logger.util';
 
 export class AuthServer {
@@ -23,6 +24,7 @@ export class AuthServer {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
+    this.startElasticSearch();
     this.errorHandler();
     this.startServer();
   };
@@ -59,6 +61,10 @@ export class AuthServer {
 
   private routesMiddleware() {
     appRoutes(this.app);
+  }
+
+  private startElasticSearch() {
+    elasticSearch.checkConnection();
   }
 
   private errorHandler(): void {
