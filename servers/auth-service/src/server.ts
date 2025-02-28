@@ -2,13 +2,14 @@ import 'express-async-errors';
 
 import { config } from '@auth/config';
 import { appRoutes } from '@auth/routes';
-import { CustomError, getErrorMessage, IErrorResponse } from '@cngvc/shopi-shared';
+import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse, verifyGatewayRequest } from '@cngvc/shopi-shared';
 import compression from 'compression';
 import cors from 'cors';
 import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
+import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
 import { log } from './utils/logger.util';
 
@@ -27,6 +28,9 @@ export class AuthServer {
   };
 
   private securityMiddleware() {
+    // only receive requests from gateway server
+    this.app.use(verifyGatewayRequest);
+
     this.app.set('trust proxy', 1);
     this.app.use(hpp());
     this.app.use(helmet());
@@ -37,6 +41,14 @@ export class AuthServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.headers.authorization) {
+        const token = (req.headers.authorization as string).split(' ')[1];
+        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
+        req.currentUser = payload;
+      }
+      next();
+    });
   }
 
   private standardMiddleware(): void {

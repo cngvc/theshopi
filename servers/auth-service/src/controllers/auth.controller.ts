@@ -54,11 +54,11 @@ class AuthController {
       throw new BadRequestError('Invalid credentials', 'signin() method error');
     }
     let message = 'User login successfully';
-    const userJWT = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
-    if (!userJWT) {
+    const jwt = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
+    if (!jwt) {
       throw new BadRequestError('Error when signing token', 'signin() method error');
     }
-    res.status(StatusCodes.OK).json({ message, token: userJWT });
+    res.status(StatusCodes.OK).json({ message, token: jwt });
   }
 }
 

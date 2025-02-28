@@ -52,7 +52,6 @@ export class GatewayServer {
     );
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      log.log(SERVICE_NAME + ' Starting Request:', req.url);
       if (req.session?.jwt) {
         req.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
         authService.axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;

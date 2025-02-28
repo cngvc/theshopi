@@ -1,8 +1,7 @@
 import { config } from '@auth/config';
 import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
-import { log } from '@auth/utils/logger.util';
-import { getErrorMessage, IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
+import { IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
 import { sign } from 'jsonwebtoken';
 import { MoreThan, Repository } from 'typeorm';
 
@@ -12,14 +11,8 @@ export class AuthService {
     this.authRepository = AppDataSource.getRepository(AuthModel);
   }
   async createAuthUser(data: IAuthDocument): Promise<IAuthDocument> {
-    try {
-      const user = this.authRepository.create(data);
-      await this.authRepository.save(user);
-      return user;
-    } catch (error) {
-      log.error(getErrorMessage(error));
-      throw new Error('Error creating auth user');
-    }
+    const user = this.authRepository.create(data);
+    return await this.authRepository.save(user);
   }
 
   async getAuthUserById(authId: number): Promise<IAuthDocument | null> {

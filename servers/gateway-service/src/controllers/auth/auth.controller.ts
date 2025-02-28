@@ -7,7 +7,7 @@ class AuthController {
   public async signup(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.signup(req.body);
     const { message, token } = response.data;
-    req.session = { jwt: token };
+    req.session = { token };
     res.status(StatusCodes.CREATED).json({ message });
   }
 
