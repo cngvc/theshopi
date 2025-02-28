@@ -1,0 +1,75 @@
+# docker-compose up -d redis mongodb mysql postgres rabbitmq elasticsearch kibana
+version: "3.9"
+name: "theshopi-containers"
+services:
+  # requirement technical
+  redis:
+    container_name: redis_container
+    image: arm64v8/redis:alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --loglevel warning
+    volumes:
+      - ./docker-volumes/cache:/data
+  mongodb:
+    container_name: mongodb_container
+    image: mongodb/mongodb-community-server:latest
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=Asdfgh123
+      - MONGO_INITDB_DATABASE=theshopi_users
+    volumes:
+      - ./docker-volumes/mongodb:/data/db
+  mysql:
+    container_name: mysql_container
+    image: arm64v8/mysql:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=Asdfgh123
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=Asdfgh123
+      - MYSQL_DATABASE=theshopi_auth
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker-volumes/mysql:/var/lib/mysql
+
+  rabbitmq:
+    container_name: rabbitmq_container
+    image: arm64v8/rabbitmq:3-management-alpine
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=Asdfgh123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  elasticsearch:
+    container_name: elasticsearch_container
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    restart: always
+    ports:
+      - "9200:9200"
+    environment:
+      - ELASTIC_PASSWORD=Asdfgh123
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.authc.api_key.enabled=true
+      - xpack.monitoring.collection.enabled=true
+      - xpack.security.enrollment.enabled=true
+    volumes:
+      - ./docker-volumes/elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+  # built services
+
+networks:
+  elastic:
+    name: elastic
