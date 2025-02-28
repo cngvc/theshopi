@@ -23,38 +23,34 @@ export class AuthService {
   }
 
   async getAuthUserById(authId: number): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { id: authId } }) || null;
+    return this.authRepository.findOne({ where: { id: authId } });
   }
 
   async getAuthUserByUsernameOrEmail(username: string, email: string): Promise<IAuthDocument | null> {
-    return (
-      this.authRepository.findOne({
-        where: [{ username: lowerCase(username ?? '') }, { email: lowerCase(email ?? '') }]
-      }) || null
-    );
+    return this.authRepository.findOne({
+      where: [{ username: lowerCase(username ?? '') }, { email: lowerCase(email ?? '') }]
+    });
   }
 
   async getAuthUserByEmail(email: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { email: lowerCase(email) } }) || null;
+    return this.authRepository.findOne({ where: { email: lowerCase(email) } });
   }
 
   async getAuthUserByUsername(username: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { username: lowerCase(username) } }) || null;
+    return this.authRepository.findOne({ where: { username: lowerCase(username) } });
   }
 
   async getAuthUserByVerificationToken(token: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { emailVerificationToken: token } }) || null;
+    return this.authRepository.findOne({ where: { emailVerificationToken: token } });
   }
 
   async getAuthUserByPasswordResetToken(token: string): Promise<IAuthDocument | null> {
-    return (
-      this.authRepository.findOne({
-        where: {
-          passwordResetToken: token,
-          passwordResetExpires: MoreThan(new Date())
-        }
-      }) || null
-    );
+    return this.authRepository.findOne({
+      where: {
+        passwordResetToken: token,
+        passwordResetExpires: MoreThan(new Date())
+      }
+    });
   }
 
   async updateVerifyEmailField(authId: number, emailVerified: boolean, emailVerificationToken?: string): Promise<boolean> {
@@ -82,13 +78,15 @@ export class AuthService {
     return !!result.affected && result?.affected > 0;
   }
 
-  signToken(id: number, email: string, username: string): string | null {
-    try {
-      return sign({ id, email, username }, `${config.AUTH_JWT_TOKEN_SECRET}`);
-    } catch (error) {
-      log.error(getErrorMessage(error));
-      return null;
-    }
+  signToken(id: number, email: string, username: string): string {
+    return sign(
+      {
+        id,
+        email,
+        username
+      },
+      config.AUTH_JWT_TOKEN_SECRET!
+    );
   }
 }
 
