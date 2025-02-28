@@ -1,6 +1,9 @@
+import { config } from '@auth/config';
+import { authProducer } from '@auth/queues/auth.producer';
+import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
 import { generateRandomCharacters } from '@auth/utils/generate.util';
-import { BadRequestError, NotFoundError } from '@cngvc/shopi-shared';
+import { BadRequestError, ExchangeNames, IEmailMessageDetails, lowerCase, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
@@ -23,6 +26,20 @@ class CurrentUserController {
     }
     const randomCharacters = await generateRandomCharacters();
     await authService.updateVerifyEmailField(existingUser.id!, false, randomCharacters);
+
+    const verificationLink = `${config.CLIENT_URL}/confirm_email?v_token=${randomCharacters}`;
+    const messageDetails: IEmailMessageDetails = {
+      receiverEmail: lowerCase(existingUser.email!),
+      verifyLink: verificationLink,
+      template: 'verify-email'
+    };
+    await authProducer.publishDirectMessage(
+      authChannel,
+      ExchangeNames.AUTH_NOTIFICATION_EMAIL,
+      RoutingKeys.AUTH_NOTIFICATION_EMAIL,
+      JSON.stringify(messageDetails),
+      'Verify email message has been sent to notification service.'
+    );
     const updatedUser = await authService.getAuthUserById(existingUser.id!);
     res.status(StatusCodes.OK).json({ message: 'Email verification sent', user: updatedUser });
   }
