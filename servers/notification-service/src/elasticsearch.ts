@@ -1,8 +1,8 @@
-import { config } from '@auth/config';
-import { SERVICE_NAME } from '@auth/constants';
-import { log } from '@auth/utils/logger.util';
 import { getErrorMessage } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
+import { config } from './config';
+import { SERVICE_NAME } from './constants';
+import { log } from './utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;
