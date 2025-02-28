@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Reset Your Shopi Password</title>
+</head>
+
+<body style="font-family: Arial, sans-serif; color: #333;">
+  <h2 style="color: #0e0e0f;">Reset Your Shopi Password</h2>
+  <p>Hi <%= username %>,</p>
+  <p>We received a request to reset your Shopi password.</p>
+  <p>To start the process, please click the following link:</p>
+  <p>
+    <a href="<%= resetLink %>" style="color: #4aa1f3; text-decoration: none;">
+      Reset Your Password
+    </a>
+  </p>
+  <p>If the above link doesn’t work, copy and paste the URL in a new browser window:</p>
+  <p>
+    <%= resetLink %>
+  </p>
+  <p>The URL will expire in 1 hour for security reasons.</p>
+  <p>If you didn’t make this request, simply ignore this message.</p>
+</body>
+
+</html>

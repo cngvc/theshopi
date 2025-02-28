@@ -1,7 +1,10 @@
+import { config } from '@auth/config';
+import { authProducer } from '@auth/queues/auth.producer';
 import { signinSchema } from '@auth/schemes/signin.scheme';
 import { signupSchema } from '@auth/schemes/signup.scheme';
+import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError, IAuthDocument, isEmail, lowerCase } from '@cngvc/shopi-shared';
+import { BadRequestError, ExchangeNames, IAuthDocument, IEmailMessageDetails, isEmail, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
 import { compare } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
@@ -30,8 +33,20 @@ class AuthController {
       emailVerificationToken: randomCharacters
     };
     const result = await authService.createAuthUser(authData);
+    const verificationLink = `${config.CLIENT_URL}/confirm_email?v_token${authData.emailVerificationToken}`;
+    const messageDetails: IEmailMessageDetails = {
+      receiverEmail: result.email,
+      verifyLink: verificationLink,
+      template: 'verify-email'
+    };
+    await authProducer.publishDirectMessage(
+      authChannel,
+      ExchangeNames.AUTH_NOTIFICATION_EMAIL,
+      RoutingKeys.AUTH_NOTIFICATION_EMAIL,
+      JSON.stringify(messageDetails),
+      'Verify email message has been sent to notification service.'
+    );
 
-    // todo: send verify email
     const jwt = authService.signToken(result.id!, result.email!, result.username!);
     if (!jwt) {
       throw new BadRequestError('Error when signing token', 'RefreshToken refreshToken() method error');

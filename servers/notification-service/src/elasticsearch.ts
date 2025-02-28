@@ -1,6 +1,6 @@
 import { getErrorMessage } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
-import { config } from './config';
+import { config } from '@notification/config';
 import { SERVICE_NAME } from './constants';
 import { log } from './utils/logger.util';
 

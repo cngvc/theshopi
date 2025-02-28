@@ -27,7 +27,7 @@ export class NotificationServer {
     const channel = await createConnection();
     if (channel) {
       channel.prefetch(1);
-      await authConsumes.consumeAuthUserCreatedMessages(channel);
+      await authConsumes.consumeSendAuthEmailMessages(channel);
     } else {
       log.log('error', SERVICE_NAME + ` start queue failed, channel undefined`);
     }

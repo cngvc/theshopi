@@ -9,6 +9,7 @@ class Config {
   public ELASTIC_SEARCH_URL: string | undefined;
   public GATEWAY_JWT_TOKEN_SECRET: string | undefined;
   public NODE_ENV: string | undefined;
+  public RABBITMQ_ENDPOINT: string | undefined;
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
@@ -18,6 +19,7 @@ class Config {
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     this.GATEWAY_JWT_TOKEN_SECRET = process.env.GATEWAY_JWT_TOKEN_SECRET || '';
     this.NODE_ENV = process.env.NODE_ENV || '';
+    this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
   }
 }
 
