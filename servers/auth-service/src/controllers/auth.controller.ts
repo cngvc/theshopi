@@ -34,16 +34,15 @@ class AuthController {
     };
     const result = await authService.createAuthUser(authData);
     const verificationLink = `${config.CLIENT_URL}/confirm_email?v_token${authData.emailVerificationToken}`;
-    const messageDetails: IEmailMessageDetails = {
-      receiverEmail: result.email,
-      verifyLink: verificationLink,
-      template: 'verify-email'
-    };
     await authProducer.publishDirectMessage(
       authChannel,
       ExchangeNames.AUTH_NOTIFICATION_EMAIL,
       RoutingKeys.AUTH_NOTIFICATION_EMAIL,
-      JSON.stringify(messageDetails),
+      JSON.stringify({
+        receiverEmail: result.email,
+        verifyLink: verificationLink,
+        template: 'verify-email'
+      } as IEmailMessageDetails),
       'Verify email message has been sent to notification service.'
     );
 

@@ -17,11 +17,6 @@ const storeSchema: ObjectSchema = Joi.object().keys({
     'string.empty': 'Seller description is required',
     'any.required': 'Seller description is required'
   }),
-  country: Joi.string().required().messages({
-    'string.base': 'Please select a country',
-    'string.empty': 'Country field is required',
-    'any.required': 'Country field is required'
-  }),
   responseTime: Joi.number().required().greater(0).messages({
     'string.base': 'Please add a response time',
     'string.empty': 'Response time is required',

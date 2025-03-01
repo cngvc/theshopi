@@ -41,7 +41,6 @@ class StoreService {
           fullName: payload.fullName,
           profilePicture: payload.profilePicture,
           description: payload.description,
-          country: payload.country,
           responseTime: payload.responseTime,
           socialLinks: payload.socialLinks
         }

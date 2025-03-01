@@ -1,10 +1,10 @@
 import { authService } from '@auth/services/auth.service';
 import { generateRandomCharacters } from '@auth/utils/generate.util';
-import { BadRequestError, IAuthDocument } from '@cngvc/shopi-shared';
+import { BadRequestError, IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
 import { faker } from '@faker-js/faker';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { lowerCase, sample } from 'lodash';
+import { sample } from 'lodash';
 import { generateUsername } from 'unique-username-generator';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -18,7 +18,7 @@ class SeedController {
     }
     for (let i = 0; i < usernames.length; i++) {
       const username = usernames[i];
-      const email = faker.internet.email();
+      const email = faker.internet.email({ firstName: 'Joe', lastName: 'Vu' });
       const password = 'Asdfgh123';
       const profilePicture = faker.image.urlPicsumPhotos();
       const existingUser = await authService.getAuthUserByUsernameOrEmail(username, email);

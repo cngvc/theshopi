@@ -21,7 +21,6 @@ class StoreController {
       email: req.body.email,
       profilePicture: req.body.profilePicture,
       description: req.body.description,
-      country: req.body.country,
       responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks
     };
@@ -54,7 +53,6 @@ class StoreController {
       fullName: req.body.fullName,
       profilePicture: req.body.profilePicture,
       description: req.body.description,
-      country: req.body.country,
       responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks
     };

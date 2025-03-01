@@ -22,7 +22,6 @@ class StoreSeedController {
         fullName: faker.person.fullName(),
         username: buyer.username,
         email: buyer.email,
-        country: faker.location.country(),
         profilePicture: buyer.profilePicture,
         description: basicDescription.length <= 250 ? basicDescription : basicDescription.slice(0, 250),
         responseTime: parseInt(faker.commerce.price({ min: 1, max: 5, dec: 0 })),

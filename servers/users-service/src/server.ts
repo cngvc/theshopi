@@ -3,6 +3,8 @@ import 'express-async-errors';
 import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
 import { appRoutes } from '@users/routes';
+import { log } from '@users/utils/logger.util';
+import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
 import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
@@ -11,7 +13,8 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
-import { log } from './utils/logger.util';
+import { queueConnection } from './queues/connection';
+import { usersConsumes } from './queues/consumers/users.consumer';
 
 export class UsersServer {
   private app: Application;
@@ -23,6 +26,7 @@ export class UsersServer {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
+    this.startQueues();
     this.errorHandler();
     this.startServer();
   };
@@ -56,6 +60,11 @@ export class UsersServer {
 
   private routesMiddleware() {
     appRoutes(this.app);
+  }
+
+  private async startQueues() {
+    const channel = (await queueConnection.createConnection()) as Channel;
+    await usersConsumes.consumeUpdateUsersBuy(channel);
   }
 
   private errorHandler(): void {

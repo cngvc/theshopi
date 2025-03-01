@@ -7,6 +7,7 @@ import { queueConnection } from '@notification/queues/connection';
 import { authConsumes } from '@notification/queues/consumers/auth.consumer';
 import { appRoutes } from '@notification/routes';
 import { log } from '@notification/utils/logger.util';
+import { Channel } from 'amqplib';
 import { Application } from 'express';
 import http from 'http';
 
@@ -24,13 +25,8 @@ export class NotificationServer {
   };
 
   private async startQueues() {
-    const channel = await queueConnection.createConnection();
-    if (channel) {
-      channel.prefetch(1);
-      await authConsumes.consumeSendAuthEmailMessages(channel);
-    } else {
-      log.log('error', SERVICE_NAME + ` start queue failed, channel undefined`);
-    }
+    const channel = (await queueConnection.createConnection()) as Channel;
+    await authConsumes.consumeSendAuthEmailMessages(channel);
   }
 
   private routesMiddleware() {

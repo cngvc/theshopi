@@ -16,7 +16,7 @@ class AuthConsumes {
       await channel.bindQueue(assertQueue.queue, ExchangeNames.AUTH_NOTIFICATION_EMAIL, RoutingKeys.AUTH_NOTIFICATION_EMAIL);
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
         if (msg) {
-          const { receiverEmail, username, verifyLink, resetLink, template } = JSON.parse(msg!.content.toString());
+          const { receiverEmail, username, verifyLink, resetLink, template } = JSON.parse(msg.content.toString());
           const locals: IEmailLocals = {
             username,
             verifyLink,

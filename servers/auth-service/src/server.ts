@@ -75,9 +75,6 @@ export class AuthServer {
 
   private async startQueues() {
     authChannel = (await queueConnection.createConnection()) as Channel;
-    if (!authChannel) {
-      log.log('error', SERVICE_NAME + ` start queue failed, channel undefined`);
-    }
   }
 
   private errorHandler(): void {
