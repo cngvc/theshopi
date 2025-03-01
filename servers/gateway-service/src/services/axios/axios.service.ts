@@ -1,3 +1,4 @@
+import { GatewayToken } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
 import axios from 'axios';
 import { sign } from 'jsonwebtoken';
@@ -5,11 +6,11 @@ import { sign } from 'jsonwebtoken';
 export class AxiosService {
   public axios: ReturnType<typeof axios.create>;
 
-  constructor(baseUrl: string, serviceName: string) {
+  constructor(baseUrl: string, serviceName?: GatewayToken) {
     this.axios = this.axiosCreateInstance(baseUrl, serviceName);
   }
 
-  public axiosCreateInstance(baseUrl: string, serviceName?: string): ReturnType<typeof axios.create> {
+  public axiosCreateInstance(baseUrl: string, serviceName?: GatewayToken): ReturnType<typeof axios.create> {
     let requestGatewayToken = '';
     if (serviceName) {
       requestGatewayToken = sign({ id: serviceName }, `${config.GATEWAY_JWT_TOKEN_SECRET}`);

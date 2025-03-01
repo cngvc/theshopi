@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { CustomError, getErrorMessage, IErrorResponse } from '@cngvc/shopi-shared';
+import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
 import { appRoutes } from '@users/routes';
 import compression from 'compression';
@@ -9,6 +9,7 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
+import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
 import { log } from './utils/logger.util';
 
@@ -37,6 +38,14 @@ export class UsersServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
+    this.app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.headers.authorization) {
+        const token = (req.headers.authorization as string).split(' ')[1];
+        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
+        req.currentUser = payload;
+      }
+      next();
+    });
   }
 
   private standardMiddleware(): void {

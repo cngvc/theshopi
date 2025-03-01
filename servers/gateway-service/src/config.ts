@@ -11,6 +11,7 @@ class Config {
   public ELASTIC_SEARCH_URL: string | undefined;
   public GATEWAY_JWT_TOKEN_SECRET: string | undefined;
   public NODE_ENV: string | undefined;
+  public USERS_BASE_URL: string | undefined;
 
   constructor() {
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
@@ -21,6 +22,7 @@ class Config {
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
     this.GATEWAY_JWT_TOKEN_SECRET = process.env.GATEWAY_JWT_TOKEN_SECRET || '';
     this.NODE_ENV = process.env.NODE_ENV || '';
+    this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
   }
 }
 

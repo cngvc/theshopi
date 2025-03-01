@@ -7,4 +7,4 @@ const logger = (name: string, level: string) => {
   return log;
 };
 
-export const log = logger('userServer', 'debug');
+export const log = logger('usersServer', 'debug');

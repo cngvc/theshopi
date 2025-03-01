@@ -7,7 +7,7 @@ import { verify } from 'jsonwebtoken';
 class AuthMiddleware {
   constructor() {}
 
-  public verifyUser(req: Request, _: Response, next: NextFunction) {
+  public verifySessionJWT(req: Request, _: Response, next: NextFunction) {
     if (!req.session?.jwt) {
       throw new NotAuthorizedError('Token is not available, please login again.', SERVICE_NAME + ' verifyUser() method');
     }

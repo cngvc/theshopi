@@ -1,4 +1,6 @@
 import { currentUserController } from '@gateway/controllers/auth/current-user.controller';
+import { passwordController } from '@gateway/controllers/auth/password.controller';
+import { authMiddleware } from '@gateway/middlewares/auth.middleware';
 import express, { Router } from 'express';
 
 class CurrentUserRoutes {
@@ -8,8 +10,9 @@ class CurrentUserRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/auth/current-user', currentUserController.read);
-    this.router.post('/auth/resend-email', currentUserController.resendEmail);
+    this.router.get('/auth/me', authMiddleware.checkAuthentication, currentUserController.read);
+    this.router.post('/auth/resend-email', authMiddleware.checkAuthentication, currentUserController.resendEmail);
+    this.router.put('/auth/change-password', authMiddleware.checkAuthentication, passwordController.changePassword);
 
     return this.router;
   }

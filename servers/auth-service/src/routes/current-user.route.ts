@@ -8,7 +8,7 @@ class CurrentUserRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/current-user', currentUserController.getCurrentUser);
+    this.router.get('/me', currentUserController.getCurrentUser);
     this.router.post('/resend-email', currentUserController.resendEmail);
     return this.router;
   }

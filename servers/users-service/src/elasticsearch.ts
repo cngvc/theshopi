@@ -1,7 +1,7 @@
-import { config } from '@auth/config';
-import { SERVICE_NAME } from '@auth/constants';
-import { log } from '@auth/utils/logger.util';
 import { Client } from '@elastic/elasticsearch';
+import { config } from '@users/config';
+import { SERVICE_NAME } from '@users/constants';
+import { log } from '@users/utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;

@@ -15,6 +15,8 @@ import hpp from 'hpp';
 import http from 'http';
 import { StatusCodes } from 'http-status-codes';
 import { elasticSearch } from './elasticsearch';
+import { buyerService } from './services/api/buyer.service';
+import { storeService } from './services/api/store.service';
 import { log } from './utils/logger.util';
 
 export class GatewayServer {
@@ -56,7 +58,9 @@ export class GatewayServer {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (req.session?.jwt) {
         req.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
-        authService.axiosAuthInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+        authService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+        buyerService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+        storeService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
       }
       next();
     });
@@ -86,7 +90,7 @@ export class GatewayServer {
       next();
     });
 
-    this.app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
+    this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}:`, error.message);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());

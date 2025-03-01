@@ -22,7 +22,6 @@ export class Database {
       await AppDataSource.initialize();
       log.info(SERVICE_NAME + ' Mysql database connection has been established successfully');
     } catch (error) {
-      console.log(error);
       log.error(SERVICE_NAME + ' unable to connect to db');
       log.log('error', SERVICE_NAME + ` connection() method:`, getErrorMessage(error));
     }
