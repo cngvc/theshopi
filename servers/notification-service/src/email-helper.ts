@@ -42,12 +42,12 @@ class EmailHelper {
         juiceResources: {
           preserveImportant: true,
           webResources: {
-            relativeTo: path.join(__dirname, '../../build')
+            relativeTo: path.join(__dirname, '../build')
           }
         }
       });
       await email.send({
-        template: path.join(__dirname, '/templates', template),
+        template: path.join(__dirname, '..', 'src/emails', template),
         message: { to: receiver },
         locals
       });

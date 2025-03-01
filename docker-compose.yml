@@ -83,7 +83,26 @@ services:
       - elastic
     depends_on:
       - elasticsearch
+
   # built services
+  notifications:
+    container_name: notification_container
+    build:
+      context: ./servers/notification-service
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 4001:4001
+    env_file: ./servers/notification-service/.env
+    environment:
+      - CLIENT_URL=http://localhost:3000
+      - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
+      - NODE_ENV=development
+      - RABBITMQ_ENDPOINT=amqp://admin:Asdfgh123@rabbitmq_container:5672
+      - SENDER_EMAIL=95f39b48edfe1b
+      - SENDER_PASSWORD=cbbf7b0b94fd7e
+    depends_on:
+      - elasticsearch
 
 networks:
   elastic:

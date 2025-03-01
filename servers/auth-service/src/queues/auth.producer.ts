@@ -2,7 +2,7 @@ import { SERVICE_NAME } from '@auth/constants';
 import { log } from '@auth/utils/logger.util';
 import { getErrorMessage } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
-import { createConnection } from './connection';
+import { queueConnection } from './connection';
 
 class AuthProducer {
   public publishDirectMessage = async (
@@ -14,7 +14,7 @@ class AuthProducer {
   ): Promise<void> => {
     try {
       if (!channel) {
-        channel = (await createConnection()) as Channel;
+        channel = (await queueConnection.createConnection()) as Channel;
       }
       await channel.assertExchange(exchangeName, 'direct');
       channel.publish(exchangeName, routingKey, Buffer.from(message));

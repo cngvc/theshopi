@@ -1,6 +1,6 @@
 import { ExchangeNames, getErrorMessage, IEmailLocals, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { SERVICE_NAME } from '@notification/constants';
-import { emailHelper } from '@notification/emails/email-helper';
+import { emailHelper } from '@notification/email-helper';
 import { queueConnection } from '@notification/queues/connection';
 import { log } from '@notification/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
