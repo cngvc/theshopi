@@ -3,12 +3,12 @@ import 'express-async-errors';
 import { getErrorMessage } from '@cngvc/shopi-shared';
 import { SERVER_PORT, SERVICE_NAME } from '@notification/constants';
 import { elasticSearch } from '@notification/elasticsearch';
+import { queueConnection } from '@notification/queues/connection';
+import { authConsumes } from '@notification/queues/consumers/auth.consumer';
 import { appRoutes } from '@notification/routes';
+import { log } from '@notification/utils/logger.util';
 import { Application } from 'express';
 import http from 'http';
-import { createConnection } from './queues/connections';
-import { authConsumes } from './queues/consumers/auth.consumer';
-import { log } from './utils/logger.util';
 
 export class NotificationServer {
   private app: Application;
@@ -24,7 +24,7 @@ export class NotificationServer {
   };
 
   private async startQueues() {
-    const channel = await createConnection();
+    const channel = await queueConnection.createConnection();
     if (channel) {
       channel.prefetch(1);
       await authConsumes.consumeSendAuthEmailMessages(channel);

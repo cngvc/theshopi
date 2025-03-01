@@ -3,7 +3,7 @@ import 'express-async-errors';
 import { config } from '@auth/config';
 import { SERVER_PORT, SERVICE_NAME } from '@auth/constants';
 import { elasticSearch } from '@auth/elasticsearch';
-import { createConnection } from '@auth/queues/connection';
+import { queueConnection } from '@auth/queues/connection';
 import { appRoutes } from '@auth/routes';
 import { log } from '@auth/utils/logger.util';
 import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse, verifyGatewayRequest } from '@cngvc/shopi-shared';
@@ -73,7 +73,7 @@ export class AuthServer {
   }
 
   private async startQueues() {
-    authChannel = (await createConnection()) as Channel;
+    authChannel = (await queueConnection.createConnection()) as Channel;
     if (!authChannel) {
       log.log('error', SERVICE_NAME + ` start queue failed, channel undefined`);
     }

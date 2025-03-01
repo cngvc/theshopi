@@ -1,7 +1,7 @@
-import { config } from '@auth/config';
-import { SERVICE_NAME } from '@auth/constants';
-import { log } from '@auth/utils/logger.util';
 import { getErrorMessage } from '@cngvc/shopi-shared';
+import { config } from '@notification/config';
+import { SERVICE_NAME } from '@notification/constants';
+import { log } from '@notification/utils/logger.util';
 import client, { Channel, Connection } from 'amqplib';
 
 class QueueConnection {

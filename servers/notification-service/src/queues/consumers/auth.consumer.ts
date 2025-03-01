@@ -1,7 +1,7 @@
 import { ExchangeNames, getErrorMessage, IEmailLocals, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { SERVICE_NAME } from '@notification/constants';
 import { emailHelper } from '@notification/emails/email-helper';
-import { createConnection } from '@notification/queues/connections';
+import { queueConnection } from '@notification/queues/connection';
 import { log } from '@notification/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
@@ -9,7 +9,7 @@ class AuthConsumes {
   public consumeSendAuthEmailMessages = async (channel: Channel): Promise<void> => {
     try {
       if (!channel) {
-        channel = (await createConnection()) as Channel;
+        channel = (await queueConnection.createConnection()) as Channel;
       }
       await channel.assertExchange(ExchangeNames.AUTH_NOTIFICATION_EMAIL, 'direct');
       const assertQueue = await channel.assertQueue(QueueNames.AUTH_NOTIFICATION_EMAIL, { durable: true, autoDelete: false });
