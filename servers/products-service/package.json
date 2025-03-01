@@ -1,5 +1,5 @@
 {
-  "name": "auth-service",
+  "name": "products-service",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -16,11 +16,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.15",
-    "@elastic/elasticsearch": "^8.17.1",
+    "@cngvc/shopi-shared": "^0.0.16",
     "@faker-js/faker": "^9.5.1",
     "amqplib": "^0.10.5",
-    "bcryptjs": "^3.0.2",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
@@ -32,20 +30,18 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "mysql2": "^3.12.0",
+    "mongoose": "^8.11.0",
     "pino-pretty": "^13.0.0",
-    "typeorm": "^0.3.20",
-    "unique-username-generator": "^1.4.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.10.7",
+    "@types/amqplib": "^0.10.6",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/hpp": "^0.2.6",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/lodash": "^4.17.15",
+    "@types/lodash": "^4.17.16",
     "@types/node": "^22.13.8",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
