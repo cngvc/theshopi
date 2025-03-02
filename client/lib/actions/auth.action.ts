@@ -2,7 +2,7 @@ import { signIn, signOut } from 'next-auth/react';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { signinFormSchema } from '../validators';
 
-export const signinWithCredentials = async (_preState: unknown, formData: FormData) => {
+export const signinWithCredentials = async (_prevState: unknown, formData: FormData) => {
   try {
     const user = signinFormSchema.parse({
       username: formData.get('username'),

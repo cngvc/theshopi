@@ -1,18 +1,19 @@
-'use client';
-
+import { auth } from '@/auth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { APP_NAME } from '@/lib/constants';
-import { useSession } from 'next-auth/react';
+import pages from '@/lib/constants/pages';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import CredentialsSigninForm from './credentials-signin-form';
 
-const SigninPage = () => {
-  const session = useSession();
+const SigninPage = async (props: { searchParams: Promise<{ callbackUrl: string }> }) => {
+  const { callbackUrl } = await props.searchParams;
+  const session = await auth();
 
-  // if (session.data) {
-  //   redirect(pages.home);
-  // }
+  if (session?.user) {
+    redirect(callbackUrl || pages.home);
+  }
 
   return (
     <div className="w-full max-w-md mx-auto">

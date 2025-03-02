@@ -4,7 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signinWithCredentials } from '@/lib/actions/auth.action';
+import pages from '@/lib/constants/pages';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -13,6 +15,9 @@ const CredentialsSigninForm = () => {
     success: false,
     message: ''
   });
+
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || pages.home;
 
   const SigninButton = () => {
     const { pending } = useFormStatus();
@@ -25,6 +30,8 @@ const CredentialsSigninForm = () => {
 
   return (
     <form action={action}>
+      <input type="hidden" name="callbackUrl" value={callbackUrl} />
+
       <div className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
