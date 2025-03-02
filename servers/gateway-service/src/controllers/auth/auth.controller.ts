@@ -7,17 +7,18 @@ import { StatusCodes } from 'http-status-codes';
 class AuthController {
   public async signup(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.signup(req.body);
-    const { message, token, id } = response.data;
+    const { message, token, user } = response.data;
     req.session = { token };
-    res.status(StatusCodes.CREATED).json({ message, id });
+    log.info(`User ${user?.username} has signed up.`);
+    res.status(StatusCodes.CREATED).json({ message, user });
   }
 
   public async signin(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.signin(req.body);
-    const { message, token, id } = response.data;
+    const { message, token, user } = response.data;
     req.session = { jwt: token };
-    log.info(`User ${id} has logged in.`);
-    res.status(StatusCodes.OK).json({ message, id });
+    log.info(`User ${user?.username} has logged in.`);
+    res.status(StatusCodes.OK).json({ message, user });
   }
 }
 

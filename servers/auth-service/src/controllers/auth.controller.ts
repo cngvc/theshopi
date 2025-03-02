@@ -50,7 +50,14 @@ class AuthController {
     if (!jwt) {
       throw new BadRequestError('Error when signing token', 'RefreshToken refreshToken() method error');
     }
-    res.status(StatusCodes.CREATED).json({ message: 'User created successfully', token: jwt, id: result.id! });
+    res.status(StatusCodes.CREATED).json({
+      message: 'User created successfully',
+      token: jwt,
+      user: {
+        id: result.id,
+        username: result.username
+      }
+    });
   }
   async signin(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(signinSchema.validate(req.body));
@@ -72,7 +79,14 @@ class AuthController {
     if (!jwt) {
       throw new BadRequestError('Error when signing token', 'signin() method error jwt');
     }
-    res.status(StatusCodes.OK).json({ message, token: jwt, id: existingUser.id! });
+    res.status(StatusCodes.OK).json({
+      message,
+      token: jwt,
+      user: {
+        id: existingUser.id,
+        username: existingUser.username
+      }
+    });
   }
 }
 

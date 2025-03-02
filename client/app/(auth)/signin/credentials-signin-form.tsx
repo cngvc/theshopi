@@ -15,7 +15,6 @@ const CredentialsSigninForm = () => {
     success: false,
     message: ''
   });
-
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || pages.home;
 
