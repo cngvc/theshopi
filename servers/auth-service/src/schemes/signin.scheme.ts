@@ -7,7 +7,7 @@ export const signinSchema: ObjectSchema = Joi.object().keys({
       'string.email': 'Invalid email',
       'string.empty': 'Email is required'
     }),
-    otherwise: Joi.string().min(4).max(12).messages({
+    otherwise: Joi.string().min(1).messages({
       'string.base': 'Username must be of type string',
       'string.min': 'Invalid username',
       'string.max': 'Invalid username',

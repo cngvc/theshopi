@@ -49,7 +49,7 @@ export class GatewayServer {
     this.app.use(helmet());
     this.app.use(
       cors({
-        origin: `${config.CLIENT_URL}`,
+        origin: config.CLIENT_URL,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
@@ -91,7 +91,7 @@ export class GatewayServer {
     });
 
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      log.log('error', SERVICE_NAME + ` ${error.comingFrom}:`, error.message);
+      log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
       }

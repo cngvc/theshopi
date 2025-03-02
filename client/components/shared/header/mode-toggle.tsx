@@ -1,0 +1,72 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoonIcon, SunIcon } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useMountedState } from "react-use";
+
+const ModeToggle = () => {
+  const isMounted = useMountedState();
+  const { theme, setTheme } = useTheme();
+  if (!isMounted) return null;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant={"ghost"}
+          className="focus-visible:ring-0 focus-visible:ring-offset-0"
+        >
+          {theme === "system" ? (
+            <SunIcon />
+          ) : theme === "dark" ? (
+            <MoonIcon />
+          ) : (
+            <SunIcon />
+          )}
+          <p className="md:hidden">Theme</p>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuCheckboxItem
+          checked={theme === "system"}
+          onClick={() => {
+            setTheme("system");
+          }}
+        >
+          System
+        </DropdownMenuCheckboxItem>
+
+        <DropdownMenuCheckboxItem
+          checked={theme === "dark"}
+          onClick={() => {
+            setTheme("dark");
+          }}
+        >
+          Dark
+        </DropdownMenuCheckboxItem>
+
+        <DropdownMenuCheckboxItem
+          checked={theme === "light"}
+          onClick={() => {
+            setTheme("light");
+          }}
+        >
+          Light
+        </DropdownMenuCheckboxItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
+export default ModeToggle;

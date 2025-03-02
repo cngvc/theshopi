@@ -16,7 +16,7 @@ class Config {
   constructor() {
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
     this.AUTH_JWT_TOKEN_SECRET = process.env.AUTH_JWT_TOKEN_SECRET || '';
-    this.CLIENT_URL = process.env.CLIENT_URL || '*';
+    this.CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
     this.COOKIE_SECRET_KEY_FIRST = process.env.COOKIE_SECRET_KEY_FIRST || '*';
     this.COOKIE_SECRET_KEY_SECOND = process.env.COOKIE_SECRET_KEY_SECOND || '';
     this.ELASTIC_SEARCH_URL = process.env.ELASTIC_SEARCH_URL || '';
