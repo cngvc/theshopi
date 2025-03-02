@@ -16,7 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.16",
+    "@cngvc/shopi-shared": "^0.0.17",
     "@faker-js/faker": "^9.5.1",
     "amqplib": "^0.10.5",
     "compression": "^1.8.0",
@@ -32,6 +32,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^8.11.0",
     "pino-pretty": "^13.0.0",
+    "slugify": "^1.6.6",
     "uuid": "^11.1.0"
   },
   "devDependencies": {

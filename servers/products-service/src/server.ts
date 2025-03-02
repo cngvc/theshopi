@@ -14,6 +14,9 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
+import { elasticSearch } from './elasticsearch';
+
+export let productChannel: Channel;
 
 export class UsersServer {
   private app: Application;
@@ -26,6 +29,7 @@ export class UsersServer {
     this.securityMiddleware();
     this.routesMiddleware();
     this.startQueues();
+    this.startElasticSearch();
     this.errorHandler();
     this.startServer();
   };
@@ -62,7 +66,12 @@ export class UsersServer {
   }
 
   private async startQueues() {
-    const channel = (await queueConnection.createConnection()) as Channel;
+    productChannel = (await queueConnection.createConnection()) as Channel;
+  }
+
+  private startElasticSearch() {
+    elasticSearch.checkConnection();
+    elasticSearch.createIndex('products');
   }
 
   private errorHandler(): void {

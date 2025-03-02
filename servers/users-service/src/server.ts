@@ -65,6 +65,7 @@ export class UsersServer {
   private async startQueues() {
     const channel = (await queueConnection.createConnection()) as Channel;
     await usersConsumes.consumeUpdateUsersBuy(channel);
+    await usersConsumes.consumeUpdateUsersStore(channel);
   }
 
   private errorHandler(): void {
