@@ -14,11 +14,13 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
+import { elasticSearchIndexes } from './constants/elasticsearch-indexes';
 import { elasticSearch } from './elasticsearch';
+import { productConsumes } from './queues/consumers/product.consumer';
 
 export let productChannel: Channel;
 
-export class UsersServer {
+export class ProductServer {
   private app: Application;
   constructor(app: Application) {
     this.app = app;
@@ -67,11 +69,12 @@ export class UsersServer {
 
   private async startQueues() {
     productChannel = (await queueConnection.createConnection()) as Channel;
+    productConsumes.consumeCreateProductSeeds(productChannel);
   }
 
   private startElasticSearch() {
     elasticSearch.checkConnection();
-    elasticSearch.createIndex('products');
+    elasticSearch.createIndex(elasticSearchIndexes.products);
   }
 
   private errorHandler(): void {

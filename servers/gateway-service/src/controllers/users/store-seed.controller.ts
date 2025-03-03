@@ -11,4 +11,4 @@ class StoreSeedController {
   }
 }
 
-export const authSeedController = new StoreSeedController();
+export const storeSeedController = new StoreSeedController();

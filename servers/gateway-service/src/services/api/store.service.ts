@@ -13,7 +13,7 @@ class StoreService {
   }
 
   async getStoreById(storeId: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.axiosInstance.get(`/id/${storeId}`);
+    const response: AxiosResponse = await this.axiosInstance.get(`/${storeId}`);
     return response;
   }
 
@@ -28,7 +28,7 @@ class StoreService {
   }
 
   async createStore(body: IStoreDocument): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.axiosInstance.post('/create', body);
+    const response: AxiosResponse = await this.axiosInstance.post('/', body);
     return response;
   }
 

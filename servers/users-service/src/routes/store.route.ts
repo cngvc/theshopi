@@ -12,9 +12,10 @@ class StoreRoutes {
     this.router.get('/id/:storeId', storeController.getStoreById);
     this.router.get('/username/:username', storeController.getStoreByUsername);
     this.router.get('/random/:size', storeController.getRandomStores);
-    this.router.post('/create', storeController.createStore);
     this.router.put('/:storeId', storeController.updateStore);
     this.router.put('/seed/:count', storeSeedController.createSeeds);
+    this.router.post('/', storeController.createStore);
+
     return this.router;
   }
 }

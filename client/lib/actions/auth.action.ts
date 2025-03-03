@@ -41,7 +41,6 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
     });
     return { success: true, message: 'User registered successfully' };
   } catch (error: any) {
-    console.log(error?.name);
     if (isRedirectError(error)) {
       throw error;
     }

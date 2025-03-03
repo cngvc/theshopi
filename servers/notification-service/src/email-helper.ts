@@ -1,10 +1,11 @@
 import path from 'path';
 
-import { IEmailLocals } from '@cngvc/shopi-shared';
+import { getErrorMessage, IEmailLocals } from '@cngvc/shopi-shared';
 import { config } from '@notification/config';
 import { log } from '@notification/utils/logger.util';
 import Email from 'email-templates';
 import nodemailer, { Transporter } from 'nodemailer';
+import { SERVICE_NAME } from './constants';
 
 class EmailHelper {
   public sendEmail = async (template: string, receiver: string, locals: IEmailLocals): Promise<void> => {
@@ -12,7 +13,7 @@ class EmailHelper {
       await this.createTemplatedEmail(template, receiver, locals);
       log.info('Email sent successfully.');
     } catch (error) {
-      log.log('error', 'NotificationService MailTransport sendEmail() method error:', error);
+      log.log('error', SERVICE_NAME + ' sendEmail() method error:', getErrorMessage(error));
     }
   };
 
@@ -52,7 +53,7 @@ class EmailHelper {
         locals
       });
     } catch (error) {
-      log.error(error);
+      log.log('error', SERVICE_NAME + ' createTemplatedEmail() method error:', getErrorMessage(error));
     }
   };
 }

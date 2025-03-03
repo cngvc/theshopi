@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@orders/config';
 import { SERVICE_NAME } from '@orders/constants';
@@ -22,7 +23,7 @@ class ElasticSearch {
       } catch (error) {
         log.error(SERVICE_NAME + ' connection to elasticsearch failed, retrying');
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        log.log('error', SERVICE_NAME + ' checkConnection() method:', error);
+        log.log('error', SERVICE_NAME + ' checkConnection() method:', getErrorMessage(error));
       }
     }
   }

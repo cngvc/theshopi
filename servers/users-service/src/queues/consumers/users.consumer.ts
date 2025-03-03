@@ -1,6 +1,7 @@
 import { ExchangeNames, getErrorMessage, IBuyerDocument, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { SERVICE_NAME } from '@users/constants';
 import { queueConnection } from '@users/queues/connection';
+import { usersProducer } from '@users/queues/users.producer';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { log } from '@users/utils/logger.util';
@@ -51,6 +52,31 @@ class UsersConsumes {
         } else if (type === 'update-store-product-count') {
           await storeService.updateTotalProductsCount(storeId, count);
         }
+        channel.ack(msg!);
+      });
+    } catch (error) {
+      log.log('error', SERVICE_NAME + ' consumeUpdateUsersStore() method:', getErrorMessage(error));
+    }
+  };
+
+  consumeGetUsersStore = async (channel: Channel): Promise<void> => {
+    try {
+      if (!channel) {
+        channel = (await queueConnection.createConnection()) as Channel;
+      }
+      await channel.assertExchange(ExchangeNames.GET_STORE_USERS, 'direct');
+      const assertQueue = await channel.assertQueue(QueueNames.GET_STORE_USERS, { durable: true, autoDelete: false });
+      await channel.bindQueue(assertQueue.queue, ExchangeNames.GET_STORE_USERS, RoutingKeys.GET_STORE_USERS);
+      channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
+        const { count } = JSON.parse(msg!.content.toString());
+        const stores = await storeService.getRandomStores(parseInt(count, 10));
+        usersProducer.publishDirectMessage(
+          channel,
+          ExchangeNames.CREATE_SEED_PRODUCT,
+          RoutingKeys.CREATE_SEED_PRODUCT,
+          JSON.stringify({ stores, count }),
+          'Message to callback product service creates seeds with store users.'
+        );
         channel.ack(msg!);
       });
     } catch (error) {

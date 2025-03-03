@@ -1,8 +1,11 @@
-import { getErrorMessage } from '@cngvc/shopi-shared';
+import { getErrorMessage, IStoreProduct, NotFoundError } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
+import { CountResponse, GetResponse, QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';
 import { SERVICE_NAME } from '@products/constants';
 import { log } from '@products/utils/logger.util';
+
+type QueryListType = QueryDslQueryContainer | QueryDslQueryContainer[];
 
 class ElasticSearch {
   private elasticSearchClient: Client;
@@ -33,15 +36,35 @@ class ElasticSearch {
     return result;
   }
 
+  async getDocumentCount(index: string): Promise<number> {
+    try {
+      const result: CountResponse = await this.elasticSearchClient.count({ index });
+      return result.count;
+    } catch (error) {
+      log.log('error', SERVICE_NAME + ' getDocumentCount() method error:', getErrorMessage(error));
+      return 0;
+    }
+  }
+
+  async getIndexedData(index: string, itemId: string): Promise<IStoreProduct> {
+    try {
+      const result: GetResponse = await this.elasticSearchClient.get({ index, id: itemId });
+      return result._source as IStoreProduct;
+    } catch (error) {
+      log.log('error', SERVICE_NAME + ' getIndexedData() method error:', getErrorMessage(error));
+      throw new NotFoundError('Product not found', 'getIndexedData() method');
+    }
+  }
+
   async createIndex(indexName: string): Promise<void> {
     try {
       const result: boolean = await this.checkIfIndexExist(indexName);
       if (result) {
-        log.info(`Index "${indexName}" already exist.`);
+        log.info(`Index "${indexName}" already existed.`);
       } else {
         await this.elasticSearchClient.indices.create({ index: indexName });
         await this.elasticSearchClient.indices.refresh({ index: indexName });
-        log.info(`Created index ${indexName}`);
+        log.info(`Created index ${indexName}.`);
       }
     } catch (error) {
       log.error(`An error occurred while creating the index ${indexName}`);
@@ -49,31 +72,31 @@ class ElasticSearch {
     }
   }
 
-  addItemToIndex = async (index: string, itemId: string, productDocument: unknown): Promise<void> => {
+  async addItemToIndex(index: string, itemId: string, doc: unknown): Promise<void> {
     try {
       await this.elasticSearchClient.index({
         index,
         id: itemId,
-        document: productDocument
+        document: doc
       });
     } catch (error) {
       log.log('error', SERVICE_NAME + ' addItemToIndex() method:', getErrorMessage(error));
     }
-  };
+  }
 
-  updateIndexedItem = async (index: string, itemId: string, productDocument: unknown): Promise<void> => {
+  async updateIndexedItem(index: string, itemId: string, doc: unknown) {
     try {
       await this.elasticSearchClient.update({
         index,
         id: itemId,
-        doc: productDocument
+        doc: doc
       });
     } catch (error) {
       log.log('error', SERVICE_NAME + ' updateIndexedItem() method:', getErrorMessage(error));
     }
-  };
+  }
 
-  deleteIndexedItem = async (index: string, itemId: string): Promise<void> => {
+  async deleteIndexedItem(index: string, itemId: string): Promise<void> {
     try {
       await this.elasticSearchClient.delete({
         index,
@@ -82,7 +105,18 @@ class ElasticSearch {
     } catch (error) {
       log.log('error', SERVICE_NAME + ' deleteIndexedItem() method:', getErrorMessage(error));
     }
-  };
+  }
+
+  async search(index: string, queryList: QueryListType) {
+    return await this.elasticSearchClient.search({
+      index,
+      query: {
+        bool: {
+          must: queryList
+        }
+      }
+    });
+  }
 }
 
 export const elasticSearch: ElasticSearch = new ElasticSearch();

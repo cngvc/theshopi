@@ -6,7 +6,7 @@ import { storeRoutes } from '@users/routes/store.route';
 import { Application } from 'express';
 
 const appRoutes = (app: Application): void => {
-  app.use(BASE_PATH, healthRoutes.routes());
+  app.use(BASE_PATH, verifyGatewayRequest, healthRoutes.routes());
   app.use(BUYER_BASE_PATH, verifyGatewayRequest, buyerRoutes.routes());
   app.use(STORE_BASE_PATH, verifyGatewayRequest, storeRoutes.routes());
 };

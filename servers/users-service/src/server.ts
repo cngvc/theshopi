@@ -66,6 +66,7 @@ export class UsersServer {
     const channel = (await queueConnection.createConnection()) as Channel;
     await usersConsumes.consumeUpdateUsersBuy(channel);
     await usersConsumes.consumeUpdateUsersStore(channel);
+    await usersConsumes.consumeGetUsersStore(channel);
   }
 
   private errorHandler(): void {
