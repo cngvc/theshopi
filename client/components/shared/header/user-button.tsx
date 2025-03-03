@@ -39,11 +39,19 @@ const UserButton = async () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">{session?.user?.name}</DropdownMenuLabel>
+          <div className="py-1 space-y-1">
+            <DropdownMenuLabel>
+              <div className="text-sm font-medium leading-0">{session?.user?.name}</div>
+            </DropdownMenuLabel>
+            <DropdownMenuLabel>
+              <div className="text-sm text-muted-foreground font-medium leading-0">{session?.user?.email}</div>
+            </DropdownMenuLabel>
+          </div>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <form action={signoutUser}>
-              <Button className="w-full px-1 h-5 justify-start" variant={'ghost'} type="submit">
+              <Button className="w-full px-1 h-5 justify-start" variant={'ghost'}>
                 Signout
               </Button>
             </form>
