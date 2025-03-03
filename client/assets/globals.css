@@ -1,13 +1,10 @@
 @import 'tailwindcss';
 
 @plugin "tailwindcss-animate";
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
 
 @custom-variant dark (&:is(.dark *));
-
-@tailwind variants;
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 @layer utilities {
   .wrapper {

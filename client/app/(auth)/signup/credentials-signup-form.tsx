@@ -41,12 +41,20 @@ const CredentialsSignupForm = () => {
             type="text"
             autoComplete="username"
             placeholder="Enter your username"
-            defaultValue={''}
+            defaultValue={'joevu98+8'}
           />
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" name="email" required type="email" autoComplete="email" placeholder="Enter your email" defaultValue={''} />
+          <Input
+            id="email"
+            name="email"
+            required
+            type="email"
+            autoComplete="email"
+            placeholder="Enter your email"
+            defaultValue={'joevu98+8@gmail.com'}
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
@@ -57,7 +65,7 @@ const CredentialsSignupForm = () => {
             type="password"
             autoComplete="password"
             placeholder="Enter your password"
-            defaultValue={''}
+            defaultValue={'joevu98+8'}
           />
         </div>
 
@@ -70,7 +78,7 @@ const CredentialsSignupForm = () => {
             type="password"
             autoComplete="confirmPassword"
             placeholder="Enter your confirm password"
-            defaultValue={''}
+            defaultValue={'joevu98+8'}
           />
         </div>
 

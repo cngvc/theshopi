@@ -3,6 +3,7 @@
 import { signIn, signOut } from '@/auth';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import axiosInstance from '../axios';
+import { formatError } from '../utils';
 import { signinFormSchema, signupFormSchema } from '../validators/auth-validator';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
@@ -17,7 +18,7 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
     if (isRedirectError(error)) {
       throw error;
     }
-    return { success: false, message: 'Invalid username or password' };
+    return { success: false, message: formatError(error) };
   }
 }
 
@@ -39,12 +40,12 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
       password: user.password
     });
     return { success: true, message: 'User registered successfully' };
-  } catch (error) {
+  } catch (error: any) {
+    console.log(error?.name);
     if (isRedirectError(error)) {
       throw error;
     }
-    console.log(error);
-    return { success: false, message: 'User was not registered successfully' };
+    return { success: false, message: formatError(error) };
   }
 }
 

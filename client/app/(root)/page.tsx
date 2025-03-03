@@ -1,14 +1,13 @@
 import { auth } from '@/auth';
-import { Button } from '@/components/ui/button';
+import axiosInstance from '@/lib/axios';
 
 const HomePage = async () => {
   const session = await auth();
-
-  return (
-    <div>
-      <Button>HOME</Button>
-    </div>
-  );
+  if (session?.user?.accessToken) {
+    const { data } = await axiosInstance.get('/auth/me');
+    return <div className="w-full break-words">{JSON.stringify(data.user)}</div>;
+  }
+  return <div></div>;
 };
 
 export default HomePage;
