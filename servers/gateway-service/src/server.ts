@@ -48,7 +48,6 @@ export class GatewayServer {
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       const authHeader = req.headers.authorization;
-
       if (authHeader && authHeader.startsWith('Bearer ')) {
         authService.axiosInstance.defaults.headers['Authorization'] = authHeader;
         buyerService.axiosInstance.defaults.headers['Authorization'] = authHeader;
@@ -84,6 +83,7 @@ export class GatewayServer {
 
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
+
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
       }
