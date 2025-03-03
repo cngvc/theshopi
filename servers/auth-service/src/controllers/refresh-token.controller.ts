@@ -9,11 +9,11 @@ class RefreshTokenController {
     if (!existingUser) {
       throw new BadRequestError('Invalid credentials', 'refreshToken() method error');
     }
-    const userJWT = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
-    if (!userJWT) {
+    const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
+    if (!token) {
       throw new BadRequestError('Error when signing token', 'refreshToken() method error');
     }
-    res.status(StatusCodes.OK).json({ message: 'Refresh token successfully', token: userJWT });
+    res.status(StatusCodes.OK).json({ message: 'Refresh token successfully', token });
   }
 }
 

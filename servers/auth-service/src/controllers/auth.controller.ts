@@ -46,16 +46,17 @@ class AuthController {
       'Verify email message has been sent to notification service.'
     );
 
-    const jwt = authService.signToken(result.id!, result.email!, result.username!);
-    if (!jwt) {
+    const token = authService.signToken(result.id!, result.email!, result.username!);
+    if (!token) {
       throw new BadRequestError('Error when signing token', 'RefreshToken refreshToken() method error');
     }
     res.status(StatusCodes.CREATED).json({
       message: 'User created successfully',
-      token: jwt,
+      accessToken: token,
       user: {
         id: result.id,
-        username: result.username
+        username: result.username,
+        email: result.email
       }
     });
   }
@@ -75,16 +76,17 @@ class AuthController {
       throw new BadRequestError('Invalid credentials', 'signin() method error password');
     }
     let message = 'User login successfully';
-    const jwt = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
-    if (!jwt) {
+    const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
+    if (!token) {
       throw new BadRequestError('Error when signing token', 'signin() method error jwt');
     }
     res.status(StatusCodes.OK).json({
       message,
-      token: jwt,
+      accessToken: token,
       user: {
         id: existingUser.id,
-        username: existingUser.username
+        username: existingUser.username,
+        email: existingUser.email
       }
     });
   }

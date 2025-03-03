@@ -12,22 +12,18 @@ const config: NextAuthConfig = {
         username: { label: 'Username', type: 'text' },
         password: { label: 'Password', type: 'password' }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         try {
-          const { data } = await axiosInstance.post(
-            `/auth/signin`,
-            {
-              username: credentials?.username,
-              password: credentials?.password
-            },
-            {
-              withCredentials: true
-            }
-          );
+          const { data } = await axiosInstance.post(`/auth/signin`, {
+            username: credentials?.username,
+            password: credentials?.password
+          });
           if (data?.user) {
             return {
               id: data.user.id,
-              name: data.user.username
+              name: data.user.username,
+              email: data.user.email,
+              accessToken: data.accessToken
             };
           }
           return null;
@@ -37,11 +33,21 @@ const config: NextAuthConfig = {
       }
     })
   ],
+  session: {
+    strategy: 'jwt'
+  },
   callbacks: {
-    async jwt({ token }) {
+    async jwt({ token, user, account }) {
+      if (user && account) {
+        const { accessToken } = user;
+        return { ...token, accessToken, user };
+      }
       return token;
     },
-    async session({ session, token, user, trigger }) {
+    async session({ session, token }) {
+      if (token) {
+        session.user.accessToken = `${token.accessToken}`;
+      }
       return session;
     }
   },

@@ -8,11 +8,14 @@ class AuthMiddleware {
   constructor() {}
 
   public verifySessionJWT(req: Request, _: Response, next: NextFunction) {
-    if (!req.session?.jwt) {
-      throw new NotAuthorizedError('Token is not available, please login again.', SERVICE_NAME + ' verifyUser() method');
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new NotAuthorizedError('Authorization token is missing or invalid.', SERVICE_NAME + ' verifyBearerToken() method');
     }
+
     try {
-      const payload = verify(req.session?.jwt, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
+      const token = authHeader.split(' ')[1];
+      const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
       req.currentUser = payload;
     } catch (error) {
       throw new NotAuthorizedError('Token is not available, please login again.', SERVICE_NAME + ' verifyUser() method');

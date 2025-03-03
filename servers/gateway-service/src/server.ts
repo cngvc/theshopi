@@ -7,7 +7,6 @@ import { appRoutes } from '@gateway/routes';
 import { authService } from '@gateway/services/api/auth.service';
 import { isAxiosError } from 'axios';
 import compression from 'compression';
-import cookieSession from 'cookie-session';
 import cors from 'cors';
 import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
 import helmet from 'helmet';
@@ -37,14 +36,6 @@ export class GatewayServer {
 
   private securityMiddleware(): void {
     this.app.set('trust proxy', 1);
-    this.app.use(
-      cookieSession({
-        name: 'session',
-        keys: [`${config.COOKIE_SECRET_KEY_FIRST}`, `${config.COOKIE_SECRET_KEY_SECOND}`],
-        maxAge: 24 * 7 * 3600 * 1000,
-        secure: config.NODE_ENV !== 'development'
-      })
-    );
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(
@@ -56,11 +47,12 @@ export class GatewayServer {
     );
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.session?.jwt) {
-        req.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
-        authService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
-        buyerService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
-        storeService.axiosInstance.defaults.headers['Authorization'] = `Bearer ${req.session?.jwt}`;
+      const authHeader = req.headers.authorization;
+
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        authService.axiosInstance.defaults.headers['Authorization'] = authHeader;
+        buyerService.axiosInstance.defaults.headers['Authorization'] = authHeader;
+        storeService.axiosInstance.defaults.headers['Authorization'] = authHeader;
       }
       next();
     });
