@@ -5,9 +5,9 @@ import pages from '@/lib/constants/pages';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import CredentialsSigninForm from './credentials-signin-form';
+import CredentialsSignupForm from './credentials-signup-form';
 
-const SigninPage = async (props: { searchParams: Promise<{ callbackUrl: string }> }) => {
+const SignupPage = async (props: { searchParams: Promise<{ callbackUrl: string }> }) => {
   const { callbackUrl } = await props.searchParams;
   const session = await auth();
 
@@ -19,14 +19,14 @@ const SigninPage = async (props: { searchParams: Promise<{ callbackUrl: string }
     <div className="w-full h-full max-w-md mx-auto flex flex-col justify-center">
       <Card>
         <CardHeader className="space-y-4">
-          <Link href={'/'} className="flex-center">
+          <Link href={pages.home} className="flex-center">
             <Image src={'/images/logo.png'} width={130} height={26} alt={`${APP_NAME} logo`} priority={true} />
           </Link>
-          <CardTitle className="text-center">Sign In</CardTitle>
-          <CardDescription className="text-center">Sign in to your account</CardDescription>
+          <CardTitle className="text-center">Sign Up</CardTitle>
+          <CardDescription className="text-center">Create a new account</CardDescription>
 
           <CardContent className="space-y-4">
-            <CredentialsSigninForm />
+            <CredentialsSignupForm />
           </CardContent>
         </CardHeader>
       </Card>
@@ -34,4 +34,4 @@ const SigninPage = async (props: { searchParams: Promise<{ callbackUrl: string }
   );
 };
 
-export default SigninPage;
+export default SignupPage;

@@ -61,6 +61,7 @@ class AuthController {
     });
   }
   async signin(req: Request, res: Response): Promise<void> {
+    console.log(req.body);
     const { error } = await Promise.resolve(signinSchema.validate(req.body));
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'signin() method error validation');
