@@ -4,7 +4,6 @@ import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { v4 as uuidv4 } from 'uuid';
 
 class StoreSeedController {
   createSeeds = async (req: Request, res: Response): Promise<void> => {
@@ -18,11 +17,9 @@ class StoreSeedController {
       }
       const basicDescription: string = faker.commerce.productDescription();
       const store: IStoreDocument = {
-        profilePublicId: uuidv4(),
         fullName: faker.person.fullName(),
         username: buyer.username,
         email: buyer.email,
-        profilePicture: buyer.profilePicture,
         description: basicDescription.length <= 250 ? basicDescription : basicDescription.slice(0, 250),
         responseTime: parseInt(faker.commerce.price({ min: 1, max: 5, dec: 0 })),
         socialLinks: ['http://youtube.com', 'https://facebook.com']

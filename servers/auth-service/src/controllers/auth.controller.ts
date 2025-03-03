@@ -9,7 +9,6 @@ import { compare } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { v4 as uuidv4 } from 'uuid';
 
 class AuthController {
   async signup(req: Request, res: Response): Promise<void> {
@@ -22,13 +21,11 @@ class AuthController {
     if (existingUser) {
       throw new BadRequestError('User already exists', 'signup() method error existing');
     }
-    const profilePublicId = uuidv4();
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
     const randomCharacters: string = randomBytes.toString('hex');
     const authData: IAuthDocument = {
       username: lowerCase(username),
       email: lowerCase(email),
-      profilePublicId,
       password,
       emailVerificationToken: randomCharacters
     };

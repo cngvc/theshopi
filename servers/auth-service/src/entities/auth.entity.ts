@@ -15,12 +15,6 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
   @Column()
   password!: string;
 
-  @Column({ nullable: true })
-  profilePublicId?: string;
-
-  @Column({ nullable: true })
-  profilePicture?: string;
-
   @Index()
   @Column({ unique: true })
   email!: string;

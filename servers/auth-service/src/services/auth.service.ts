@@ -21,7 +21,6 @@ export class AuthService {
       JSON.stringify({
         username: user.username!,
         email: user.email!,
-        profilePicture: user.profilePicture!,
         createdAt: user.createdAt!,
         type: 'auth'
       } as IAuthBuyerMessageDetails),

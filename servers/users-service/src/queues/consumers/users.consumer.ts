@@ -18,11 +18,10 @@ class UsersConsumes {
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
         const { type } = JSON.parse(msg!.content.toString());
         if (type === 'auth') {
-          const { username, email, profilePicture, createdAt } = JSON.parse(msg!.content.toString());
+          const { username, email, createdAt } = JSON.parse(msg!.content.toString());
           const buyer: IBuyerDocument = {
             username,
             email,
-            profilePicture,
             purchasedProducts: [],
             createdAt
           };

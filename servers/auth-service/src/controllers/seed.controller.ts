@@ -1,12 +1,13 @@
+import { SERVICE_NAME } from '@auth/constants';
 import { authService } from '@auth/services/auth.service';
 import { generateRandomCharacters } from '@auth/utils/generate.util';
-import { BadRequestError, IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
+import { log } from '@auth/utils/logger.util';
+import { IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
 import { faker } from '@faker-js/faker';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { sample } from 'lodash';
 import { generateUsername } from 'unique-username-generator';
-import { v4 as uuidV4 } from 'uuid';
 
 class SeedController {
   async createSeeds(req: Request, res: Response): Promise<void> {
@@ -18,25 +19,22 @@ class SeedController {
     }
     for (let i = 0; i < usernames.length; i++) {
       const username = usernames[i];
-      const email = faker.internet.email({ firstName: 'Joe', lastName: 'Vu' });
+      const email = faker.internet.email();
       const password = 'Asdfgh123';
-      const profilePicture = faker.image.urlPicsumPhotos();
       const existingUser = await authService.getAuthUserByUsernameOrEmail(username, email);
-      if (existingUser) {
-        throw new BadRequestError('Invalid credentials', 'Seed create() method');
+      if (!existingUser) {
+        const randomCharacters = await generateRandomCharacters();
+        const authData: IAuthDocument = {
+          username: lowerCase(username),
+          email: lowerCase(email),
+          password,
+          emailVerificationToken: randomCharacters,
+          emailVerified: sample([false, true])
+        } as IAuthDocument;
+        await authService.createAuthUser(authData);
+      } else {
+        log.info(SERVICE_NAME + ` createSeeds() method:`, `${existingUser.username} existed`);
       }
-      const profilePublicId = uuidV4();
-      const randomCharacters = await generateRandomCharacters();
-      const authData: IAuthDocument = {
-        username: lowerCase(username),
-        email: lowerCase(email),
-        profilePublicId,
-        password,
-        profilePicture,
-        emailVerificationToken: randomCharacters,
-        emailVerified: sample([false, true])
-      } as IAuthDocument;
-      await authService.createAuthUser(authData);
     }
     res.status(StatusCodes.OK).json({ message: 'Seed users created successfully.' });
   }

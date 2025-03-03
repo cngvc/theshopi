@@ -37,9 +37,7 @@ class StoreService {
       { _id: storeId },
       {
         $set: {
-          profilePublicId: payload.profilePublicId,
           fullName: payload.fullName,
-          profilePicture: payload.profilePicture,
           description: payload.description,
           responseTime: payload.responseTime,
           socialLinks: payload.socialLinks

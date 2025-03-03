@@ -6,8 +6,6 @@ const storeSchema: Schema = new Schema(
     fullName: { type: String, required: true },
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
-    profilePicture: { type: String },
-    profilePublicId: { type: String },
     description: { type: String, required: true },
     ratingsCount: { type: Number, default: 0 },
     ratingSum: { type: Number, default: 0 },

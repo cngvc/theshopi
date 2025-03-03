@@ -2,7 +2,7 @@ import 'express-async-errors';
 
 import { CustomError, getErrorMessage, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
-import { SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
+import { DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
 import { appRoutes } from '@gateway/routes';
 import { authService } from '@gateway/services/api/auth.service';
 import { isAxiosError } from 'axios';
@@ -83,7 +83,6 @@ export class GatewayServer {
 
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
-
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
       }
@@ -93,11 +92,16 @@ export class GatewayServer {
           `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`,
           error?.response?.data?.message ?? 'Error occurred.'
         );
-        res
-          .status(error?.response?.data?.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ message: error?.response?.data?.message ?? 'Error occurred.' });
+        const status = error?.response?.data?.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
+        const message = error?.response?.data?.message ?? 'Error occurred.';
+        res.status(status).json({ message });
       }
-      next(error);
+      res.status(DEFAULT_ERROR_CODE).json({
+        message: error.message || 'Internal Server Error',
+        statusCode: DEFAULT_ERROR_CODE,
+        status: 'error',
+        comingFrom: 'Unknown error.'
+      });
     });
   }
 

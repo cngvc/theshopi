@@ -15,11 +15,9 @@ class StoreController {
       throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStore() method error');
     }
     const store: IStoreDocument = {
-      profilePublicId: req.body.profilePublicId,
       fullName: req.body.fullName,
       username: req.currentUser!.username,
       email: req.body.email,
-      profilePicture: req.body.profilePicture,
       description: req.body.description,
       responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks
@@ -49,9 +47,7 @@ class StoreController {
       throw new BadRequestError(error.details[0].message, 'updateStore() method error');
     }
     const store: IStoreDocument = {
-      profilePublicId: req.body.profilePublicId,
       fullName: req.body.fullName,
-      profilePicture: req.body.profilePicture,
       description: req.body.description,
       responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks

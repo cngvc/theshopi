@@ -9,9 +9,7 @@ const storeSchema: ObjectSchema = Joi.object().keys({
   }),
   id: Joi.string().optional(),
   username: Joi.string().optional(),
-  profilePublicId: Joi.string().optional().allow(null, ''),
   email: Joi.string().optional(),
-  profilePicture: Joi.string().optional().allow(null, ''),
   description: Joi.string().required().messages({
     'string.base': 'Please add a store description',
     'string.empty': 'Seller description is required',
