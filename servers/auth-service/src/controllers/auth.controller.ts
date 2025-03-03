@@ -45,7 +45,7 @@ class AuthController {
 
     const token = authService.signToken(result.id!, result.email!, result.username!);
     if (!token) {
-      throw new BadRequestError('Error when signing token', 'RefreshToken refreshToken() method error');
+      throw new BadRequestError('Error when signing token', 'signup() method error');
     }
     res.status(StatusCodes.CREATED).json({
       message: 'User created successfully',

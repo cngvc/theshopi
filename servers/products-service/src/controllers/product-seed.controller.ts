@@ -15,7 +15,7 @@ class ProductSeedController {
       }),
       'Message to make user service calls to create seeds with store users.'
     );
-    await res.status(StatusCodes.OK).json({ message: 'Products creating was handled by message queue.' });
+    res.status(StatusCodes.OK).json({ message: 'Products creating was handled by message queue.' });
   };
 }
 

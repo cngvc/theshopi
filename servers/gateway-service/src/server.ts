@@ -85,16 +85,18 @@ export class GatewayServer {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
+        return;
       }
       if (isAxiosError(error)) {
-        log.log(
-          'error',
-          `GatewayService Axios Error - ${error?.response?.data?.comingFrom}:`,
-          error?.response?.data?.message ?? 'Error occurred.'
-        );
         const status = error?.response?.data?.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
         const message = error?.response?.data?.message ?? 'Error occurred.';
-        res.status(status).json({ message });
+        res.status(status).json({
+          message,
+          statusCode: status,
+          status: 'error',
+          comingFrom: 'Axios middleware'
+        });
+        return;
       }
       res.status(DEFAULT_ERROR_CODE).json({
         message: error.message || 'Internal Server Error',

@@ -82,6 +82,7 @@ export class ProductServer {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}:`, error.message);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
+        return;
       }
       res.status(error.statusCode).json({
         message: error.message,
