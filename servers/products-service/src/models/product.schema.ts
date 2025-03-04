@@ -10,7 +10,7 @@ const productSchema: Schema = new Schema(
       required: true,
       index: 'text'
     },
-    description: { type: String, required: true, index: 'text' },
+    description: { type: String, required: true },
     slug: {
       type: String
     },
@@ -26,6 +26,8 @@ const productSchema: Schema = new Schema(
       default: false,
       select: false
     },
+    tags: [{ type: String }],
+    categories: [{ type: String }],
     ratingsCount: { type: Number, default: 0 },
     ratingSum: { type: Number, default: 0 },
     ratingCategories: {

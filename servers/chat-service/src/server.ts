@@ -13,7 +13,11 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
+import { Server } from 'socket.io';
 import { SERVER_PORT, SERVICE_NAME } from './constants';
+
+export let chatChannel: Channel;
+export let socketServer: Server;
 
 export class UsersServer {
   private app: Application;
@@ -62,7 +66,7 @@ export class UsersServer {
   }
 
   private async startQueues() {
-    const channel = (await queueConnection.createConnection()) as Channel;
+    chatChannel = (await queueConnection.createConnection()) as Channel;
   }
 
   private errorHandler(): void {
@@ -84,12 +88,22 @@ export class UsersServer {
   private async startServer(): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(this.app);
+      this.startSocket(httpServer);
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
       log.log('error', SERVICE_NAME + ` startServer() method:`, getErrorMessage(error));
     }
   }
+
+  private startSocket = async (httpServer: http.Server): Promise<void> => {
+    socketServer = new Server(httpServer, {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+      }
+    });
+  };
 
   private async startHttpServer(httpServer: http.Server): Promise<void> {
     try {

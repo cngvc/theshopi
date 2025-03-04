@@ -27,6 +27,7 @@ class UsersConsumes {
             createdAt
           };
           await buyerService.createBuyer(buyer);
+          console.log(`***Created buyer user: ${email}`);
         } else {
           // todo: order
         }

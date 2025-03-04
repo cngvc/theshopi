@@ -16,7 +16,9 @@ class ProductController {
       description: req.body.description,
       price: req.body.price,
       quantity: req.body.quantity ?? 0,
-      isPublished: !!req.body.isPublished
+      isPublished: !!req.body.isPublished,
+      categories: req.body.categories,
+      tags: req.body.tags
     };
     const createdProduct = await productService.createProduct(product);
     new CreatedRequestSuccess('Product has been created successfully.', { product: createdProduct }).send(res);
@@ -33,7 +35,9 @@ class ProductController {
       description: req.body.description,
       price: req.body.price,
       quantity: req.body.quantity ?? 0,
-      isPublished: !!req.body.isPublished
+      isPublished: !!req.body.isPublished,
+      categories: req.body.categories,
+      tags: req.body.tags
     };
     const updatedProduct = await productService.updateProduct(req.params.productId, product);
     new OkRequestSuccess('Product has been updated successfully.', { product: updatedProduct }).send(res);

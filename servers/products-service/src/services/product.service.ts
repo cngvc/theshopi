@@ -61,7 +61,9 @@ class ProductService {
           price: payload.price,
           thumb: payload.thumb,
           quantity: payload.quantity,
-          isPublished: payload.isPublished
+          isPublished: payload.isPublished,
+          categories: payload.categories || [],
+          tags: payload.tags || []
         }
       },
       { new: true }
@@ -97,7 +99,9 @@ class ProductService {
         ratingSum: (i + 1) % 4 === 0 ? rating!['sum'] : 0,
         isPublished: sample([true, false]),
         quantity: faker.number.int({ min: 10, max: 1000 }),
-        thumb: faker.image.urlPicsumPhotos()
+        thumb: faker.image.urlPicsumPhotos(),
+        categories: [faker.commerce.product()],
+        tags: [faker.commerce.productMaterial()]
       };
       log.info(`***Seeding product:*** - ${i + 1} of ${stores.length}`);
       await this.createProduct(product);
