@@ -10,11 +10,6 @@ class ElasticsearchService {
           fields: ['storeId'],
           query: `${searchQuery}`
         }
-      },
-      {
-        term: {
-          isPublished: true
-        }
       }
     ];
     const { hits }: SearchResponse = await elasticSearch.search(elasticSearchIndexes.products, queryList);

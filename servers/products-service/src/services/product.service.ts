@@ -5,24 +5,25 @@ import { elasticSearch } from '@products/elasticsearch';
 import { ProductModel } from '@products/models/product.schema';
 import { productProducer } from '@products/queues/product.producer';
 import { productChannel } from '@products/server';
+import { log } from '@products/utils/logger.util';
 import { sample } from 'lodash';
 import { elasticsearchService } from './elasticsearch.service';
 
 class ProductService {
   createProduct = async (product: IStoreProduct): Promise<IStoreProduct> => {
-    const createdProduct: IStoreProduct = await ProductModel.create(product);
-    if (createdProduct) {
-      const data: IStoreProduct = createdProduct.toJSON?.() as IStoreProduct;
+    const newProduct: IStoreProduct = await ProductModel.create(product);
+    if (newProduct) {
       await productProducer.publishDirectMessage(
         productChannel,
         ExchangeNames.USERS_STORE_UPDATE,
         RoutingKeys.USERS_STORE_UPDATE,
-        JSON.stringify({ type: 'update-store-product-count', storeId: `${data.storeId}`, count: 1 }),
+        JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 }),
         'Details sent to users service.'
       );
-      await elasticSearch.addItemToIndex('products', `${data._id}`, data);
+      const data = newProduct.toJSON?.();
+      await elasticSearch.addItemToIndex(elasticSearchIndexes.products, `${newProduct._id}`, data);
     }
-    return createdProduct;
+    return newProduct;
   };
   deleteProduct = async (productId: string, storeId: string): Promise<void> => {
     await ProductModel.deleteOne({ _id: productId }).exec();
@@ -97,7 +98,7 @@ class ProductService {
         quantity: faker.number.int({ min: 10, max: 1000 }),
         thumb: faker.image.urlPicsumPhotos()
       };
-      console.log(`***Seeding product:*** - ${i + 1} of ${count}`);
+      log.info(`***Seeding product:*** - ${i + 1} of ${stores.length}`);
       await this.createProduct(product);
     }
   }

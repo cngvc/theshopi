@@ -31,7 +31,7 @@ class SeedController {
           emailVerificationToken: randomCharacters,
           emailVerified: sample([false, true])
         } as IAuthDocument;
-        console.log(`***Seeding auth:*** - ${i + 1} of ${usernames.length}`);
+        log.info(`***Seeding auth:*** - ${i + 1} of ${usernames.length}`);
         await authService.createAuthUser(authData);
       } else {
         log.info(SERVICE_NAME + ` createSeeds() method:`, `${existingUser.username} existed`);

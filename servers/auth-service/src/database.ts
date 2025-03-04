@@ -1,6 +1,5 @@
 import { config } from '@auth/config';
 import { SERVICE_NAME } from '@auth/constants';
-import { getErrorMessage } from '@cngvc/shopi-shared';
 import { DataSource } from 'typeorm';
 import { log } from './utils/logger.util';
 
@@ -22,8 +21,7 @@ export class Database {
       await AppDataSource.initialize();
       log.info(SERVICE_NAME + ' Mysql database connection has been established successfully');
     } catch (error) {
-      log.error(SERVICE_NAME + ' unable to connect to db');
-      log.log('error', SERVICE_NAME + ` connection() method:`, getErrorMessage(error));
+      log.log('error', SERVICE_NAME + ` connection() method`);
     }
   }
 }

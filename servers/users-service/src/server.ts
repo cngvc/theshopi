@@ -71,7 +71,7 @@ export class UsersServer {
 
   private errorHandler(): void {
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      log.log('error', SERVICE_NAME + ` ${error.comingFrom}:`, error.message);
+      log.log('error', SERVICE_NAME + ` ${error.comingFrom}: ${error.message}`);
       if (error instanceof CustomError) {
         res.status(error.statusCode).json(error.serializeError());
         return;

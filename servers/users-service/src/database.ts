@@ -1,4 +1,3 @@
-import { getErrorMessage } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
 import { SERVICE_NAME } from '@users/constants';
 import { log } from '@users/utils/logger.util';
@@ -11,7 +10,6 @@ export class Database {
       log.info(SERVICE_NAME + ' MongoDB database connection has been established successfully');
     } catch (error) {
       log.error(SERVICE_NAME + ' unable to connect to db');
-      log.log('error', SERVICE_NAME + ` connection() method:`, getErrorMessage(error));
     }
   }
 }

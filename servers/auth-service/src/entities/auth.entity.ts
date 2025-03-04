@@ -1,21 +1,19 @@
 import { SALT_ROUND } from '@auth/constants/hashing';
 import { IAuthDocument } from '@cngvc/shopi-shared';
 import { compare, hash } from 'bcryptjs';
-import { BaseEntity, BeforeInsert, Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('auths')
 export class AuthModel extends BaseEntity implements IAuthDocument {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id!: number;
 
-  @Index()
   @Column({ unique: true })
   username!: string;
 
   @Column()
   password!: string;
 
-  @Index()
   @Column({ unique: true })
   email!: string;
 

@@ -74,6 +74,7 @@ class ElasticSearch {
 
   async addItemToIndex(index: string, itemId: string, doc: unknown): Promise<void> {
     try {
+      log.info(`Adding new doc named ${(doc as IStoreProduct).name ?? 'Product'} to index ${index}`);
       await this.elasticSearchClient.index({
         index,
         id: itemId,

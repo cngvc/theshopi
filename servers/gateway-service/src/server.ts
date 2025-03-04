@@ -14,6 +14,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { StatusCodes } from 'http-status-codes';
 import { elasticSearch } from './elasticsearch';
+import { endpointMiddleware } from './middlewares/endpoint.middleware';
 import { buyerService } from './services/api/buyer.service';
 import { storeService } from './services/api/store.service';
 import { log } from './utils/logger.util';
@@ -45,7 +46,7 @@ export class GatewayServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-
+    this.app.use(endpointMiddleware.gatewayRequestLogger);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       const authHeader = req.headers.authorization;
       if (authHeader && authHeader.startsWith('Bearer ')) {
@@ -82,24 +83,31 @@ export class GatewayServer {
     });
 
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
-      log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
       if (error instanceof CustomError) {
+        log.log('error', SERVICE_NAME + ` ${error.comingFrom}`, error.message);
         res.status(error.statusCode).json(error.serializeError());
         return;
       }
       if (isAxiosError(error)) {
-        const status = error?.response?.data?.statusCode ?? StatusCodes.INTERNAL_SERVER_ERROR;
+        const status = error?.response?.data?.status || 'error';
         const message = error?.response?.data?.message ?? 'Error occurred.';
-        res.status(status).json({
+        const statusCode = error?.response?.data?.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;
+        const comingFrom = error?.response?.data?.comingFrom ?? 'Axios middleware.';
+
+        log.log('error', SERVICE_NAME + ` ${comingFrom}`, message);
+
+        res.status(statusCode).json({
           message,
-          statusCode: status,
-          status: 'error',
-          comingFrom: 'Axios middleware'
+          statusCode,
+          status,
+          comingFrom
         });
         return;
       }
+      const message = error.message || 'Internal Server Error';
+      log.log('error', SERVICE_NAME + ` Unknown error.`, message);
       res.status(DEFAULT_ERROR_CODE).json({
-        message: error.message || 'Internal Server Error',
+        message,
         statusCode: DEFAULT_ERROR_CODE,
         status: 'error',
         comingFrom: 'Unknown error.'
