@@ -30,6 +30,7 @@ class UsersConsumes {
         } else {
           // todo: order
         }
+        channel.ack(msg!);
       });
     } catch (error) {
       log.log('error', SERVICE_NAME + ' consumeUpdateUsersBuy() method:', getErrorMessage(error));

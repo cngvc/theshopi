@@ -7,7 +7,7 @@ import client, { Channel, ChannelModel } from 'amqplib';
 class QueueConnection {
   createConnection = async (): Promise<Channel | undefined> => {
     try {
-      const connection = await client.connect(`${config.RABBITMQ_ENDPOINT}`);
+      const connection = await client.connect(`${config.RABBITMQ_ENDPOINT}`, { clientProperties: { connection_name: SERVICE_NAME } });
       const channel: Channel = await connection.createChannel();
       log.info(SERVICE_NAME + ` connected to queue successfully`);
       this.closeConnection(channel, connection);

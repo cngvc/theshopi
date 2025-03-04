@@ -36,6 +36,7 @@ class ProductService {
     );
     await elasticSearch.deleteIndexedItem(elasticSearchIndexes.products, productId);
   };
+
   getProductById = async (productId: string): Promise<IStoreProduct> => {
     const product: IStoreProduct = await elasticSearch.getIndexedData(elasticSearchIndexes.products, productId);
     return product;
