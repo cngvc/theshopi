@@ -2,10 +2,9 @@ import { SERVICE_NAME } from '@auth/constants';
 import { authService } from '@auth/services/auth.service';
 import { generateRandomCharacters } from '@auth/utils/generate.util';
 import { log } from '@auth/utils/logger.util';
-import { IAuthDocument, lowerCase } from '@cngvc/shopi-shared';
+import { IAuthDocument, lowerCase, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { faker } from '@faker-js/faker';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { sample } from 'lodash';
 import { generateUsername } from 'unique-username-generator';
 
@@ -37,7 +36,7 @@ class SeedController {
         log.info(SERVICE_NAME + ` createSeeds() method:`, `${existingUser.username} existed`);
       }
     }
-    res.status(StatusCodes.OK).json({ message: 'Seed users created successfully.' });
+    new OkRequestSuccess('Seed users created successfully.', {}).send(res);
   }
 }
 

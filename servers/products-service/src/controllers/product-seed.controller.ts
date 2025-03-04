@@ -1,8 +1,7 @@
-import { ExchangeNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, OkRequestSuccess, RoutingKeys } from '@cngvc/shopi-shared';
 import { productProducer } from '@products/queues/product.producer';
 import { productChannel } from '@products/server';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class ProductSeedController {
   createdSeeds = async (req: Request, res: Response): Promise<void> => {
@@ -15,7 +14,7 @@ class ProductSeedController {
       }),
       'Message to make user service calls to create seeds with store users.'
     );
-    res.status(StatusCodes.OK).json({ message: 'Products creating was handled by message queue.' });
+    new OkRequestSuccess('Products creating was handled by message queue.', {}).send(res);
   };
 }
 

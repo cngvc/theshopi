@@ -16,7 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.20",
+    "@cngvc/shopi-shared": "^0.0.23",
     "@faker-js/faker": "^9.5.1",
     "amqplib": "^0.10.5",
     "compression": "^1.8.0",

@@ -4,11 +4,10 @@ import { authProducer } from '@auth/queues/auth.producer';
 import { changePasswordSchema, emailSchema, passwordSchema } from '@auth/schemes/password.scheme';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError, ExchangeNames, IEmailMessageDetails, RoutingKeys } from '@cngvc/shopi-shared';
+import { BadRequestError, ExchangeNames, IEmailMessageDetails, OkRequestSuccess, RoutingKeys } from '@cngvc/shopi-shared';
 import { hash } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class PasswordController {
   async forgotPassword(req: Request, res: Response): Promise<void> {
@@ -40,7 +39,7 @@ class PasswordController {
       JSON.stringify(messageDetails),
       'Forgot password message sent to notification service.'
     );
-    res.status(StatusCodes.OK).json({ message: 'Password reset email sent.' });
+    new OkRequestSuccess('Password reset email sent.', {}).send(res);
   }
 
   async resetPassword(req: Request, res: Response): Promise<void> {
@@ -72,7 +71,7 @@ class PasswordController {
       JSON.stringify(messageDetails),
       'Reset password success message sent to notification service.'
     );
-    res.status(StatusCodes.OK).json({ message: 'Password successfully updated.' });
+    new OkRequestSuccess('Password successfully updated.', {}).send(res);
   }
 
   async changePassword(req: Request, res: Response): Promise<void> {
@@ -101,7 +100,7 @@ class PasswordController {
       JSON.stringify(messageDetails),
       'Password change success message sent to notification service.'
     );
-    res.status(StatusCodes.OK).json({ message: 'Password successfully updated.' });
+    new OkRequestSuccess('Password successfully updated.', {}).send(res);
   }
 }
 

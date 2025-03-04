@@ -6,7 +6,7 @@
     "start": "pm2 start ./build/src/app.js -i 5 --attach --watch | pino-pretty -c",
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
-    "dev": "nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c",
+    "dev": "concurrently \"nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c\"",
     "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,json}'"
@@ -16,7 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.20",
+    "@cngvc/shopi-shared": "^0.0.23",
     "@elastic/elasticsearch": "^8.17.1",
     "axios": "^1.8.1",
     "bcrypt": "^5.1.1",

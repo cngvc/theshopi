@@ -1,7 +1,6 @@
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError } from '@cngvc/shopi-shared';
+import { BadRequestError, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class RefreshTokenController {
   async refreshToken(req: Request, res: Response): Promise<void> {
@@ -13,7 +12,9 @@ class RefreshTokenController {
     if (!token) {
       throw new BadRequestError('Error when signing token', 'refreshToken() method error');
     }
-    res.status(StatusCodes.OK).json({ message: 'Refresh token successfully', token });
+    new OkRequestSuccess('Refresh token successfully.', {
+      accessToken: token
+    }).send(res);
   }
 }
 

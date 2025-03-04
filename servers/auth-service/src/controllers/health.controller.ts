@@ -1,10 +1,10 @@
 import { SERVICE_NAME } from '@auth/constants';
+import { OkRequestSuccess } from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 export class HealthController {
   public health(req: Request, res: Response) {
-    res.status(StatusCodes.OK).send(SERVICE_NAME + ' is healthy');
+    new OkRequestSuccess(`${SERVICE_NAME} + ' is healthy'`, {}).send(res);
   }
 }
 

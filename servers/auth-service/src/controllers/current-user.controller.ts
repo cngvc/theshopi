@@ -3,9 +3,16 @@ import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
 import { generateRandomCharacters } from '@auth/utils/generate.util';
-import { BadRequestError, ExchangeNames, IEmailMessageDetails, lowerCase, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
+import {
+  BadRequestError,
+  ExchangeNames,
+  IEmailMessageDetails,
+  lowerCase,
+  NotFoundError,
+  OkRequestSuccess,
+  RoutingKeys
+} from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class CurrentUserController {
   async getCurrentUser(req: Request, res: Response): Promise<void> {
@@ -13,7 +20,7 @@ class CurrentUserController {
     if (!existingUser) {
       throw new NotFoundError('User not found', 'getCurrentUser() method');
     }
-    res.status(StatusCodes.OK).json({ message: 'Authenticated user', user: existingUser });
+    new OkRequestSuccess('Authenticated user', { user: existingUser }).send(res);
   }
 
   async resendEmail(req: Request, res: Response): Promise<void> {
@@ -41,7 +48,7 @@ class CurrentUserController {
       'Verify email message has been sent to notification service.'
     );
     const updatedUser = await authService.getAuthUserById(existingUser.id!);
-    res.status(StatusCodes.OK).json({ message: 'Email verification sent', user: updatedUser });
+    new OkRequestSuccess('Email verification sent', { user: updatedUser }).send(res);
   }
 }
 

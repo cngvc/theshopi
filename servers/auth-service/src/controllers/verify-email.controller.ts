@@ -1,7 +1,6 @@
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError } from '@cngvc/shopi-shared';
+import { BadRequestError, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class VerifyEmailController {
   async verifyEmail(req: Request, res: Response): Promise<void> {
@@ -12,7 +11,7 @@ class VerifyEmailController {
     }
     await authService.updateVerifyEmailField(existingUser.id!, true);
     const updatedUser = await authService.getAuthUserById(existingUser.id!);
-    res.status(StatusCodes.OK).json({ message: 'Email verified successfully.', user: updatedUser });
+    new OkRequestSuccess('Email verified successfully.', { user: updatedUser }).send(res);
   }
 }
 

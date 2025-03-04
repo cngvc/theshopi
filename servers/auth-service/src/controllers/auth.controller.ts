@@ -4,11 +4,20 @@ import { signinSchema } from '@auth/schemes/signin.scheme';
 import { signupSchema } from '@auth/schemes/signup.scheme';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError, ExchangeNames, IAuthDocument, IEmailMessageDetails, isEmail, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
+import {
+  BadRequestError,
+  CreatedRequestSuccess,
+  ExchangeNames,
+  IAuthDocument,
+  IEmailMessageDetails,
+  isEmail,
+  lowerCase,
+  OkRequestSuccess,
+  RoutingKeys
+} from '@cngvc/shopi-shared';
 import { compare } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class AuthController {
   async signup(req: Request, res: Response): Promise<void> {
@@ -47,15 +56,14 @@ class AuthController {
     if (!token) {
       throw new BadRequestError('Error when signing token', 'signup() method error');
     }
-    res.status(StatusCodes.CREATED).json({
-      message: 'User created successfully',
+    new CreatedRequestSuccess('User created successfully', {
       accessToken: token,
       user: {
         id: result.id,
         username: result.username,
         email: result.email
       }
-    });
+    }).send(res);
   }
   async signin(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(signinSchema.validate(req.body));
@@ -72,20 +80,18 @@ class AuthController {
     if (!passwordsMatch) {
       throw new BadRequestError('Invalid credentials', 'signin() method error password');
     }
-    let message = 'User login successfully';
     const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
     if (!token) {
       throw new BadRequestError('Error when signing token', 'signin() method error jwt');
     }
-    res.status(StatusCodes.OK).json({
-      message,
+    new OkRequestSuccess('User login successfully', {
       accessToken: token,
       user: {
         id: existingUser.id,
         username: existingUser.username,
         email: existingUser.email
       }
-    });
+    }).send(res);
   }
 }
 

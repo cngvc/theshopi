@@ -1,8 +1,7 @@
-import { BadRequestError, IStoreProduct } from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, IStoreProduct, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { productCreateSchema, productUpdateSchema } from '@products/schemes/product.scheme';
 import { productService } from '@products/services/product.service';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class ProductController {
   createProduct = async (req: Request, res: Response): Promise<void> => {
@@ -20,7 +19,7 @@ class ProductController {
       isPublished: !!req.body.isPublished
     };
     const createdProduct = await productService.createProduct(product);
-    res.status(StatusCodes.CREATED).json({ message: 'Product has been created successfully.', product: createdProduct });
+    new CreatedRequestSuccess('Product has been created successfully.', { product: createdProduct }).send(res);
   };
 
   updateProduct = async (req: Request, res: Response): Promise<void> => {
@@ -37,17 +36,17 @@ class ProductController {
       isPublished: !!req.body.isPublished
     };
     const updatedProduct = await productService.updateProduct(req.params.productId, product);
-    res.status(StatusCodes.CREATED).json({ message: 'Product has been updated successfully.', product: updatedProduct });
+    new OkRequestSuccess('Product has been updated successfully.', { product: updatedProduct }).send(res);
   };
 
   getProductById = async (req: Request, res: Response): Promise<void> => {
     const product = await productService.getProductById(req.params.productId);
-    res.status(StatusCodes.OK).json({ message: 'Get product by id', product });
+    new OkRequestSuccess('Get product by id.', { product }).send(res);
   };
 
   getProductsByStore = async (req: Request, res: Response): Promise<void> => {
     const products: IStoreProduct[] = await productService.getStoreProducts(req.params.storeId);
-    res.status(StatusCodes.OK).json({ message: 'Get store products', products });
+    new OkRequestSuccess('Get store products.', { products }).send(res);
   };
 }
 

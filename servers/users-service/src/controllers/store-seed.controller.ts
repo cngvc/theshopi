@@ -1,10 +1,9 @@
-import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared';
+import { IBuyerDocument, IStoreDocument, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { faker } from '@faker-js/faker';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { log } from '@users/utils/logger.util';
 import { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 class StoreSeedController {
   createSeeds = async (req: Request, res: Response): Promise<void> => {
@@ -27,7 +26,7 @@ class StoreSeedController {
         await storeService.createStore(store);
       }
     }
-    res.status(StatusCodes.CREATED).json({ message: 'Stores created successfully' });
+    new OkRequestSuccess('Stores created successfully.', {}).send(res);
   };
 }
 export const storeSeedController = new StoreSeedController();
