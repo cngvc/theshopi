@@ -1,4 +1,4 @@
-import { ExchangeNames, IStoreDocument, IStoreProduct, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, IProductDocument, IStoreDocument, RoutingKeys } from '@cngvc/shopi-shared';
 import { faker } from '@faker-js/faker';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
@@ -10,8 +10,8 @@ import { sample } from 'lodash';
 import { elasticsearchService } from './elasticsearch.service';
 
 class ProductService {
-  createProduct = async (product: IStoreProduct): Promise<IStoreProduct> => {
-    const newProduct: IStoreProduct = await ProductModel.create(product);
+  createProduct = async (product: IProductDocument): Promise<IProductDocument> => {
+    const newProduct: IProductDocument = await ProductModel.create(product);
     if (newProduct) {
       await productProducer.publishDirectMessage(
         productChannel,
@@ -37,22 +37,22 @@ class ProductService {
     await elasticSearch.deleteIndexedItem(elasticSearchIndexes.products, productId);
   };
 
-  getProductById = async (productId: string): Promise<IStoreProduct> => {
-    const product: IStoreProduct = await elasticSearch.getIndexedData(elasticSearchIndexes.products, productId);
+  getProductById = async (productId: string): Promise<IProductDocument> => {
+    const product: IProductDocument = await elasticSearch.getIndexedData(elasticSearchIndexes.products, productId);
     return product;
   };
 
-  getStoreProducts = async (storeId: string): Promise<IStoreProduct[]> => {
-    const products: IStoreProduct[] = [];
+  getStoreProducts = async (storeId: string): Promise<IProductDocument[]> => {
+    const products: IProductDocument[] = [];
     const queryResults = await elasticsearchService.productsSearchByStoreId(storeId);
     for (const item of queryResults.hits) {
-      products.push(item._source as IStoreProduct);
+      products.push(item._source as IProductDocument);
     }
     return products;
   };
 
-  updateProduct = async (productId: string, payload: IStoreProduct): Promise<IStoreProduct> => {
-    const document: IStoreProduct = (await ProductModel.findOneAndUpdate(
+  updateProduct = async (productId: string, payload: IProductDocument): Promise<IProductDocument> => {
+    const document: IProductDocument = (await ProductModel.findOneAndUpdate(
       { _id: productId },
       {
         $set: {
@@ -65,10 +65,10 @@ class ProductService {
         }
       },
       { new: true }
-    ).exec()) as IStoreProduct;
+    ).exec()) as IProductDocument;
 
     if (document) {
-      const data = document.toJSON?.() as IStoreProduct;
+      const data = document.toJSON?.() as IProductDocument;
       await elasticSearch.updateIndexedItem(elasticSearchIndexes.products, `${document._id}`, data);
     }
 
@@ -88,7 +88,7 @@ class ProductService {
       const name = faker.commerce.productName();
       const description = faker.commerce.productDescription();
       const rating = sample(randomRatings);
-      const product: IStoreProduct = {
+      const product: IProductDocument = {
         storeId: store._id,
         name: name,
         description: description,

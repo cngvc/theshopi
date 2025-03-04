@@ -1,4 +1,4 @@
-import { IStoreProduct } from '@cngvc/shopi-shared';
+import { IProductDocument } from '@cngvc/shopi-shared';
 import mongoose, { Model, Schema, model } from 'mongoose';
 const { default: slugify } = require('slugify');
 
@@ -62,5 +62,5 @@ productSchema.virtual('id').get(function () {
   return this._id;
 });
 
-const ProductModel: Model<IStoreProduct> = model<IStoreProduct>('Product', productSchema, 'Product');
+const ProductModel: Model<IProductDocument> = model<IProductDocument>('Product', productSchema, 'Product');
 export { ProductModel };

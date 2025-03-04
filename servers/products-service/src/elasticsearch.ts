@@ -1,4 +1,4 @@
-import { getErrorMessage, IStoreProduct, NotFoundError } from '@cngvc/shopi-shared';
+import { getErrorMessage, IProductDocument, NotFoundError } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
 import { CountResponse, GetResponse, QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';
@@ -46,10 +46,10 @@ class ElasticSearch {
     }
   }
 
-  async getIndexedData(index: string, itemId: string): Promise<IStoreProduct> {
+  async getIndexedData(index: string, itemId: string): Promise<IProductDocument> {
     try {
       const result: GetResponse = await this.elasticSearchClient.get({ index, id: itemId });
-      return result._source as IStoreProduct;
+      return result._source as IProductDocument;
     } catch (error) {
       log.log('error', SERVICE_NAME + ' getIndexedData() method error:', getErrorMessage(error));
       throw new NotFoundError('Product not found', 'getIndexedData() method');
@@ -74,7 +74,7 @@ class ElasticSearch {
 
   async addItemToIndex(index: string, itemId: string, doc: unknown): Promise<void> {
     try {
-      log.info(`Adding new doc named ${(doc as IStoreProduct).name ?? 'Product'} to index ${index}`);
+      log.info(`Adding new doc named ${(doc as IProductDocument).name ?? 'Product'} to index ${index}`);
       await this.elasticSearchClient.index({
         index,
         id: itemId,

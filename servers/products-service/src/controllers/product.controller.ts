@@ -1,4 +1,4 @@
-import { BadRequestError, CreatedRequestSuccess, IStoreProduct, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, IProductDocument, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { productCreateSchema, productUpdateSchema } from '@products/schemes/product.scheme';
 import { productService } from '@products/services/product.service';
 import { Request, Response } from 'express';
@@ -9,7 +9,7 @@ class ProductController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createProduct() method');
     }
-    const product: IStoreProduct = {
+    const product: IProductDocument = {
       storeId: req.body.storeId,
       thumb: req.body.thumb,
       name: req.body.name,
@@ -27,7 +27,7 @@ class ProductController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createProduct() method');
     }
-    const product: IStoreProduct = {
+    const product: IProductDocument = {
       thumb: req.body.thumb,
       name: req.body.name,
       description: req.body.description,
@@ -45,7 +45,7 @@ class ProductController {
   };
 
   getProductsByStore = async (req: Request, res: Response): Promise<void> => {
-    const products: IStoreProduct[] = await productService.getStoreProducts(req.params.storeId);
+    const products: IProductDocument[] = await productService.getStoreProducts(req.params.storeId);
     new OkRequestSuccess('Get store products.', { products }).send(res);
   };
 }
