@@ -7,11 +7,11 @@ class StoreController {
   createStore = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(storeSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'createStore() method error');
+      throw new BadRequestError(error.details[0].message, 'createStoremethod error');
     }
     const existingStore = await storeService.getStoreByEmail(req.body.email);
     if (existingStore) {
-      throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStore() method error');
+      throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStoremethod error');
     }
     const store: IStoreDocument = {
       fullName: req.body.fullName,
@@ -43,7 +43,7 @@ class StoreController {
   updateStore = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(storeSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'updateStore() method error');
+      throw new BadRequestError(error.details[0].message, 'updateStoremethod error');
     }
     const store: IStoreDocument = {
       fullName: req.body.fullName,

@@ -19,10 +19,10 @@ export class SocketHandler {
   }
 
   async createSocket(): Promise<void> {
-    const pubClient = createClient({ url: config.REDIS_HOST });
-    const subClient = pubClient.duplicate();
-    await Promise.all([pubClient.connect(), subClient.connect()]);
-    this.io.adapter(createAdapter(pubClient, subClient));
+    const pub = createClient({ url: config.REDIS_HOST });
+    const sub = pub.duplicate();
+    await Promise.all([pub.connect(), sub.connect()]);
+    this.io.adapter(createAdapter(pub, sub));
   }
 
   public listen(): void {

@@ -32,7 +32,7 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ],
     "paths": {
-      "@orders/*": ["src/*"]
+      "@chat/*": ["src/*"]
     }
   },
   "include": ["src"],

@@ -1,7 +1,7 @@
+import { config } from '@chat/config';
+import { SERVICE_NAME } from '@chat/constants';
+import { log, logCatch } from '@chat/utils/logger.util';
 import { Client } from '@elastic/elasticsearch';
-import { config } from '@orders/config';
-import { SERVICE_NAME } from '@orders/constants';
-import { log, logCatch } from '@orders/utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;

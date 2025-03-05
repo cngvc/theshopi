@@ -26,10 +26,10 @@ class CurrentUserController {
   async resendEmail(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new BadRequestError('Email is invalid', 'resentEmail() method error');
+      throw new BadRequestError('Email is invalid', 'resentEmailmethod error');
     }
     if (existingUser.emailVerified) {
-      throw new BadRequestError('Email has been verified', 'resentEmail() method error');
+      throw new BadRequestError('Email has been verified', 'resentEmailmethod error');
     }
     const randomCharacters = await generateRandomCharacters();
     await authService.updateVerifyEmailField(existingUser.id!, false, randomCharacters);

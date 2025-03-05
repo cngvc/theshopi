@@ -9,6 +9,7 @@ import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application } from 'express';
+import { chatRoutes } from './routes/chat.route';
 
 export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, healthRoutes.routes());
@@ -20,4 +21,5 @@ export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, authMiddleware.verifySessionJWT, buyerRoutes.routes());
   app.use(BASE_PATH, authMiddleware.verifySessionJWT, currentUserRoutes.routes());
   app.use(BASE_PATH, authMiddleware.verifySessionJWT, productRoutes.routes());
+  app.use(BASE_PATH, authMiddleware.verifySessionJWT, chatRoutes.routes());
 };

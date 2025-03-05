@@ -1,5 +1,5 @@
-import { database } from '@orders/database';
-import { UsersServer } from '@orders/server';
+import { database } from '@chat/database';
+import { UsersServer } from '@chat/server';
 import express, { Express } from 'express';
 
 class Application {

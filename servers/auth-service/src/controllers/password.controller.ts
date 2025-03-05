@@ -13,12 +13,12 @@ class PasswordController {
   async forgotPassword(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(emailSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'forgotPassword() method error');
+      throw new BadRequestError(error.details[0].message, 'forgotPassword method error');
     }
     const { email } = req.body;
     const existingUser = await authService.getAuthUserByEmail(email);
     if (!existingUser) {
-      throw new BadRequestError('Invalid credentials', 'forgotPassword() method error');
+      throw new BadRequestError('Invalid credentials', 'forgotPassword method error');
     }
     const randomBytes: Buffer = crypto.randomBytes(20);
     const randomCharacters: string = randomBytes.toString('hex');
@@ -44,17 +44,17 @@ class PasswordController {
   async resetPassword(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(passwordSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'resetPassword() method error');
+      throw new BadRequestError(error.details[0].message, 'resetPassword method error');
     }
     const { password, confirmPassword } = req.body;
     const { token } = req.params;
     if (password !== confirmPassword) {
-      throw new BadRequestError('Passwords do not match', 'resetPassword() method error');
+      throw new BadRequestError('Passwords do not match', 'resetPassword method error');
     }
 
     const existingUser = await authService.getAuthUserByPasswordResetToken(token);
     if (!existingUser) {
-      throw new BadRequestError('Reset token has expired', 'resetPassword() method error');
+      throw new BadRequestError('Reset token has expired', 'resetPassword method error');
     }
     const hashedPassword: string = await hash(password, SALT_ROUND);
     await authService.updatePassword(existingUser.id!, hashedPassword);
@@ -75,13 +75,13 @@ class PasswordController {
   async changePassword(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(changePasswordSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'changePassword() method error');
+      throw new BadRequestError(error.details[0].message, 'changePassword method error');
     }
     const { newPassword } = req.body;
 
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new BadRequestError('Invalid password', 'changePassword() method error');
+      throw new BadRequestError('Invalid password', 'changePassword method error');
     }
     const hashedPassword: string = await hash(newPassword, SALT_ROUND);
     await authService.updatePassword(existingUser.id!, hashedPassword);

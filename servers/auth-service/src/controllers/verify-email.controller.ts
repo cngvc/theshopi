@@ -7,7 +7,7 @@ class VerifyEmailController {
     const token = req.query?.token as string;
     const existingUser = await authService.getAuthUserByVerificationToken(token);
     if (!existingUser) {
-      throw new BadRequestError('Verification token is either invalid or is already used.', 'verifyEmail() method error');
+      throw new BadRequestError('Verification token is either invalid or is already used.', 'verifyEmailmethod error');
     }
     await authService.updateVerifyEmailField(existingUser.id!, true);
     const updatedUser = await authService.getAuthUserById(existingUser.id!);

@@ -1,6 +1,6 @@
-import { config } from '@orders/config';
-import { SERVICE_NAME } from '@orders/constants';
-import { log } from '@orders/utils/logger.util';
+import { config } from '@chat/config';
+import { SERVICE_NAME } from '@chat/constants';
+import { log } from '@chat/utils/logger.util';
 import mongoose from 'mongoose';
 
 export class Database {

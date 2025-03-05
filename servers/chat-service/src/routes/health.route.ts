@@ -1,4 +1,4 @@
-import { healthController } from '@orders/controllers/health.controller';
+import { healthController } from '@chat/controllers/health.controller';
 import express, { Router } from 'express';
 
 class HealthRoutes {

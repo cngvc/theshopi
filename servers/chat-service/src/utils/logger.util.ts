@@ -1,6 +1,6 @@
+import { config } from '@chat/config';
+import { SERVICE_NAME } from '@chat/constants';
 import { getErrorMessage, winstonLogger } from '@cngvc/shopi-shared';
-import { config } from '@orders/config';
-import { SERVICE_NAME } from '@orders/constants';
 import { Logger } from 'winston';
 
 const logger = (name: string, level: string) => {

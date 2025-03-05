@@ -23,12 +23,12 @@ class AuthController {
   async signup(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(signupSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error?.details[0].message, 'signup() method error validation');
+      throw new BadRequestError(error?.details[0].message, 'signup method error validation');
     }
     const { username, email, password } = req.body;
     const existingUser = await authService.getAuthUserByUsernameOrEmail(username, email);
     if (existingUser) {
-      throw new BadRequestError('User already exists', 'signup() method error existing');
+      throw new BadRequestError('User already exists', 'signup method error existing');
     }
     const randomBytes: Buffer = await Promise.resolve(crypto.randomBytes(20));
     const randomCharacters: string = randomBytes.toString('hex');
@@ -53,7 +53,7 @@ class AuthController {
 
     const token = authService.signToken(result.id!, result.email!, result.username!);
     if (!token) {
-      throw new BadRequestError('Error when signing token', 'signup() method error');
+      throw new BadRequestError('Error when signing token', 'signup method error');
     }
     new CreatedRequestSuccess('User created successfully', {
       accessToken: token,
@@ -67,21 +67,21 @@ class AuthController {
   async signin(req: Request, res: Response): Promise<void> {
     const { error } = await Promise.resolve(signinSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'signin() method error validation');
+      throw new BadRequestError(error.details[0].message, 'signin method error validation');
     }
     const { username, password } = req.body;
     const isValidEmail: boolean = isEmail(username);
     const existingUser = !isValidEmail ? await authService.getAuthUserByUsername(username) : await authService.getAuthUserByEmail(username);
     if (!existingUser) {
-      throw new BadRequestError('Invalid credentials', 'signin() method error existing');
+      throw new BadRequestError('Invalid credentials', 'signin method error existing');
     }
     const passwordsMatch: boolean = await compare(password, `${existingUser.password}`);
     if (!passwordsMatch) {
-      throw new BadRequestError('Invalid credentials', 'signin() method error password');
+      throw new BadRequestError('Invalid credentials', 'signin method error password');
     }
     const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
     if (!token) {
-      throw new BadRequestError('Error when signing token', 'signin() method error jwt');
+      throw new BadRequestError('Error when signing token', 'signin method error jwt');
     }
     new OkRequestSuccess('User login successfully', {
       accessToken: token,

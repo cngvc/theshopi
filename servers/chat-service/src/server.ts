@@ -1,11 +1,11 @@
 import 'express-async-errors';
 
+import { config } from '@chat/config';
+import { SERVER_PORT, SERVICE_NAME } from '@chat/constants';
+import { queueConnection } from '@chat/queues/connection';
+import { appRoutes } from '@chat/routes';
+import { log, logCatch } from '@chat/utils/logger.util';
 import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
-import { config } from '@orders/config';
-import { SERVER_PORT, SERVICE_NAME } from '@orders/constants';
-import { queueConnection } from '@orders/queues/connection';
-import { appRoutes } from '@orders/routes';
-import { log, logCatch } from '@orders/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -15,6 +15,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { Server } from 'socket.io';
+import { SocketHandler } from './sockets/socket.handler';
 
 export let chatChannel: Channel;
 export let socketServer: Server;
@@ -88,22 +89,14 @@ export class UsersServer {
   private async startServer(): Promise<void> {
     try {
       const httpServer: http.Server = new http.Server(this.app);
-      this.startSocket(httpServer);
+      const socketHandler = new SocketHandler(httpServer);
+      socketServer = socketHandler.io;
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
       logCatch(error, 'startServer');
     }
   }
-
-  private startSocket = async (httpServer: http.Server): Promise<void> => {
-    socketServer = new Server(httpServer, {
-      cors: {
-        origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-      }
-    });
-  };
 
   private async startHttpServer(httpServer: http.Server): Promise<void> {
     try {

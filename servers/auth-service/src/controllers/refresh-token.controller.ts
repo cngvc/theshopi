@@ -6,11 +6,11 @@ class RefreshTokenController {
   async refreshToken(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new BadRequestError('Invalid credentials', 'refreshToken() method error');
+      throw new BadRequestError('Invalid credentials', 'refreshTokenmethod error');
     }
     const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
     if (!token) {
-      throw new BadRequestError('Error when signing token', 'refreshToken() method error');
+      throw new BadRequestError('Error when signing token', 'refreshTokenmethod error');
     }
     new OkRequestSuccess('Refresh token successfully.', {
       accessToken: token
