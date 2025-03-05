@@ -4,11 +4,11 @@ import { authRoute } from '@gateway/routes/auth.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
 import { currentUserRoutes } from '@gateway/routes/current-user.route';
 import { healthRoutes } from '@gateway/routes/health.route';
+import { productRoutes } from '@gateway/routes/product.route';
 import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application } from 'express';
-import { productRoutes } from './routes/product.route';
 
 export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, healthRoutes.routes());

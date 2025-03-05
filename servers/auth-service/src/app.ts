@@ -1,6 +1,6 @@
+import { database } from '@auth/database';
 import { AuthServer } from '@auth/server';
 import express, { Express } from 'express';
-import { database } from './database';
 
 class Application {
   public initialize() {

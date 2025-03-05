@@ -2,7 +2,11 @@ import 'express-async-errors';
 
 import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@products/config';
+import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
+import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
+import { elasticSearch } from '@products/elasticsearch';
 import { queueConnection } from '@products/queues/connection';
+import { productConsumes } from '@products/queues/consumers/product.consumer';
 import { appRoutes } from '@products/routes';
 import { log, logCatch } from '@products/utils/logger.util';
 import { Channel } from 'amqplib';
@@ -13,10 +17,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
-import { SERVER_PORT, SERVICE_NAME } from './constants';
-import { elasticSearchIndexes } from './constants/elasticsearch-indexes';
-import { elasticSearch } from './elasticsearch';
-import { productConsumes } from './queues/consumers/product.consumer';
 
 export let productChannel: Channel;
 

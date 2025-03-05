@@ -3,8 +3,13 @@ import 'express-async-errors';
 import { CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
 import { DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
+import { elasticSearch } from '@gateway/elasticsearch';
+import { endpointMiddleware } from '@gateway/middlewares/endpoint.middleware';
 import { appRoutes } from '@gateway/routes';
 import { authService } from '@gateway/services/api/auth.service';
+import { buyerService } from '@gateway/services/api/buyer.service';
+import { storeService } from '@gateway/services/api/store.service';
+import { log, logCatch } from '@gateway/utils/logger.util';
 import { isAxiosError } from 'axios';
 import compression from 'compression';
 import cors from 'cors';
@@ -12,12 +17,8 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
-import { elasticSearch } from './elasticsearch';
-import { endpointMiddleware } from './middlewares/endpoint.middleware';
-import { buyerService } from './services/api/buyer.service';
-import { storeService } from './services/api/store.service';
-import { log, logCatch } from './utils/logger.util';
 
 export class GatewayServer {
   private app: Application;
@@ -31,6 +32,7 @@ export class GatewayServer {
     this.standardMiddleware();
     this.routesMiddleware();
     this.startElasticSearch();
+    this.forwardSocket();
     this.errorHandler();
     this.startServer();
   }
@@ -70,6 +72,10 @@ export class GatewayServer {
 
   private routesMiddleware(): void {
     appRoutes(this.app);
+  }
+
+  private forwardSocket(): void {
+    this.app.use('/socket.io', createProxyMiddleware({ target: config.ONLINE_STATUS_BASE_URL, ws: true }));
   }
 
   private errorHandler(): void {

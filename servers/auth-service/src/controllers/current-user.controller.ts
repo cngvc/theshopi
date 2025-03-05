@@ -44,8 +44,7 @@ class CurrentUserController {
       authChannel,
       ExchangeNames.AUTH_NOTIFICATION_EMAIL,
       RoutingKeys.AUTH_NOTIFICATION_EMAIL,
-      JSON.stringify(messageDetails),
-      'Verify email message has been sent to notification service.'
+      JSON.stringify(messageDetails)
     );
     const updatedUser = await authService.getAuthUserById(existingUser.id!);
     new OkRequestSuccess('Email verification sent', { user: updatedUser }).send(res);

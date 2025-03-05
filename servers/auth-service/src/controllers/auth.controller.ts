@@ -48,8 +48,7 @@ class AuthController {
         receiverEmail: result.email,
         verifyLink: verificationLink,
         template: 'verify-email'
-      } as IEmailMessageDetails),
-      'Verify email message has been sent to notification service.'
+      } as IEmailMessageDetails)
     );
 
     const token = authService.signToken(result.id!, result.email!, result.username!);

@@ -23,8 +23,7 @@ export class AuthService {
         email: user.email!,
         createdAt: user.createdAt!,
         type: 'auth'
-      } as IAuthBuyerMessageDetails),
-      'Buyer details sent to buyer service.'
+      } as IAuthBuyerMessageDetails)
     );
     return await this.authRepository.save(user);
   }

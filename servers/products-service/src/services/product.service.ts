@@ -5,9 +5,9 @@ import { elasticSearch } from '@products/elasticsearch';
 import { ProductModel } from '@products/models/product.schema';
 import { productProducer } from '@products/queues/product.producer';
 import { productChannel } from '@products/server';
+import { searchService } from '@products/services/search.service';
 import { log } from '@products/utils/logger.util';
 import { sample } from 'lodash';
-import { elasticsearchService } from './elasticsearch.service';
 
 class ProductService {
   createProduct = async (product: IProductDocument): Promise<IProductDocument> => {
@@ -17,8 +17,7 @@ class ProductService {
         productChannel,
         ExchangeNames.USERS_STORE_UPDATE,
         RoutingKeys.USERS_STORE_UPDATE,
-        JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 }),
-        'Details sent to users service.'
+        JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 })
       );
       const data = newProduct.toJSON?.();
       await elasticSearch.addItemToIndex(elasticSearchIndexes.products, `${newProduct._id}`, data);
@@ -31,8 +30,7 @@ class ProductService {
       productChannel,
       ExchangeNames.USERS_STORE_UPDATE,
       RoutingKeys.USERS_STORE_UPDATE,
-      JSON.stringify({ type: 'update-store-product-count', storeId: `${storeId}`, count: 1 }),
-      'Details sent to users service.'
+      JSON.stringify({ type: 'update-store-product-count', storeId: `${storeId}`, count: 1 })
     );
     await elasticSearch.deleteIndexedItem(elasticSearchIndexes.products, productId);
   };
@@ -44,7 +42,7 @@ class ProductService {
 
   getStoreProducts = async (storeId: string): Promise<IProductDocument[]> => {
     const products: IProductDocument[] = [];
-    const queryResults = await elasticsearchService.productsSearchByStoreId(storeId);
+    const queryResults = await searchService.productsSearchByStoreId(storeId);
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);
     }

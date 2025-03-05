@@ -1,9 +1,9 @@
 import { auth } from '@/auth';
 import axios from 'axios';
-import { SERVER_URL } from './constants';
+import { GATEWAY_URL } from './configs';
 
 const axiosInstance = axios.create({
-  baseURL: SERVER_URL,
+  baseURL: GATEWAY_URL,
   withCredentials: true
 });
 

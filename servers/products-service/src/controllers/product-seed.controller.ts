@@ -11,8 +11,7 @@ class ProductSeedController {
       RoutingKeys.GET_STORE_USERS,
       JSON.stringify({
         count: req.params.count
-      }),
-      'Message to make user service calls to create seeds with store users.'
+      })
     );
     new OkRequestSuccess('Products creating was handled by message queue.', {}).send(res);
   };

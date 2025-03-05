@@ -2,7 +2,7 @@ import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
 
-class ElasticsearchService {
+class SearchService {
   async productsSearchByStoreId(searchQuery: string) {
     const queryList = [
       {
@@ -22,4 +22,4 @@ class ElasticsearchService {
 
   async productsSearch() {}
 }
-export const elasticsearchService = new ElasticsearchService();
+export const searchService = new SearchService();

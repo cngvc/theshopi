@@ -1,8 +1,8 @@
-import { config } from '@gateway/config';
-import { SERVICE_NAME } from '@gateway/constants';
-import { log, logCatch } from '@gateway/utils/logger.util';
+import { config } from '@online-status/config';
+import { SERVICE_NAME } from '@online-status/constants';
+import { RedisClient } from '@online-status/redis/types';
+import { log, logCatch } from '@online-status/utils/logger.util';
 import { createClient } from '@redis/client';
-import { RedisClient } from './types';
 
 class RedisCache {
   client: RedisClient;
@@ -11,7 +11,7 @@ class RedisCache {
     this.client = createClient({ url: config.REDIS_HOST });
   }
 
-  async redisConnect() {
+  async connect() {
     try {
       await this.client.connect();
       log.info(SERVICE_NAME + ` Redis Connection: ${await this.client.ping()}`);

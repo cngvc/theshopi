@@ -75,8 +75,7 @@ class UsersConsumes {
           channel,
           ExchangeNames.CREATE_SEED_PRODUCT,
           RoutingKeys.CREATE_SEED_PRODUCT,
-          JSON.stringify({ stores, count }),
-          'Message to callback product service creates seeds with store users.'
+          JSON.stringify({ stores, count })
         );
         channel.ack(msg!);
       });

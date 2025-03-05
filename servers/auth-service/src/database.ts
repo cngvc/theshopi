@@ -1,7 +1,7 @@
 import { config } from '@auth/config';
 import { SERVICE_NAME } from '@auth/constants';
+import { log, logCatch } from '@auth/utils/logger.util';
 import { DataSource } from 'typeorm';
-import { log, logCatch } from './utils/logger.util';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',

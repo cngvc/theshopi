@@ -1,7 +1,7 @@
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@notification/config';
-import { SERVICE_NAME } from './constants';
-import { log, logCatch } from './utils/logger.util';
+import { SERVICE_NAME } from '@notification/constants';
+import { log, logCatch } from '@notification/utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;

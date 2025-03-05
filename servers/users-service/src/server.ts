@@ -2,6 +2,9 @@ import 'express-async-errors';
 
 import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
+import { SERVER_PORT, SERVICE_NAME } from '@users/constants';
+import { queueConnection } from '@users/queues/connection';
+import { usersConsumes } from '@users/queues/consumers/users.consumer';
 import { appRoutes } from '@users/routes';
 import { log, logCatch } from '@users/utils/logger.util';
 import { Channel } from 'amqplib';
@@ -12,9 +15,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
-import { SERVER_PORT, SERVICE_NAME } from './constants';
-import { queueConnection } from './queues/connection';
-import { usersConsumes } from './queues/consumers/users.consumer';
 
 export class UsersServer {
   private app: Application;

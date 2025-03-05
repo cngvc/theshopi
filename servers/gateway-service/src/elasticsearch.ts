@@ -1,7 +1,7 @@
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@gateway/config';
-import { SERVICE_NAME } from './constants';
-import { log, logCatch } from './utils/logger.util';
+import { SERVICE_NAME } from '@gateway/constants';
+import { log, logCatch } from '@gateway/utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;

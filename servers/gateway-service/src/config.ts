@@ -14,6 +14,7 @@ class Config {
   public USERS_BASE_URL: string | undefined;
   public REDIS_HOST: string | undefined;
   public PRODUCTS_BASE_URL: string | undefined;
+  public ONLINE_STATUS_BASE_URL: string | undefined;
 
   constructor() {
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
@@ -27,6 +28,7 @@ class Config {
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.PRODUCTS_BASE_URL = process.env.PRODUCTS_BASE_URL || '';
+    this.ONLINE_STATUS_BASE_URL = process.env.ONLINE_STATUS_BASE_URL || '';
   }
 }
 

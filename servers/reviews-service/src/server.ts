@@ -2,6 +2,7 @@ import 'express-async-errors';
 
 import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@reviews/config';
+import { SERVER_PORT, SERVICE_NAME } from '@reviews/constants';
 import { queueConnection } from '@reviews/queues/connection';
 import { appRoutes } from '@reviews/routes';
 import { log, logCatch } from '@reviews/utils/logger.util';
@@ -13,7 +14,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
-import { SERVER_PORT, SERVICE_NAME } from './constants';
 
 export class UsersServer {
   private app: Application;

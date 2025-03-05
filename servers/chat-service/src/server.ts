@@ -2,6 +2,7 @@ import 'express-async-errors';
 
 import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@orders/config';
+import { SERVER_PORT, SERVICE_NAME } from '@orders/constants';
 import { queueConnection } from '@orders/queues/connection';
 import { appRoutes } from '@orders/routes';
 import { log, logCatch } from '@orders/utils/logger.util';
@@ -14,7 +15,6 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { Server } from 'socket.io';
-import { SERVER_PORT, SERVICE_NAME } from './constants';
 
 export let chatChannel: Channel;
 export let socketServer: Server;

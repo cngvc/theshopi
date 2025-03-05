@@ -1,10 +1,12 @@
-import "@/assets/globals.css";
-import { APP_DESC, APP_NAME, SERVER_URL } from "@/lib/constants";
-import Providers from "@/providers";
-import { Metadata } from "next";
-import { Inter } from "next/font/google";
+import '@/assets/globals.css';
+import WebSocketInitializer from '@/components/shared/socket';
+import { SERVER_URL } from '@/lib/configs';
+import { APP_DESC, APP_NAME } from '@/lib/constants';
+import Providers from '@/providers';
+import { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -15,16 +17,13 @@ export const metadata: Metadata = {
   metadataBase: new URL(SERVER_URL)
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <Providers>
           {children}
+          <WebSocketInitializer />
         </Providers>
       </body>
     </html>

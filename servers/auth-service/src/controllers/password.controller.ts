@@ -36,8 +36,7 @@ class PasswordController {
       authChannel,
       ExchangeNames.AUTH_NOTIFICATION_EMAIL,
       RoutingKeys.AUTH_NOTIFICATION_EMAIL,
-      JSON.stringify(messageDetails),
-      'Forgot password message sent to notification service.'
+      JSON.stringify(messageDetails)
     );
     new OkRequestSuccess('Password reset email sent.', {}).send(res);
   }
@@ -68,8 +67,7 @@ class PasswordController {
       authChannel,
       ExchangeNames.AUTH_NOTIFICATION_EMAIL,
       RoutingKeys.AUTH_NOTIFICATION_EMAIL,
-      JSON.stringify(messageDetails),
-      'Reset password success message sent to notification service.'
+      JSON.stringify(messageDetails)
     );
     new OkRequestSuccess('Password successfully updated.', {}).send(res);
   }
@@ -97,8 +95,7 @@ class PasswordController {
       authChannel,
       ExchangeNames.AUTH_NOTIFICATION_EMAIL,
       RoutingKeys.AUTH_NOTIFICATION_EMAIL,
-      JSON.stringify(messageDetails),
-      'Password change success message sent to notification service.'
+      JSON.stringify(messageDetails)
     );
     new OkRequestSuccess('Password successfully updated.', {}).send(res);
   }

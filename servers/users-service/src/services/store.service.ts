@@ -1,7 +1,7 @@
 import { IRatingTypes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared';
 import { StoreModel } from '@users/models/store.schema';
+import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';
-import { buyerService } from './buyer.service';
 
 class StoreService {
   getStoreById = async (storeId: string): Promise<IStoreDocument | null> => {

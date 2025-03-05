@@ -1,8 +1,8 @@
 import axiosInstance from '@/lib/axios';
-import { NEXTAUTH_SECRET } from '@/lib/constants';
 import pages from '@/lib/constants/pages';
 import NextAuth, { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { NEXTAUTH_SECRET } from './lib/configs';
 
 const config: NextAuthConfig = {
   providers: [
@@ -18,12 +18,13 @@ const config: NextAuthConfig = {
             username: credentials?.username,
             password: credentials?.password
           });
-          if (data?.user) {
+          if (data?.metadata?.user) {
             return {
-              id: data.user.id,
-              name: data.user.username,
-              email: data.user.email,
-              accessToken: data.accessToken
+              id: data.metadata.user.id,
+              name: data.metadata.user.username,
+              email: data.metadata.user.email,
+              username: data.metadata.user.username,
+              accessToken: data.metadata.accessToken
             };
           }
           return null;
@@ -46,7 +47,7 @@ const config: NextAuthConfig = {
     },
     async session({ session, token }) {
       if (token) {
-        session.user.accessToken = `${token.accessToken}`;
+        session.user = { ...(token.user as any), accessToken: token.accessToken };
       }
       return session;
     }
