@@ -5,17 +5,24 @@ import { socketClient } from '@/sockets/socket-client';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';
 
-export default function WebSocketInitializer() {
+export default function SocketInitializer() {
   const session = useSession();
 
   const emitUserOnline = useCallback(() => {
     const username = session.data?.user?.username;
-    if (username) socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, username);
+    if (username) {
+      console.log('💌 User online: ', socketClient.socket.connected);
+      socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, username);
+    }
   }, [session.data?.user]);
 
   const emitUserOffline = useCallback(() => {
     const username = session.data?.user?.username;
-    if (username) socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
+
+    if (username) {
+      console.log('💌 User offline: ', socketClient.socket.connected);
+      socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
+    }
   }, [session.data?.user]);
 
   useEffect(() => {

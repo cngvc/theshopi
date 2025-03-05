@@ -15,16 +15,16 @@ class BaseSocketClient {
 
   listen() {
     this.socket.on('connect', () => {
-      console.log('Connected to server');
+      console.log('👆 Connected to server');
     });
 
     this.socket.on('disconnect', (reason: Socket.DisconnectReason) => {
-      console.log(`disconnect, reason: ${reason}`);
+      console.log(`😞 Disconnect, reason: ${reason}`);
       this.socket.connect();
     });
 
     this.socket.on('connect_error', (error: Error) => {
-      console.log(`connect_error: ${error.message}`);
+      console.log(`👇 Connect error: ${error.message}`);
       this.socket.connect();
     });
   }

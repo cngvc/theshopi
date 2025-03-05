@@ -1,6 +1,8 @@
 import { SocketEvents } from '@cngvc/shopi-shared';
 import { config } from '@online-status/config';
+import { SERVICE_NAME } from '@online-status/constants';
 import { onlineStatusCache } from '@online-status/redis/online-status-cache';
+import { log } from '@online-status/utils/logger.util';
 import { createAdapter } from '@socket.io/redis-adapter';
 import http from 'http';
 import { createClient } from 'redis';
@@ -10,6 +12,7 @@ export class SocketHandler {
   io: Server;
 
   constructor(httpServer: http.Server) {
+    log.info(`🤜 ${SERVICE_NAME} inits socket`);
     this.io = new Server(httpServer, {
       cors: {
         origin: `${config.CLIENT_URL}`,
@@ -25,8 +28,9 @@ export class SocketHandler {
     this.io.adapter(createAdapter(pub, sub));
   }
 
-  public listen(): void {
+  public listen() {
     this.io.on('connection', async (socket: Socket) => {
+      log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
         const response: string[] = await onlineStatusCache.saveLoggedInUserToCache(SocketEvents.LOGGED_IN_USERS, username);
         this.io.emit('online', response);
@@ -40,6 +44,15 @@ export class SocketHandler {
         const response: string[] = await onlineStatusCache.removeLoggedInUserFromCache(SocketEvents.LOGGED_IN_USERS, username);
         this.io.emit('online', response);
       });
+    });
+    this.io.on('connect_error', (err) => {
+      console.log(err);
+    });
+    this.io.on('connect_failed', (err) => {
+      console.log(err);
+    });
+    this.io.on('disconnect', (err) => {
+      console.log(err);
     });
   }
 }

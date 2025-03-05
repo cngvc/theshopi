@@ -1,5 +1,5 @@
 import '@/assets/globals.css';
-import WebSocketInitializer from '@/components/shared/socket';
+import SocketInitializer from '@/components/shared/socket/socket-initializer';
 import { SERVER_URL } from '@/lib/configs';
 import { APP_DESC, APP_NAME } from '@/lib/constants';
 import Providers from '@/providers';
@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <Providers>
           {children}
-          <WebSocketInitializer />
+          <SocketInitializer />
         </Providers>
       </body>
     </html>

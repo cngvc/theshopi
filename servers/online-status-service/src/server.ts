@@ -32,6 +32,7 @@ export class OnlineStatusServer {
       const socketHandler = new SocketHandler(httpServer);
       socketHandler.createSocket();
       this.startHttpServer(httpServer);
+      socketHandler.listen();
       log.info(`Worker with process id of ${process.pid} on online-status service has started`);
     } catch (error) {
       logCatch(error, 'startServer');
