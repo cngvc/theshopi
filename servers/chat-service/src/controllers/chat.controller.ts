@@ -9,7 +9,7 @@ class ChatController {
     const conversationLastMessages: IMessageDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.username);
     new OkRequestSuccess('Conversation list', {
       conversations: conversationLastMessages
-    });
+    }).send(res);
   };
 
   getConversationByConversationPublicId = async (req: Request, res: Response): Promise<void> => {

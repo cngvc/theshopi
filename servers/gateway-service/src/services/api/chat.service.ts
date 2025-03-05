@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 
 class ChatService extends AxiosService {
   constructor() {
-    super(`${config.USERS_BASE_URL}/api/v1/chat`, 'buyer');
+    super(`${config.CHAT_BASE_URL}/api/v1/chat`, 'buyer');
   }
   getCurrentUserConversations = async () => {
     const response: AxiosResponse = await this.get('/conversations/');

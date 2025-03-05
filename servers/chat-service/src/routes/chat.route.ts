@@ -9,10 +9,11 @@ class ChatRoutes {
 
   public routes(): Router {
     this.router.get('/conversations', chatController.getCurrentUserConversations);
-    this.router.post('/conversations/messages', chatController.sendMessage);
-    this.router.post('/conversations', chatController.createConversation);
     this.router.get('/conversations/:conversationId', chatController.getConversationByConversationPublicId);
     this.router.get('/conversations/:conversationId/messages', chatController.getConversationMessages);
+    this.router.post('/conversations', chatController.createConversation);
+    this.router.post('/conversations/messages', chatController.sendMessage);
+
     return this.router;
   }
 }
