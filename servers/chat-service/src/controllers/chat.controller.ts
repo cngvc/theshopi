@@ -5,8 +5,8 @@ import { BadRequestError, CreatedRequestSuccess, IConversationDocument, IMessage
 import { Request, Response } from 'express';
 
 class ChatController {
-  getUserConversations = async (req: Request, res: Response): Promise<void> => {
-    const conversationLastMessages: IMessageDocument[] = await chatService.getUserConversations(req.currentUser!.username);
+  getCurrentUserConversations = async (req: Request, res: Response): Promise<void> => {
+    const conversationLastMessages: IMessageDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.username);
     new OkRequestSuccess('Conversation list', {
       conversations: conversationLastMessages
     });

@@ -6,7 +6,7 @@ import { elasticSearch } from '@auth/elasticsearch';
 import { queueConnection } from '@auth/queues/connection';
 import { appRoutes } from '@auth/routes';
 import { log, logCatch } from '@auth/utils/logger.util';
-import { CustomError, IAuthPayload, IErrorResponse, verifyGatewayRequest } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -36,7 +36,7 @@ export class AuthServer {
 
   private securityMiddleware() {
     // only receive requests from gateway server
-    this.app.use(verifyGatewayRequest);
+    this.app.use(AuthMiddleware.verifyGatewayRequest);
 
     this.app.set('trust proxy', 1);
     this.app.use(hpp());

@@ -9,8 +9,8 @@ SERVICES=(
   "orders-service" 
   "products-service" 
   "reviews-service" 
-  "users-service",
-  "online-status-service",
+  "users-service"
+  "online-status-service"
 )
 
 echo "🔄 Updating $LIB_NAME in all services..."

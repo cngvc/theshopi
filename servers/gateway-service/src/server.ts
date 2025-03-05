@@ -8,6 +8,7 @@ import { endpointMiddleware } from '@gateway/middlewares/endpoint.middleware';
 import { appRoutes } from '@gateway/routes';
 import { authService } from '@gateway/services/api/auth.service';
 import { buyerService } from '@gateway/services/api/buyer.service';
+import { chatService } from '@gateway/services/api/chat.service';
 import { storeService } from '@gateway/services/api/store.service';
 import { log, logCatch } from '@gateway/utils/logger.util';
 import { isAxiosError } from 'axios';
@@ -19,6 +20,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
+import { productService } from './services/api/product.service';
 
 export class GatewayServer {
   private app: Application;
@@ -50,11 +52,13 @@ export class GatewayServer {
     );
     this.app.use(endpointMiddleware.gatewayRequestLogger);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      const authHeader = req.headers.authorization;
-      if (authHeader && authHeader.startsWith('Bearer ')) {
-        authService.axiosInstance.defaults.headers['Authorization'] = authHeader;
-        buyerService.axiosInstance.defaults.headers['Authorization'] = authHeader;
-        storeService.axiosInstance.defaults.headers['Authorization'] = authHeader;
+      const headerAuthorization = req.headers.authorization;
+      if (headerAuthorization && headerAuthorization.startsWith('Bearer ')) {
+        authService.setHeaderAuthorization(headerAuthorization);
+        buyerService.setHeaderAuthorization(headerAuthorization);
+        storeService.setHeaderAuthorization(headerAuthorization);
+        productService.setHeaderAuthorization(headerAuthorization);
+        chatService.setHeaderAuthorization(headerAuthorization);
       }
       next();
     });

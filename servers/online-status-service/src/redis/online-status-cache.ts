@@ -54,7 +54,6 @@ class OnlineStatusCache {
       }
       return response;
     } catch (error) {
-      console.log(error);
       logCatch(error, 'removeLoggedInUserFromCache');
       return [];
     }

@@ -1,6 +1,6 @@
 import { BASE_PATH } from '@chat/constants/path';
+import { chatRoutes } from '@chat/routes/chat.route';
 import { healthRoutes } from '@chat/routes/health.route';
-import { chatRoutes } from '@chat/routes/message';
 import { Application } from 'express';
 
 const appRoutes = (app: Application): void => {

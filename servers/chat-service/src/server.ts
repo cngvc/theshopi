@@ -5,7 +5,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@chat/constants';
 import { queueConnection } from '@chat/queues/connection';
 import { appRoutes } from '@chat/routes';
 import { log, logCatch } from '@chat/utils/logger.util';
-import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -36,6 +36,9 @@ export class UsersServer {
   };
 
   private securityMiddleware() {
+    // only receive requests from gateway server
+    this.app.use(AuthMiddleware.verifyGatewayRequest);
+
     this.app.set('trust proxy', 1);
     this.app.use(hpp());
     this.app.use(helmet());

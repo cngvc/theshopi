@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@products/config';
 import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
@@ -37,6 +37,9 @@ export class ProductServer {
   };
 
   private securityMiddleware() {
+    // only receive requests from gateway server
+    this.app.use(AuthMiddleware.verifyGatewayRequest);
+
     this.app.set('trust proxy', 1);
     this.app.use(hpp());
     this.app.use(helmet());
@@ -81,7 +84,6 @@ export class ProductServer {
     this.app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
       log.log('error', SERVICE_NAME + ` ${error.comingFrom}: ${error.message}`);
       if (error instanceof CustomError) {
-        console.log(error.serializeError());
         res.status(error.statusCode).json(error.serializeError());
         return;
       }

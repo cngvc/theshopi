@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
 import { SERVER_PORT, SERVICE_NAME } from '@users/constants';
 import { queueConnection } from '@users/queues/connection';
@@ -32,6 +32,9 @@ export class UsersServer {
   };
 
   private securityMiddleware() {
+    // only receive requests from gateway server
+    this.app.use(AuthMiddleware.verifyGatewayRequest);
+
     this.app.set('trust proxy', 1);
     this.app.use(hpp());
     this.app.use(helmet());

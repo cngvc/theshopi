@@ -54,7 +54,7 @@ class ChatService {
     return message;
   };
 
-  getUserConversations = async (username: string): Promise<IMessageDocument[]> => {
+  getCurrentUserConversations = async (username: string): Promise<IMessageDocument[]> => {
     const conversationLastMessages: IMessageDocument[] = await MessageModel.aggregate([
       {
         $match: {

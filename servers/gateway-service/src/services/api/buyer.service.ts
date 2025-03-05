@@ -1,28 +1,24 @@
 import { config } from '@gateway/config';
 import { AxiosService } from '@gateway/services/axios/axios.service';
-import axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 
-class BuyerService {
-  axiosService: AxiosService;
-  public axiosInstance: ReturnType<typeof axios.create>;
-
+class BuyerService extends AxiosService {
   constructor() {
-    this.axiosService = new AxiosService(`${config.USERS_BASE_URL}/api/v1/buyer`, 'buyer');
-    this.axiosInstance = this.axiosService.axios;
+    super(`${config.USERS_BASE_URL}/api/v1/buyer`, 'buyer');
   }
 
   async getBuyerByEmail(): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.axiosInstance.get('/email');
+    const response: AxiosResponse = await this.get('/email');
     return response;
   }
 
   async getCurrentBuyer(): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.axiosInstance.get('/me');
+    const response: AxiosResponse = await this.get('/me');
     return response;
   }
 
   async getBuyerByUsername(username: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.axiosInstance.get(`/${username}`);
+    const response: AxiosResponse = await this.get(`/${username}`);
     return response;
   }
 }
