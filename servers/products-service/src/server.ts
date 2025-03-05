@@ -1,10 +1,10 @@
 import 'express-async-errors';
 
-import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@products/config';
 import { queueConnection } from '@products/queues/connection';
 import { appRoutes } from '@products/routes';
-import { log } from '@products/utils/logger.util';
+import { log, logCatch } from '@products/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -100,7 +100,7 @@ export class ProductServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startServer');
     }
   }
 
@@ -110,7 +110,7 @@ export class ProductServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startHttpServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startHttpServer');
     }
   }
 }

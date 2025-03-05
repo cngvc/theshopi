@@ -1,5 +1,6 @@
-import { winstonLogger } from '@cngvc/shopi-shared';
+import { getErrorMessage, winstonLogger } from '@cngvc/shopi-shared';
 import { config } from '@users/config';
+import { SERVICE_NAME } from '@users/constants';
 import { Logger } from 'winston';
 
 const logger = (name: string, level: string) => {
@@ -7,4 +8,6 @@ const logger = (name: string, level: string) => {
   return log;
 };
 
-export const log = logger('usersServer', 'debug');
+export const log = logger(SERVICE_NAME, 'debug');
+
+export const logCatch = (error: unknown, comingFrom: string) => log.log('error', `${SERVICE_NAME} ${comingFrom}`, getErrorMessage(error));

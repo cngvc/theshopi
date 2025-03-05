@@ -1,9 +1,9 @@
-import { getErrorMessage, IProductDocument, NotFoundError } from '@cngvc/shopi-shared';
+import { IProductDocument, NotFoundError } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
 import { CountResponse, GetResponse, QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';
 import { SERVICE_NAME } from '@products/constants';
-import { log } from '@products/utils/logger.util';
+import { log, logCatch } from '@products/utils/logger.util';
 
 type QueryListType = QueryDslQueryContainer | QueryDslQueryContainer[];
 
@@ -24,9 +24,8 @@ class ElasticSearch {
         log.info(SERVICE_NAME + ` elasticsearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
-        log.error(SERVICE_NAME + ' connection to elasticsearch failed, retrying');
+        logCatch(error, 'checkConnection, connection to elasticsearch failed, retrying');
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        log.log('error', SERVICE_NAME + ' checkConnection() method:', getErrorMessage(error));
       }
     }
   }
@@ -41,7 +40,7 @@ class ElasticSearch {
       const result: CountResponse = await this.elasticSearchClient.count({ index });
       return result.count;
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' getDocumentCount() method error:', getErrorMessage(error));
+      logCatch(error, 'getDocumentCount');
       return 0;
     }
   }
@@ -51,8 +50,8 @@ class ElasticSearch {
       const result: GetResponse = await this.elasticSearchClient.get({ index, id: itemId });
       return result._source as IProductDocument;
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' getIndexedData() method error:', getErrorMessage(error));
-      throw new NotFoundError('Product not found', 'getIndexedData() method');
+      logCatch(error, 'getIndexedData');
+      throw new NotFoundError('Product not found', 'getIndexedData method');
     }
   }
 
@@ -67,8 +66,7 @@ class ElasticSearch {
         log.info(`Created index ${indexName}.`);
       }
     } catch (error) {
-      log.error(`An error occurred while creating the index ${indexName}`);
-      log.log('error', SERVICE_NAME + ' createIndex() method:', getErrorMessage(error));
+      logCatch(error, 'createIndex');
     }
   }
 
@@ -81,7 +79,7 @@ class ElasticSearch {
         document: doc
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' addItemToIndex() method:', getErrorMessage(error));
+      logCatch(error, 'addItemToIndex');
     }
   }
 
@@ -93,7 +91,7 @@ class ElasticSearch {
         doc: doc
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' updateIndexedItem() method:', getErrorMessage(error));
+      logCatch(error, 'updateIndexedItem');
     }
   }
 
@@ -104,7 +102,7 @@ class ElasticSearch {
         id: itemId
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' deleteIndexedItem() method:', getErrorMessage(error));
+      logCatch(error, 'deleteIndexedItem');
     }
   }
 

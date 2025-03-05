@@ -1,6 +1,4 @@
-import { SERVICE_NAME } from '@auth/constants';
-import { log } from '@auth/utils/logger.util';
-import { getErrorMessage } from '@cngvc/shopi-shared';
+import { log, logCatch } from '@auth/utils/logger.util';
 import { Channel } from 'amqplib';
 import { queueConnection } from './connection';
 
@@ -20,7 +18,7 @@ class AuthProducer {
       channel.publish(exchangeName, routingKey, Buffer.from(message));
       log.info(logMessage);
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' publishDirectMessage() method:', getErrorMessage(error));
+      logCatch(error, 'publishDirectMessage');
     }
   };
 }

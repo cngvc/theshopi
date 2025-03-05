@@ -12,6 +12,7 @@ class Config {
   public GATEWAY_JWT_TOKEN_SECRET: string | undefined;
   public NODE_ENV: string | undefined;
   public USERS_BASE_URL: string | undefined;
+  public REDIS_HOST: string | undefined;
   public PRODUCTS_BASE_URL: string | undefined;
 
   constructor() {
@@ -24,6 +25,7 @@ class Config {
     this.GATEWAY_JWT_TOKEN_SECRET = process.env.GATEWAY_JWT_TOKEN_SECRET || '';
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
+    this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.PRODUCTS_BASE_URL = process.env.PRODUCTS_BASE_URL || '';
   }
 }

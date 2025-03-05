@@ -1,8 +1,7 @@
-import { getErrorMessage } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@gateway/config';
 import { SERVICE_NAME } from './constants';
-import { log } from './utils/logger.util';
+import { log, logCatch } from './utils/logger.util';
 
 class ElasticSearch {
   private elasticSearchClient: Client;
@@ -21,9 +20,8 @@ class ElasticSearch {
         log.info(SERVICE_NAME + ` elasticsearch health status - ${health.status}`);
         isConnected = true;
       } catch (error) {
-        log.error(SERVICE_NAME + ' connection to elasticsearch failed, retrying');
+        logCatch(error, 'checkConnection, connection to elasticsearch failed, retrying');
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        log.log('error', SERVICE_NAME + ' checkConnection() method:', getErrorMessage(error));
       }
     }
   }

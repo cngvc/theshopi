@@ -1,12 +1,11 @@
 import 'express-async-errors';
 
-import { getErrorMessage } from '@cngvc/shopi-shared';
 import { SERVER_PORT, SERVICE_NAME } from '@notification/constants';
 import { elasticSearch } from '@notification/elasticsearch';
 import { queueConnection } from '@notification/queues/connection';
 import { authConsumes } from '@notification/queues/consumers/auth.consumer';
 import { appRoutes } from '@notification/routes';
-import { log } from '@notification/utils/logger.util';
+import { log, logCatch } from '@notification/utils/logger.util';
 import { Channel } from 'amqplib';
 import { Application } from 'express';
 import http from 'http';
@@ -45,7 +44,7 @@ export class NotificationServer {
         log.info(SERVICE_NAME + ` running on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' startServer() method:', getErrorMessage(error));
+      logCatch(error, 'startServer');
     }
   }
 }

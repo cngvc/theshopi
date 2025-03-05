@@ -1,7 +1,6 @@
 import { config } from '@auth/config';
 import { SERVICE_NAME } from '@auth/constants';
-import { log } from '@auth/utils/logger.util';
-import { getErrorMessage } from '@cngvc/shopi-shared';
+import { log, logCatch } from '@auth/utils/logger.util';
 import client, { Channel, ChannelModel } from 'amqplib';
 
 class QueueConnection {
@@ -13,7 +12,7 @@ class QueueConnection {
       this.closeConnection(channel, connection);
       return channel;
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' createConnection() method:', getErrorMessage(error));
+      logCatch(error, 'createConnection');
       return undefined;
     }
   };

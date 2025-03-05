@@ -1,10 +1,9 @@
-import { ExchangeNames, getErrorMessage, IBuyerDocument, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
-import { SERVICE_NAME } from '@users/constants';
+import { ExchangeNames, IBuyerDocument, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { queueConnection } from '@users/queues/connection';
 import { usersProducer } from '@users/queues/users.producer';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
-import { log } from '@users/utils/logger.util';
+import { logCatch } from '@users/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
 class UsersConsumes {
@@ -34,7 +33,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' consumeUpdateUsersBuy() method:', getErrorMessage(error));
+      logCatch(error, 'consumeUpdateUsersBuy');
     }
   };
 
@@ -57,7 +56,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' consumeUpdateUsersStore() method:', getErrorMessage(error));
+      logCatch(error, 'consumeUpdateUsersStore');
     }
   };
 
@@ -82,7 +81,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ' consumeUpdateUsersStore() method:', getErrorMessage(error));
+      logCatch(error, 'consumeGetUsersStore');
     }
   };
 }

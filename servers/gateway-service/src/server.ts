@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { CustomError, getErrorMessage, IErrorResponse } from '@cngvc/shopi-shared';
+import { CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
 import { DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
 import { appRoutes } from '@gateway/routes';
@@ -17,7 +17,7 @@ import { elasticSearch } from './elasticsearch';
 import { endpointMiddleware } from './middlewares/endpoint.middleware';
 import { buyerService } from './services/api/buyer.service';
 import { storeService } from './services/api/store.service';
-import { log } from './utils/logger.util';
+import { log, logCatch } from './utils/logger.util';
 
 export class GatewayServer {
   private app: Application;
@@ -124,7 +124,7 @@ export class GatewayServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startServer');
     }
   }
 
@@ -134,7 +134,7 @@ export class GatewayServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startHttpServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startHttpServer');
     }
   }
 }

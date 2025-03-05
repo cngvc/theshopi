@@ -5,8 +5,8 @@ import { SERVER_PORT, SERVICE_NAME } from '@auth/constants';
 import { elasticSearch } from '@auth/elasticsearch';
 import { queueConnection } from '@auth/queues/connection';
 import { appRoutes } from '@auth/routes';
-import { log } from '@auth/utils/logger.util';
-import { CustomError, getErrorMessage, IAuthPayload, IErrorResponse, verifyGatewayRequest } from '@cngvc/shopi-shared';
+import { log, logCatch } from '@auth/utils/logger.util';
+import { CustomError, IAuthPayload, IErrorResponse, verifyGatewayRequest } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -98,7 +98,7 @@ export class AuthServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startServer');
     }
   }
 
@@ -108,7 +108,7 @@ export class AuthServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      log.log('error', SERVICE_NAME + ` startHttpServer() method:`, getErrorMessage(error));
+      logCatch(error, 'startHttpServer');
     }
   }
 }
