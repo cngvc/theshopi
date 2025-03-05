@@ -75,7 +75,7 @@ class ProductService {
     return document;
   };
 
-  async createSeeds(stores: IStoreDocument[], count: string): Promise<void> {
+  async createSeeds(stores: IStoreDocument[]): Promise<void> {
     const randomRatings = [
       { sum: 20, count: 4 },
       { sum: 10, count: 2 },

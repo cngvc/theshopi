@@ -1,10 +1,16 @@
 import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { socketServer } from '@chat/server';
-import { IConversationDocument, IMessageDocument, SocketEvents } from '@cngvc/shopi-shared';
+import { log } from '@chat/utils/logger.util';
+import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument, SocketEvents } from '@cngvc/shopi-shared';
+import { faker } from '@faker-js/faker';
 
 class ChatService {
   createConversation = async (sender: string, receiver: string): Promise<IConversationDocument> => {
+    const existingConversation = await this.getConversationBySenderAndReceiver(sender, receiver);
+    if (existingConversation) {
+      return existingConversation;
+    }
     return await ConversationModel.create({
       senderUsername: sender,
       receiverUsername: receiver
@@ -17,10 +23,20 @@ class ChatService {
   };
 
   getConversationBySenderAndReceiver = async (sender: string, receiver: string) => {
-    const conversations = await ConversationModel.findOne({
-      $match: this.conversationQuery(sender, receiver)
-    });
-    return conversations;
+    const conversations = await ConversationModel.aggregate([
+      {
+        $match: {
+          $or: [
+            { senderUsername: sender, receiverUsername: receiver },
+            { senderUsername: receiver, receiverUsername: sender }
+          ]
+        }
+      },
+      {
+        $limit: 1
+      }
+    ]).exec();
+    return conversations[0];
   };
 
   getConversationByConversationPublicId = async (conversationPublicId: string) => {
@@ -82,14 +98,29 @@ class ChatService {
     return conversationLastMessages;
   };
 
-  private conversationQuery(sender: string, receiver: string) {
-    return {
-      $or: [
-        { senderUsername: sender, receiverUsername: receiver },
-        { senderUsername: receiver, receiverUsername: sender }
-      ]
-    };
-  }
+  createSeeds = async (stores: IStoreDocument[], buyers: IBuyerDocument[]): Promise<void> => {
+    const count = Math.min(stores.length, buyers.length);
+    for (let i = 0; i < count; i++) {
+      const receiver = stores[i];
+      const sender = buyers[i];
+      for (let i = 0; i < count; i++) {
+        const savedConversation = await this.createConversation(`${sender.username}`, `${receiver.username}`);
+        const messages: IMessageDocument[] = [];
+        for (let i = 0; i < count * 5; i++) {
+          messages.push({
+            conversationId: savedConversation.conversationId,
+            senderUsername: savedConversation.senderUsername,
+            receiverUsername: savedConversation.receiverUsername,
+            buyerId: `${sender._id}`,
+            storeId: `${receiver._id}`,
+            body: faker.lorem.sentence()
+          });
+        }
+        await MessageModel.insertMany(messages);
+      }
+      log.info(`***Seeding chat:*** - ${i + 1} of ${count}`);
+    }
+  };
 }
 
 export const chatService = new ChatService();

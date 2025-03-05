@@ -3,6 +3,7 @@ import { queueConnection } from '@users/queues/connection';
 import { usersProducer } from '@users/queues/users.producer';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
+import { usersService } from '@users/services/users.service';
 import { logCatch } from '@users/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
@@ -75,12 +76,36 @@ class UsersConsumes {
           channel,
           ExchangeNames.CREATE_SEED_PRODUCT,
           RoutingKeys.CREATE_SEED_PRODUCT,
-          JSON.stringify({ stores, count })
+          JSON.stringify({ stores })
         );
         channel.ack(msg!);
       });
     } catch (error) {
       logCatch(error, 'consumeGetUsersStore');
+    }
+  };
+
+  consumeGetUsers = async (channel: Channel): Promise<void> => {
+    try {
+      if (!channel) {
+        channel = (await queueConnection.createConnection()) as Channel;
+      }
+      await channel.assertExchange(ExchangeNames.GET_USERS, 'direct');
+      const assertQueue = await channel.assertQueue(QueueNames.GET_USERS, { durable: true, autoDelete: false });
+      await channel.bindQueue(assertQueue.queue, ExchangeNames.GET_USERS, RoutingKeys.GET_USERS);
+      channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
+        const { count } = JSON.parse(msg!.content.toString());
+        const { stores, buyers } = await usersService.getRandomUsers(parseInt(count, 10));
+        usersProducer.publishDirectMessage(
+          channel,
+          ExchangeNames.CREATE_SEED_CHAT,
+          RoutingKeys.CREATE_SEED_CHAT,
+          JSON.stringify({ stores, buyers })
+        );
+        channel.ack(msg!);
+      });
+    } catch (error) {
+      logCatch(error, 'consumeGetUsers');
     }
   };
 }

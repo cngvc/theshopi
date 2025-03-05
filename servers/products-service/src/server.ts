@@ -6,7 +6,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
 import { queueConnection } from '@products/queues/connection';
-import { productConsumes } from '@products/queues/consumers/product.consumer';
+import { productConsumes } from '@products/queues/product.consumer';
 import { appRoutes } from '@products/routes';
 import { log, logCatch } from '@products/utils/logger.util';
 import { Channel } from 'amqplib';
@@ -72,7 +72,7 @@ export class ProductServer {
 
   private async startQueues() {
     productChannel = (await queueConnection.createConnection()) as Channel;
-    productConsumes.consumeCreateProductSeeds(productChannel);
+    await productConsumes.consumeCreateProductSeeds(productChannel);
   }
 
   private startElasticSearch() {

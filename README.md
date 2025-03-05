@@ -2,17 +2,24 @@
 
 ## 🚀 How to Start Services
 
-This project uses **Docker Compose** to manage services like MongoDB, MySQL, RabbitMQ, Elasticsearch, and Kibana.
+### Backend
 
-### **1️⃣ Start Required Services**
+This project uses **Docker Compose** to manage services like MongoDB, MySQL, Redis, RabbitMQ, Elasticsearch, Kibana, etc.
+
+### Frontend
+
+Frameworks: [Next](https://nextjs.org/), [Next-Auth](https://authjs.dev/)
+Package manager: [Bun](https://bun.sh/)
+
+### **Start Required Services**
 
 To start all necessary services, run the following command:
 
 ```sh
-chmod +x start-services.sh && ./start-services.sh
+cd scripts && chmod +x *.sh && ./start-docker-containers.sh && ./start-services.sh
 ```
 
-### **4️⃣ Stopping Services**
+### **Stopping Services**
 
 To stop all running services:
 
@@ -20,8 +27,13 @@ To stop all running services:
 docker-compose down
 ```
 
+_(-v flag for volumes if needed)_
+
 ---
 
 ### **📌 Notes:**
 
 - Ensure **Docker** and **Docker Compose** are installed before running the script.
+- Node version: 20
+- [Bun](https://bun.sh/) _(like yarn)_
+- Container manager UI: [OrbStack](https://orbstack.dev)

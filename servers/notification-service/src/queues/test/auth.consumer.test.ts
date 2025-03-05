@@ -1,6 +1,6 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { authConsumes } from '@notification/queues/auth.consumer';
 import { queueConnection } from '@notification/queues/connection';
-import { authConsumes } from '@notification/queues/consumers/auth.consumer';
 import amqp from 'amqplib';
 
 jest.mock('@notification/queues/connection');

@@ -14,8 +14,8 @@ class ProductConsumes {
       const assertQueue = await channel.assertQueue(QueueNames.CREATE_SEED_PRODUCT, { durable: true, autoDelete: false });
       await channel.bindQueue(assertQueue.queue, ExchangeNames.CREATE_SEED_PRODUCT, RoutingKeys.CREATE_SEED_PRODUCT);
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { stores, count } = JSON.parse(msg!.content.toString());
-        await productService.createSeeds(stores, count);
+        const { stores } = JSON.parse(msg!.content.toString());
+        await productService.createSeeds(stores);
         channel.ack(msg!);
       });
     } catch (error) {

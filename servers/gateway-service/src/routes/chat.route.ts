@@ -1,4 +1,5 @@
 import { AuthMiddleware } from '@cngvc/shopi-shared';
+import { chatSeedController } from '@gateway/controllers/chat/chat-seed.controller';
 import { chatController } from '@gateway/controllers/chat/chat.controller';
 import express, { Router } from 'express';
 
@@ -10,19 +11,15 @@ class ChatRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/chat/conversations/', AuthMiddleware.checkAuthentication, chatController.getCurrentUserConversations);
-    this.router.get(
-      '/chat/conversations/:conversationId',
-      AuthMiddleware.checkAuthentication,
-      chatController.getConversationByConversationPublicId
-    );
-    this.router.get(
-      '/chat/conversations/:conversationId/messages',
-      AuthMiddleware.checkAuthentication,
-      chatController.getConversationMessages
-    );
-    this.router.post('/conversations', AuthMiddleware.checkAuthentication, chatController.createConversation);
-    this.router.post('/conversations/messages', AuthMiddleware.checkAuthentication, chatController.sendMessage);
+    this.router.use(AuthMiddleware.checkAuthentication);
+
+    this.router.get('/chat/conversations/', chatController.getCurrentUserConversations);
+    this.router.get('/chat/conversations/:conversationId', chatController.getConversationByConversationPublicId);
+    this.router.get('/chat/conversations/:conversationId/messages', chatController.getConversationMessages);
+    this.router.post('/conversations', chatController.createConversation);
+    this.router.post('/conversations/messages', chatController.sendMessage);
+
+    this.router.put('/seed/:count', chatSeedController.createSeeds);
     return this.router;
   }
 }

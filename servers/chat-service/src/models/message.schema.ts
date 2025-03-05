@@ -6,10 +6,10 @@ const messageSchema: Schema = new Schema(
     conversationId: { type: String, required: true, index: true },
     senderUsername: { type: String, required: true, index: true },
     receiverUsername: { type: String, required: true, index: true },
-    body: { type: String, default: '' },
-    productId: { type: String, default: '' },
     buyerId: { type: String, required: true },
     storeId: { type: String, required: true },
+    body: { type: String, default: '' },
+    productId: { type: String, default: '' },
     isRead: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now }
   },

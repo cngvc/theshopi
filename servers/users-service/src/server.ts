@@ -4,7 +4,7 @@ import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngv
 import { config } from '@users/config';
 import { SERVER_PORT, SERVICE_NAME } from '@users/constants';
 import { queueConnection } from '@users/queues/connection';
-import { usersConsumes } from '@users/queues/consumers/users.consumer';
+import { usersConsumes } from '@users/queues/users.consumer';
 import { appRoutes } from '@users/routes';
 import { log, logCatch } from '@users/utils/logger.util';
 import { Channel } from 'amqplib';
@@ -70,6 +70,7 @@ export class UsersServer {
     await usersConsumes.consumeUpdateUsersBuy(channel);
     await usersConsumes.consumeUpdateUsersStore(channel);
     await usersConsumes.consumeGetUsersStore(channel);
+    await usersConsumes.consumeGetUsers(channel);
   }
 
   private errorHandler(): void {

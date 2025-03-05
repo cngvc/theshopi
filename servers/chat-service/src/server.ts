@@ -15,6 +15,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { Server } from 'socket.io';
+import { chatConsumes } from './queues/chat.consumer';
 import { SocketHandler } from './sockets/socket.handler';
 
 export let chatChannel: Channel;
@@ -71,6 +72,7 @@ export class UsersServer {
 
   private async startQueues() {
     chatChannel = (await queueConnection.createConnection()) as Channel;
+    await chatConsumes.consumeCreateChatSeeds(chatChannel);
   }
 
   private errorHandler(): void {
