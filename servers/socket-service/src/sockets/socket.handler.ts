@@ -14,14 +14,18 @@ export class SocketHandler {
     log.info(`🤜 ${SERVICE_NAME} inits socket server`);
     this.io = new Server(httpServer, {
       cors: {
-        origin: `${config.CLIENT_URL}`,
+        origin: `${config.GATEWAY_URL}`,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       }
     });
-    this.onlineStatusSocketConnect();
+    this.onlineStatusSocket = io(`${config.ONLINE_STATUS_BASE_URL}`, {
+      transports: ['websocket'],
+      secure: false
+    });
   }
 
   public listen() {
+    this.onlineStatusSocketConnect();
     this.io.on('connection', async (socket: Socket) => {
       log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
@@ -46,10 +50,6 @@ export class SocketHandler {
   }
 
   private onlineStatusSocketConnect(): void {
-    this.onlineStatusSocket = io(`${config.ONLINE_STATUS_BASE_URL}`, {
-      transports: ['websocket', 'polling'],
-      secure: false
-    });
     this.onlineStatusSocket.on('connect', () => {
       log.info('Online status service socket connected');
     });
@@ -61,21 +61,21 @@ export class SocketHandler {
       }, 5000);
     });
     this.onlineStatusSocket.on('connect_error', (error: Error) => {
-      log.log('error', 'Online status service socket connection error:', error);
+      log.log('error', 'Online status service socket connection error:', error.message);
       setTimeout(() => {
         this.onlineStatusSocket.connect();
       }, 5000);
     });
 
     this.onlineStatusSocket.on(SocketEvents.LOGGED_IN_USERS, (data: string[]) => {
-      console.log('User has logged in: ', data);
+      log.info('User has logged in: ', data);
       this.io.emit('online', data);
     });
     this.onlineStatusSocket.on(SocketEvents.GET_LOGGED_IN_USERS, (data: string[]) => {
       this.io.emit('online', data);
     });
     this.onlineStatusSocket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, (data: string[]) => {
-      console.log('User has logged in: ', data);
+      log.info('User has logged in: ', data);
       this.io.emit('online', data);
     });
   }

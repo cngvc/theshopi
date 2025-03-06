@@ -15,7 +15,7 @@ export class SocketHandler {
     log.info(`🤜 ${SERVICE_NAME} inits socket`);
     this.io = new Server(httpServer, {
       cors: {
-        origin: `${config.CLIENT_URL}`,
+        origin: `${config.SOCKET_BASE_URL}`,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       }
     });
