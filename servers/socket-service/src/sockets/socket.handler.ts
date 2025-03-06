@@ -1,4 +1,5 @@
 import { SocketEvents } from '@cngvc/shopi-shared';
+import { IMessageDocument } from '@cngvc/shopi-shared-types';
 import { config } from '@socket/config';
 import { SERVICE_NAME } from '@socket/constants';
 import { log } from '@socket/utils/logger.util';
@@ -9,6 +10,7 @@ import { io, Socket as SocketClient } from 'socket.io-client';
 export class SocketHandler {
   io: Server;
   onlineStatusSocket!: SocketClient;
+  chatStatusSocket!: SocketClient;
 
   constructor(httpServer: http.Server) {
     log.info(`🤜 ${SERVICE_NAME} inits socket server`);
@@ -22,10 +24,15 @@ export class SocketHandler {
       transports: ['websocket'],
       secure: false
     });
+    this.chatStatusSocket = io(`${config.CHAT_BASE_URL}`, {
+      transports: ['websocket'],
+      secure: false
+    });
   }
 
   public listen() {
     this.onlineStatusSocketConnect();
+    this.chatSocketConnect();
     this.io.on('connection', async (socket: Socket) => {
       log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
@@ -68,15 +75,39 @@ export class SocketHandler {
     });
 
     this.onlineStatusSocket.on(SocketEvents.LOGGED_IN_USERS, (data: string[]) => {
-      log.info('User has logged in: ', data);
+      log.info('User has logged in: ' + data);
       this.io.emit('online', data);
     });
     this.onlineStatusSocket.on(SocketEvents.GET_LOGGED_IN_USERS, (data: string[]) => {
       this.io.emit('online', data);
     });
     this.onlineStatusSocket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, (data: string[]) => {
-      log.info('User has logged in: ', data);
+      log.info('User has logged in: ' + data);
       this.io.emit('online', data);
+    });
+  }
+
+  private chatSocketConnect(): void {
+    this.chatStatusSocket.on('connect', () => {
+      log.info('Chat service socket connected');
+    });
+
+    this.chatStatusSocket.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+      log.log('error', 'Chat service socket disconnect reason:', reason);
+      setTimeout(() => {
+        this.chatStatusSocket.connect();
+      }, 5000);
+    });
+    this.chatStatusSocket.on('connect_error', (error: Error) => {
+      log.log('error', 'Chat service socket connection error:', error.message);
+      setTimeout(() => {
+        this.chatStatusSocket.connect();
+      }, 5000);
+    });
+
+    this.chatStatusSocket.on(SocketEvents.MESSAGE_RECEIVED, (data: IMessageDocument) => {
+      log.info(`📥 New message from ${data.senderUsername} to ${data.receiverUsername}`);
+      this.io.emit(SocketEvents.MESSAGE_RECEIVED, data);
     });
   }
 }

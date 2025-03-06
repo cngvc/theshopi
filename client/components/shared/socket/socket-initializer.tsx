@@ -11,7 +11,7 @@ export default function SocketInitializer() {
   const emitUserOnline = useCallback(() => {
     const username = session.data?.user?.username;
     if (username) {
-      console.log('💌 User online: ', socketClient.socket.connected);
+      console.log('🟢 User online: ', socketClient.socket.connected);
       socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, username);
     }
   }, [session.data?.user]);
@@ -20,7 +20,7 @@ export default function SocketInitializer() {
     const username = session.data?.user?.username;
 
     if (username) {
-      console.log('💌 User offline: ', socketClient.socket.connected);
+      console.log('🔴 User offline: ', socketClient.socket.connected);
       socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
     }
   }, [session.data?.user]);

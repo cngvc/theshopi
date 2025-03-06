@@ -1,7 +1,7 @@
 'use client';
 
 import { socketClient } from '@/sockets/socket-client';
-import { SocketEvents } from '@cngvc/shopi-shared-types';
+import { IMessageDocument, SocketEvents } from '@cngvc/shopi-shared-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { getConversationMessages } from '../actions/chat.action';
@@ -16,8 +16,9 @@ export const useMessages = (id?: string | null) => {
   });
 
   useEffect(() => {
-    socketClient.socket.on(SocketEvents.MESSAGE_RECEIVED, (newMessage: any) => {
-      queryClient.setQueryData(['messages', id], (prevMessages: any[] | undefined) => {
+    socketClient.socket.on(SocketEvents.MESSAGE_RECEIVED, (newMessage: IMessageDocument) => {
+      console.log(`📥 Receiving new message from ${newMessage.senderUsername}`);
+      queryClient.setQueryData(['messages', id], (prevMessages: IMessageDocument[] | undefined) => {
         if (newMessage.conversationId === id) {
           return prevMessages ? [...prevMessages, newMessage] : [newMessage];
         }
