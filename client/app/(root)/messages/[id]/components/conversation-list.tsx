@@ -13,10 +13,9 @@ const ConversationList = async () => {
   const session = await auth();
   if (!session?.user?.username) throw new Error('User not found');
   const conversations = await getConversationList();
+
   const name = (conversation: IMessageDocument): string => {
-    return session?.user?.username === conversation.receiverUsername
-      ? `${conversation.senderUsername}`
-      : `${conversation.receiverUsername}`;
+    return session?.user?.username === conversation.senderUsername ? `${conversation.receiverUsername}` : `${conversation.senderUsername}`;
   };
 
   return (
