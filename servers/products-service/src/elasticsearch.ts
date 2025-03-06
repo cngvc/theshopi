@@ -1,4 +1,5 @@
-import { IProductDocument, NotFoundError } from '@cngvc/shopi-shared';
+import { NotFoundError } from '@cngvc/shopi-shared';
+import { IProductDocument } from '@cngvc/shopi-shared-types';
 import { Client } from '@elastic/elasticsearch';
 import { CountResponse, GetResponse, QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';

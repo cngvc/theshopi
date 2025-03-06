@@ -1,4 +1,4 @@
-import { IStoreDocument } from '@cngvc/shopi-shared';
+import { IStoreDocument } from '@cngvc/shopi-shared-types';
 import { Model, Schema, model } from 'mongoose';
 
 const storeSchema: Schema = new Schema(

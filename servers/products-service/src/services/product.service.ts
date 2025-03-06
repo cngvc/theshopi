@@ -1,4 +1,5 @@
-import { ExchangeNames, IProductDocument, IStoreDocument, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';

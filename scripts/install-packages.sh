@@ -8,9 +8,9 @@ SERVICES=(
   "users-service"
   "online-status-service"
   "products-service" 
-  # "orders-service"
-  # "reviews-service"
-  # "cart-service"
+  "orders-service"
+  "reviews-service"
+  "cart-service"
 )
 
 echo "🔄 Install packages in all services..."

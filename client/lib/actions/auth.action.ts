@@ -3,7 +3,7 @@
 import { signIn, signOut } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import { formatError } from '@/lib/utils';
-import { signinSchema, signupClientSchema } from '@cngvc/shopi-shared';
+import { signinSchema, signupClientSchema } from '@cngvc/shopi-shared-types';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
@@ -47,7 +47,6 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
     });
     return { success: true, message: 'User registered successfully' };
   } catch (error: any) {
-    console.log(1232);
     if (isRedirectError(error)) {
       throw error;
     }

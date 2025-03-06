@@ -1,4 +1,5 @@
-import { IBuyerDocument, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { OkRequestSuccess } from '@cngvc/shopi-shared';
+import { IBuyerDocument } from '@cngvc/shopi-shared-types';
 import { buyerService } from '@users/services/buyer.service';
 import { Request, Response } from 'express';
 

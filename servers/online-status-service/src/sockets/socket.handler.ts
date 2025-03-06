@@ -24,8 +24,15 @@ export class SocketHandler {
   async createSocket(): Promise<void> {
     const pub = createClient({ url: config.REDIS_HOST });
     const sub = pub.duplicate();
-    await Promise.all([pub.connect(), sub.connect()]);
-    this.io.adapter(createAdapter(pub, sub));
+    try {
+      await Promise.all([pub.connect(), sub.connect()]);
+      if (!pub.isOpen || !sub.isOpen) {
+        throw new Error(`${SERVICE_NAME} createSocket method`);
+      }
+      this.io.adapter(createAdapter(pub, sub));
+    } catch (error) {
+      log.log('error', `${SERVICE_NAME} createSocket method`);
+    }
   }
 
   public listen() {

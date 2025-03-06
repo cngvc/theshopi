@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getConversationList } from '@/lib/actions/chat.action';
 import pages from '@/lib/constants/pages';
 import { formatDate } from '@/lib/utils';
-import { IMessageDocument } from '@cngvc/shopi-shared';
+import { IMessageDocument } from '@cngvc/shopi-shared-types';
 import { ScrollArea } from '@radix-ui/react-scroll-area';
 import Link from 'next/link';
 

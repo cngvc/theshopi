@@ -1,4 +1,4 @@
-import { IMessageDocument } from '@cngvc/shopi-shared';
+import { IMessageDocument } from '@cngvc/shopi-shared-types';
 import { Model, Schema, model } from 'mongoose';
 
 const messageSchema: Schema = new Schema(

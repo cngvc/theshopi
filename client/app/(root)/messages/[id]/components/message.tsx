@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatDate } from '@/lib/utils';
-import { IMessageDocument } from '@cngvc/shopi-shared';
+import { IMessageDocument } from '@cngvc/shopi-shared-types';
 
 const Message = ({ message }: { message: IMessageDocument }) => {
   return (

@@ -1,4 +1,4 @@
-import { IMessageDocument } from '@cngvc/shopi-shared';
+import { IMessageDocument } from '@cngvc/shopi-shared-types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { sendMessage } from '../actions/chat.action';
 
@@ -10,8 +10,8 @@ export const useSendMessage = () => {
     onMutate: async (payload: IMessageDocument) => {
       await queryClient.cancelQueries({ queryKey: ['messages', payload.conversationId] });
       const previousMessages = queryClient.getQueryData<IMessageDocument[]>(['messages', payload.conversationId]);
-      queryClient.setQueryData(['messages', payload.conversationId], (old: IMessageDocument[] = []) => [
-        ...old,
+      queryClient.setQueryData(['messages', payload.conversationId], (prevData: IMessageDocument[] = []) => [
+        ...prevData,
         {
           _id: Date.now().toString(),
           body: payload.body,

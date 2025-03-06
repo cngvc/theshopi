@@ -1,4 +1,4 @@
-import { IRatingTypes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared';
+import { IRatingTypes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { StoreModel } from '@users/models/store.schema';
 import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';

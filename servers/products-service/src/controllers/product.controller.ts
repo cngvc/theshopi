@@ -1,11 +1,5 @@
-import {
-  BadRequestError,
-  CreatedRequestSuccess,
-  IProductDocument,
-  OkRequestSuccess,
-  productCreateSchema,
-  productUpdateSchema
-} from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { IProductDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-shared-types';
 import { productService } from '@products/services/product.service';
 import { Request, Response } from 'express';
 

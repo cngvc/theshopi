@@ -1,4 +1,4 @@
-import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared';
+import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { buyerService } from './buyer.service';
 import { storeService } from './store.service';
 

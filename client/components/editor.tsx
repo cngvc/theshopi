@@ -1,3 +1,5 @@
+'use client';
+
 import 'quill/dist/quill.snow.css';
 
 import { cn } from '@/lib/utils';

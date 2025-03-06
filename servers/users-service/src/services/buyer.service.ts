@@ -1,4 +1,4 @@
-import { IBuyerDocument } from '@cngvc/shopi-shared';
+import { IBuyerDocument } from '@cngvc/shopi-shared-types';
 import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {

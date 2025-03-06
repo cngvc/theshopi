@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { IConversationDocument, IMessageDocument, sendMessageSchema } from '@cngvc/shopi-shared';
+import { IConversationDocument, IMessageDocument, sendMessageSchema } from '@cngvc/shopi-shared-types';
 import { notFound } from 'next/navigation';
 import axiosInstance from '../axios';
 

@@ -2,7 +2,8 @@ import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { socketServer } from '@chat/server';
 import { log } from '@chat/utils/logger.util';
-import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument, SocketEvents } from '@cngvc/shopi-shared';
+import { SocketEvents } from '@cngvc/shopi-shared';
+import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 
 class ChatService {

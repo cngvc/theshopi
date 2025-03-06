@@ -1,4 +1,4 @@
-import { IBuyerDocument } from '@cngvc/shopi-shared';
+import { IBuyerDocument } from '@cngvc/shopi-shared-types';
 import mongoose, { model } from 'mongoose';
 
 const buyerSchema: mongoose.Schema = new mongoose.Schema(

@@ -3,16 +3,8 @@ import { SALT_ROUND } from '@auth/constants/hashing';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
-import {
-  BadRequestError,
-  changePasswordSchema,
-  emailSchema,
-  ExchangeNames,
-  IEmailMessageDetails,
-  OkRequestSuccess,
-  passwordSchema,
-  RoutingKeys
-} from '@cngvc/shopi-shared';
+import { BadRequestError, ExchangeNames, IEmailMessageDetails, OkRequestSuccess, RoutingKeys } from '@cngvc/shopi-shared';
+import { changePasswordSchema, emailSchema, passwordSchema } from '@cngvc/shopi-shared-types';
 import { hash } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';

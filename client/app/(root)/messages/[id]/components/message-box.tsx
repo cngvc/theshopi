@@ -1,6 +1,5 @@
 'use client';
 
-import Editor from '@/components/editor';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -9,10 +8,13 @@ import { useParamId } from '@/lib/hooks/use-id.hook';
 import { useMessages } from '@/lib/hooks/use-messages.hook';
 import { useSendMessage } from '@/lib/hooks/use-send-message.hook';
 import { useSession } from 'next-auth/react';
+import dynamic from 'next/dynamic';
 import Quill from 'quill';
 import { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
 import Message from './message';
+
+const Editor = dynamic(() => import('@/components/editor'), { ssr: false });
 
 const MessageBox = () => {
   const editorRef = useRef<Quill | null>(null);

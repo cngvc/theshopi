@@ -1,4 +1,5 @@
-import { ExchangeNames, IBuyerDocument, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { IBuyerDocument } from '@cngvc/shopi-shared-types';
 import { queueConnection } from '@users/queues/connection';
 import { usersProducer } from '@users/queues/users.producer';
 import { buyerService } from '@users/services/buyer.service';
