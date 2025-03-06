@@ -10,11 +10,11 @@ import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from
 import { Button } from './ui/button';
 
 type EditorValue = {
-  body: string;
+  content: string;
 };
 
 interface EditorProps {
-  onSubmit: ({ body }: EditorValue) => void;
+  onSubmit: (body: EditorValue) => void;
   placeholder?: string;
   defaultValue?: Delta | Op[];
   disabled?: boolean;
@@ -30,7 +30,7 @@ const Editor = ({
   innerRef,
   variant = 'create'
 }: EditorProps) => {
-  const [text, setText] = useState('');
+  const [text, $text] = useState('');
   const submitRef = useRef(onSubmit);
   const placeholderRef = useRef(placeholder);
   const quillRef = useRef<Quill | null>(null);
@@ -54,16 +54,18 @@ const Editor = ({
       theme: 'snow',
       placeholder: placeholderRef.current,
       modules: {
+        toolbar: false,
         keyboard: {
           bindings: {
             enter: {
               key: 'Enter',
               handler: () => {
-                const text = quill.getText();
-                const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
-                if (isEmpty) return;
-                const body = JSON.stringify(quill.getText());
-                submitRef.current?.({ body });
+                const text = quill
+                  .getText()
+                  .replace(/<(.|\n)*?>/g, '')
+                  .trim();
+                if (!text.length) return;
+                submitRef.current?.({ content: text });
               }
             },
             shift_enter: {
@@ -87,10 +89,10 @@ const Editor = ({
     }
 
     quill.setContents(defaultValueRef.current);
-    setText(quill.getText());
+    $text(quill.getText());
 
     quill.on(Quill.events.TEXT_CHANGE, () => {
-      setText(quill.getText());
+      $text(quill.getText());
     });
 
     return () => {
@@ -126,7 +128,7 @@ const Editor = ({
               disabled={disabled || isEmpty}
               onClick={() => {
                 onSubmit({
-                  body: quillRef.current?.getText() || ''
+                  content: text
                 });
               }}
               size="icon"

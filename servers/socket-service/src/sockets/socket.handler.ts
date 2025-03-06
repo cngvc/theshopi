@@ -76,14 +76,14 @@ export class SocketHandler {
 
     this.onlineStatusSocket.on(SocketEvents.LOGGED_IN_USERS, (data: string[]) => {
       log.info('User has logged in: ' + data);
-      this.io.emit('online', data);
+      this.io.emit(SocketEvents.USER_ONLINE, data);
     });
     this.onlineStatusSocket.on(SocketEvents.GET_LOGGED_IN_USERS, (data: string[]) => {
-      this.io.emit('online', data);
+      this.io.emit(SocketEvents.USER_ONLINE, data);
     });
     this.onlineStatusSocket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, (data: string[]) => {
       log.info('User has logged in: ' + data);
-      this.io.emit('online', data);
+      this.io.emit(SocketEvents.USER_ONLINE, data);
     });
   }
 

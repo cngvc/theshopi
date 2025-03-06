@@ -40,21 +40,21 @@ const MessageBox = () => {
     }
   }, [messages]);
 
-  const handleSubmit = async ({ body }: { body: string }) => {
+  const handleSubmit = async ({ content }: { content: string }) => {
     try {
       editorRef?.current?.enable(false);
       editorRef?.current?.setText('');
       if (!conversation) {
         throw new Error();
       }
-      if (!body?.length) {
+      if (!content?.length) {
         return null;
       }
       sendMessageMutation.mutate({
         conversationId: conversation.conversationId,
         senderUsername: name.sender!,
         receiverUsername: name.receiver!,
-        body: body
+        body: content
       });
     } catch (error) {
       toast.error('Failed to send message');
