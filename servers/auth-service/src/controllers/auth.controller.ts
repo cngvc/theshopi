@@ -1,7 +1,5 @@
 import { config } from '@auth/config';
 import { authProducer } from '@auth/queues/auth.producer';
-import { signinSchema } from '@auth/schemes/signin.scheme';
-import { signupSchema } from '@auth/schemes/signup.scheme';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
 import {
@@ -13,7 +11,9 @@ import {
   isEmail,
   lowerCase,
   OkRequestSuccess,
-  RoutingKeys
+  RoutingKeys,
+  signinSchema,
+  signupSchema
 } from '@cngvc/shopi-shared';
 import { compare } from 'bcryptjs';
 import crypto from 'crypto';

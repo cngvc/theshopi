@@ -1,5 +1,4 @@
-import { BadRequestError, CreatedRequestSuccess, IStoreDocument, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { storeSchema } from '@users/schemes/store';
+import { BadRequestError, CreatedRequestSuccess, IStoreDocument, OkRequestSuccess, storeSchema } from '@cngvc/shopi-shared';
 import { storeService } from '@users/services/store.service';
 import { Request, Response } from 'express';
 

@@ -3,15 +3,18 @@
 import { signIn, signOut } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import { formatError } from '@/lib/utils';
-import { signinFormSchema, signupFormSchema } from '@/lib/validators/auth-validator';
+import { signinSchema, signupClientSchema } from '@cngvc/shopi-shared';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
   try {
-    const user = signinFormSchema.parse({
+    const { error, value: user } = signinSchema.validate({
       username: formData.get('username'),
       password: formData.get('password')
     });
+    if (error) {
+      return { success: false, message: error.details[0].message };
+    }
     await signIn('credentials', user);
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
@@ -24,12 +27,15 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
 
 export async function signupWithCredentials(_prevState: unknown, formData: FormData) {
   try {
-    const user = signupFormSchema.parse({
+    const { error, value: user } = signupClientSchema.validate({
       username: formData.get('username'),
       password: formData.get('password'),
       confirmPassword: formData.get('confirmPassword'),
       email: formData.get('email')
     });
+    if (error) {
+      return { success: false, message: error.details[0].message };
+    }
     await axiosInstance.post(`/auth/signup`, {
       username: user.username,
       password: user.password,
@@ -41,6 +47,7 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
     });
     return { success: true, message: 'User registered successfully' };
   } catch (error: any) {
+    console.log(1232);
     if (isRedirectError(error)) {
       throw error;
     }

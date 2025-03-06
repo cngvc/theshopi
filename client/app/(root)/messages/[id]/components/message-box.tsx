@@ -1,27 +1,65 @@
 'use client';
 
 import Editor from '@/components/editor';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useConversation } from '@/lib/hooks/use-conversation.hook';
 import { useParamId } from '@/lib/hooks/use-id.hook';
 import { useMessages } from '@/lib/hooks/use-messages.hook';
+import { useSendMessage } from '@/lib/hooks/use-send-message.hook';
+import { useSession } from 'next-auth/react';
 import Quill from 'quill';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
+import { toast } from 'sonner';
 import Message from './message';
-import MessageBoxHeader from './message-box-header';
 
 const MessageBox = () => {
   const editorRef = useRef<Quill | null>(null);
   const id = useParamId();
-  const { data, isLoading } = useMessages(id);
+  const session = useSession();
+  const { data, isLoading: fetchMessageLoading } = useMessages(id);
+  const sendMessageMutation = useSendMessage();
+  const { data: conversation, isLoading: fetchConversationLoading } = useConversation(id);
+
+  const name = useMemo(() => {
+    if (!conversation) return { sender: 'Username', receiver: null };
+    return session?.data?.user?.username === conversation?.receiverUsername
+      ? { sender: `${conversation.senderUsername}`, receiver: `${conversation.senderUsername}` }
+      : { receiver: `${conversation.senderUsername}`, sender: `${conversation.senderUsername}` };
+  }, [conversation, session]);
+
+  const handleSubmit = async () => {
+    try {
+      editorRef?.current?.enable(false);
+      const content = editorRef.current?.getText();
+      if (!conversation) {
+        throw new Error();
+      }
+      if (!content?.length) {
+        return null;
+      }
+      sendMessageMutation.mutate({
+        conversationId: conversation.conversationId,
+        senderUsername: name.sender!,
+        receiverUsername: name.receiver!,
+        body: content
+      });
+    } catch (error) {
+      toast.error('Failed to send message');
+    } finally {
+      editorRef?.current?.enable(true);
+    }
+  };
 
   return (
     <Card className="flex-1 md:col-span-4 max-md:hidden pb-0">
-      <MessageBoxHeader />
+      <CardHeader>
+        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-4 w-2/5" /> : name.sender}</CardTitle>
+      </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">
-          {isLoading && (
+          {fetchMessageLoading && (
             <div className="space-y-2">
               <Skeleton className="h-4 w-2/3" />
               <Skeleton className="h-4 w-1/4" />
@@ -34,7 +72,7 @@ const MessageBox = () => {
         </ScrollArea>
       </CardContent>
       <CardFooter className="flex flex-col w-full">
-        <Editor innerRef={editorRef} placeholder={'Type your message ...'} onSubmit={() => {}} disabled={false} />
+        <Editor innerRef={editorRef} placeholder={'Type your message ...'} onSubmit={handleSubmit} />
       </CardFooter>
     </Card>
   );

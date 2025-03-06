@@ -16,7 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.30",
+    "@cngvc/shopi-shared": "^0.0.32",
     "@elastic/elasticsearch": "^8.17.1",
     "@faker-js/faker": "^9.5.1",
     "amqplib": "^0.10.5",
@@ -29,7 +29,6 @@
     "helmet": "^8.0.0",
     "hpp": "^0.2.3",
     "http-status-codes": "^2.3.0",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "mysql2": "^3.12.0",

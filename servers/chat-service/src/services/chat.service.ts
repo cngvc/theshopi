@@ -54,7 +54,7 @@ class ChatService {
       { $sort: { createdAt: -1 } },
       { $limit: 20 }
     ]);
-    return messages;
+    return messages.reverse();
   };
 
   marksMessagesAsRead = async (receiver: string, sender: string, messageId: string): Promise<IMessageDocument> => {

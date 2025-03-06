@@ -18,7 +18,7 @@ class ChatRoutes {
     this.router.get('/chat/conversations/:conversationId', chatController.getConversationByConversationId);
     this.router.get('/chat/conversations/:conversationId/messages', chatController.getConversationMessages);
     this.router.post('/conversations', chatController.createConversation);
-    this.router.post('/conversations/messages', chatController.sendMessage);
+    this.router.post('/chat/conversations/messages', chatController.sendMessage);
 
     this.router.put('/seed/:count', chatSeedController.createSeeds);
     return this.router;

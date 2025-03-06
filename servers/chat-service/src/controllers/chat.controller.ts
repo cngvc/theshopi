@@ -1,7 +1,14 @@
 import { ConversationModel } from '@chat/models/conversation.schema';
-import { createConversionSchema, sendMessageSchema } from '@chat/schemes/chat.scheme';
 import { chatService } from '@chat/services/chat.service';
-import { BadRequestError, CreatedRequestSuccess, IConversationDocument, IMessageDocument, OkRequestSuccess } from '@cngvc/shopi-shared';
+import {
+  BadRequestError,
+  createConversionSchema,
+  CreatedRequestSuccess,
+  IConversationDocument,
+  IMessageDocument,
+  OkRequestSuccess,
+  sendMessageSchema
+} from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
 
 class ChatController {
@@ -51,6 +58,7 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'sendMessage method error');
     }
+    console.log(req.body);
     const { conversationId, senderUsername, receiverUsername, body } = req.body;
     let conversation: IConversationDocument | null = null;
     if (conversationId) {

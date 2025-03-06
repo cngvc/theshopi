@@ -1,18 +1,36 @@
-import { z } from 'zod';
+import Joi from 'joi';
 
-export const signinFormSchema = z.object({
-  username: z.string().min(0, 'Username is required'),
-  password: z.string().min(8, 'Password must be at least 6 characters')
+export const signinFormSchema = Joi.object({
+  username: Joi.string().required().messages({
+    'any.required': 'Username is required',
+    'string.empty': 'Username is required'
+  }),
+  password: Joi.string().min(8).required().messages({
+    'string.min': 'Password must be at least 8 characters',
+    'any.required': 'Password is required'
+  })
 });
 
-export const signupFormSchema = z
-  .object({
-    username: z.string().min(0, 'Username is required'),
-    password: z.string().min(8, 'Password must be at least 6 characters'),
-    confirmPassword: z.string().min(8, 'Confirm password must be at least 6 characters'),
-    email: z.string().email('Invalid email address')
+export const signupFormSchema = Joi.object({
+  username: Joi.string().required().messages({
+    'any.required': 'Username is required',
+    'string.empty': 'Username is required'
+  }),
+  password: Joi.string().min(8).required().messages({
+    'string.min': 'Password must be at least 8 characters',
+    'any.required': 'Password is required'
+  }),
+  confirmPassword: Joi.string().min(8).required().messages({
+    'string.min': 'Confirm password must be at least 8 characters',
+    'any.required': 'Confirm password is required'
+  }),
+  email: Joi.string().email().required().messages({
+    'string.email': 'Invalid email address',
+    'any.required': 'Email is required'
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password don't match",
-    path: ['confirmPassword']
-  });
+}).custom((data, helpers) => {
+  if (data.password !== data.confirmPassword) {
+    return helpers.error('any.invalid', { message: "Password don't match" });
+  }
+  return data;
+});
