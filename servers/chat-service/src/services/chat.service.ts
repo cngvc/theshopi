@@ -39,7 +39,7 @@ class ChatService {
     return conversations[0];
   };
 
-  getConversationByConversationPublicId = async (conversationPublicId: string) => {
+  getConversationByConversationId = async (conversationPublicId: string) => {
     const conversations = await ConversationModel.findOne({ conversationId: conversationPublicId });
     return conversations;
   };
@@ -51,7 +51,8 @@ class ChatService {
           conversationId: conversationPublicId
         }
       },
-      { $sort: { createdAt: 1 } }
+      { $sort: { createdAt: -1 } },
+      { $limit: 20 }
     ]);
     return messages;
   };
@@ -93,9 +94,48 @@ class ChatService {
           isRead: '$result.isRead',
           createdAt: '$result.createdAt'
         }
+      },
+      {
+        $sort: {
+          createdAt: -1
+        }
       }
     ]);
     return conversationLastMessages;
+  };
+
+  getCurrentUserLastConversation = async (username: string): Promise<IMessageDocument> => {
+    const conversationLastMessage: IMessageDocument[] = await MessageModel.aggregate([
+      {
+        $match: {
+          $or: [{ senderUsername: username }, { receiverUsername: username }]
+        }
+      },
+      {
+        $group: {
+          _id: '$conversationId',
+          result: { $top: { output: '$$ROOT', sortBy: { createdAt: -1 } } }
+        }
+      },
+      {
+        $project: {
+          _id: '$result._id',
+          conversationId: '$result.conversationId',
+          receiverUsername: '$result.receiverUsername',
+          senderUsername: '$result.senderUsername',
+          body: '$result.body',
+          isRead: '$result.isRead',
+          createdAt: '$result.createdAt'
+        }
+      },
+      {
+        $limit: 1
+      }
+    ]).exec();
+    if (conversationLastMessage.length) {
+      return conversationLastMessage[0];
+    }
+    return {};
   };
 
   createSeeds = async (stores: IStoreDocument[], buyers: IBuyerDocument[]): Promise<void> => {

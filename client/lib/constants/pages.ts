@@ -1,5 +1,7 @@
 export default {
   signin: '/signin',
   signup: '/signup',
-  home: '/'
+  home: '/',
+  cart: '/cart',
+  messages: '/messages'
 };

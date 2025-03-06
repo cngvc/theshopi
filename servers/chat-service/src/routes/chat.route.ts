@@ -12,7 +12,8 @@ class ChatRoutes {
   public routes(): Router {
     this.router.use(AuthMiddleware.checkAuthentication);
     this.router.get('/conversations', chatController.getCurrentUserConversations);
-    this.router.get('/conversations/:conversationId', chatController.getConversationByConversationPublicId);
+    this.router.get('/conversations/latest', chatController.getCurrentUserLastConversation);
+    this.router.get('/conversations/:conversationId', chatController.getConversationByConversationId);
     this.router.get('/conversations/:conversationId/messages', chatController.getConversationMessages);
     this.router.post('/conversations', chatController.createConversation);
     this.router.post('/conversations/messages', chatController.sendMessage);

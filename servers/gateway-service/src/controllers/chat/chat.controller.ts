@@ -7,8 +7,12 @@ class ChatController {
     const response = await chatService.getCurrentUserConversations();
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
-  getConversationByConversationPublicId = async (req: Request, res: Response) => {
-    const response = await chatService.getConversationByConversationPublicId(req.params.conversationId);
+  getCurrentUserLastConversation = async (req: Request, res: Response) => {
+    const response = await chatService.getCurrentUserLastConversation();
+    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+  };
+  getConversationByConversationId = async (req: Request, res: Response) => {
+    const response = await chatService.getConversationByConversationId(req.params.conversationId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
   getConversationMessages = async (req: Request, res: Response) => {

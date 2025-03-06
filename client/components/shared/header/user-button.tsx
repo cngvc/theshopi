@@ -1,4 +1,5 @@
 import { auth } from '@/auth';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -31,12 +32,10 @@ const UserButton = async () => {
     <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant={'ghost'}
-            className="focus-visible:ring-0 focus-visible:ring-offset-0 relative w-8 h-8 rounded-full flex items-center justify-center bg-gray-200"
-          >
-            {firstCharacter}
-          </Button>
+          <Avatar className="cursor-pointer">
+            <AvatarImage src="" alt="User avatar" />
+            <AvatarFallback>{firstCharacter}</AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <div className="py-1 space-y-1">

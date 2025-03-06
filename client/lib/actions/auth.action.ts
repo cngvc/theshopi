@@ -1,10 +1,10 @@
 'use server';
 
 import { signIn, signOut } from '@/auth';
+import axiosInstance from '@/lib/axios';
+import { formatError } from '@/lib/utils';
+import { signinFormSchema, signupFormSchema } from '@/lib/validators/auth-validator';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
-import axiosInstance from '../axios';
-import { formatError } from '../utils';
-import { signinFormSchema, signupFormSchema } from '../validators/auth-validator';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
   try {

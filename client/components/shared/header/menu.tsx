@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { EllipsisVerticalIcon, ShoppingCartIcon } from 'lucide-react';
+import pages from '@/lib/constants/pages';
+import { EllipsisVerticalIcon, MessageCircle, ShoppingCartIcon } from 'lucide-react';
 import Link from 'next/link';
 import ModeToggle from './mode-toggle';
 import UserButton from './user-button';
@@ -11,12 +12,18 @@ const Menu = () => {
       <nav className="hidden md:flex w-full max-w-xs gap-2 items-center">
         <ModeToggle />
         <Button asChild variant={'ghost'}>
-          <Link href={'/cart'}>
-            <ShoppingCartIcon /> Cart
+          <Link href={pages.cart}>
+            <ShoppingCartIcon />
+          </Link>
+        </Button>
+        <Button asChild variant={'ghost'}>
+          <Link href={pages.messages}>
+            <MessageCircle />
           </Link>
         </Button>
         <UserButton />
       </nav>
+
       <nav className="md:hidden">
         <Sheet>
           <SheetTrigger className="align-middle">
@@ -28,7 +35,7 @@ const Menu = () => {
             </SheetHeader>
             <ModeToggle />
             <Button asChild variant={'ghost'}>
-              <Link href={'/cart'}>
+              <Link href={pages.cart}>
                 <ShoppingCartIcon /> Cart
               </Link>
             </Button>

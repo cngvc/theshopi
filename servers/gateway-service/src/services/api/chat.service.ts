@@ -11,7 +11,11 @@ class ChatService extends AxiosService {
     const response: AxiosResponse = await this.get('/conversations/');
     return response;
   };
-  getConversationByConversationPublicId = async (conversationId: string) => {
+  getCurrentUserLastConversation = async () => {
+    const response: AxiosResponse = await this.get('/conversations/latest');
+    return response;
+  };
+  getConversationByConversationId = async (conversationId: string) => {
     const response: AxiosResponse = await this.get(`/conversations/${conversationId}`);
     return response;
   };
