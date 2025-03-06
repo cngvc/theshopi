@@ -1,15 +1,16 @@
 {
-  "name": "gateway-service",
+  "name": "socket-service",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "pm2 start ./build/src/app.js -i 5 --attach --watch | pino-pretty -c",
+    "start": "pm2 start ./build/src/app.js -i 2 --attach --watch | pino-pretty -c",
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
     "dev": "nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c",
-    "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
-    "prettier:fix": "prettier --write 'src/**/*.{ts,json}'"
+    "prettier:fix": "prettier --write 'src/**/*.{ts,json}'",
+    "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false"
   },
   "keywords": [],
   "author": "",
@@ -18,38 +19,27 @@
   "dependencies": {
     "@cngvc/shopi-shared": "^0.0.36",
     "@cngvc/shopi-shared-types": "^0.0.2",
-    "@elastic/elasticsearch": "^8.17.1",
-    "axios": "^1.8.1",
-    "bcrypt": "^5.1.1",
-    "compression": "^1.8.0",
-    "cors": "^2.8.5",
+    "@socket.io/redis-adapter": "^8.3.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "express-async-errors": "^3.1.1",
-    "helmet": "^8.0.0",
-    "hpp": "^0.2.3",
-    "http-proxy-middleware": "^3.0.3",
-    "http-status-codes": "^2.3.0",
-    "jsonwebtoken": "^9.0.2",
     "pino-pretty": "^13.0.0",
-    "typescript": "^5.7.3",
-    "typescript-transform-paths": "^3.5.3"
+    "redis": "^4.7.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
-    "@types/compression": "^1.7.5",
-    "@types/cors": "^2.8.17",
+    "@jest/types": "^29.6.3",
     "@types/express": "^5.0.0",
-    "@types/hpp": "^0.2.6",
-    "@types/jsonwebtoken": "^9.0.9",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
-    "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",
     "eslint-plugin-import": "^2.31.0",
     "prettier": "^3.5.2",
     "prettier-plugin-organize-imports": "^4.1.0",
+    "ts-alias": "^0.0.7",
     "ts-node": "^10.9.2",
     "tsc-alias": "^1.8.11",
-    "tsconfig-paths": "^4.2.0"
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3"
   }
 }

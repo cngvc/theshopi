@@ -7,7 +7,7 @@ class BaseSocketClient {
   socket: Socket;
   constructor() {
     this.socket = io(SERVER_URL, {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       secure: false
     });
     this.listen();
@@ -19,12 +19,12 @@ class BaseSocketClient {
     });
 
     this.socket.on('disconnect', (reason: Socket.DisconnectReason) => {
-      console.log(`😞 Disconnect, reason: ${reason}`);
+      console.log(`😞 Gateway socket disconnect, reason: ${reason}`);
       this.socket.connect();
     });
 
     this.socket.on('connect_error', (error: Error) => {
-      console.log(`👇 Connect error: ${error.message}`);
+      console.log(`👇 Gateway socket connect error: ${error.message}`);
       this.socket.connect();
     });
   }

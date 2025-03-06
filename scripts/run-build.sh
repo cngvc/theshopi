@@ -9,6 +9,7 @@ SERVICES=(
   "notification-service" 
   "users-service"
   "online-status-service"
+  "socket-service"
   "products-service" 
   # "orders-service"
   # "reviews-service"

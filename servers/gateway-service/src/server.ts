@@ -79,7 +79,7 @@ export class GatewayServer {
   }
 
   private forwardSocket(): void {
-    this.app.use('/socket.io', createProxyMiddleware({ target: config.ONLINE_STATUS_BASE_URL, ws: true }));
+    this.app.use('/socket.io', createProxyMiddleware({ target: config.SOCKET_BASE_URL, ws: true }));
   }
 
   private errorHandler(): void {
