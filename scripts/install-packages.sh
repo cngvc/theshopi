@@ -5,11 +5,12 @@ SERVICES=(
   "chat-service" 
   "gateway-service" 
   "notification-service" 
-  "orders-service" 
-  "products-service" 
-  "reviews-service" 
   "users-service"
   "online-status-service"
+  "products-service" 
+  # "orders-service"
+  # "reviews-service"
+  # "cart-service"
 )
 
 echo "🔄 Install packages in all services..."

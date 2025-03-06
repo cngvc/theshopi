@@ -10,4 +10,8 @@ npx concurrently --names "G,A,U,P,O,C" --prefix-colors "blue,green,magenta,yello
   "cd ../servers/users-service && npm run dev" \
   "cd ../servers/products-service && npm run dev" \
   "cd ../servers/online-status-service && npm run dev" \
-  "cd ../servers/chat-service && npm run dev" 
+  "cd ../servers/chat-service && npm run dev" \
+  # "cd ../servers/review-service && npm run dev" \
+  # "cd ../servers/cart-service && npm run dev" \
+  # "cd ../servers/order-service && npm run dev" \
+

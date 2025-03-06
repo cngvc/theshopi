@@ -1,4 +1,6 @@
 docker-volumes
 node_modules
-secrets.md
 .npmrc
+
+todos.md
+secrets.md
