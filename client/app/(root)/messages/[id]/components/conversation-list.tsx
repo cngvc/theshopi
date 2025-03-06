@@ -1,21 +1,15 @@
-'use server';
+'use client';
 
-import { auth } from '@/auth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getConversationList } from '@/lib/actions/chat.action';
-import { IMessageDocument } from '@cngvc/shopi-shared-types';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useConversations } from '@/lib/hooks/use-conversations.hook';
+import { useSession } from 'next-auth/react';
 import ConversationItem from './conversation-item';
+import MessageSkeleton from './message-skeleton';
 
-const ConversationList = async () => {
-  const session = await auth();
-  if (!session?.user?.username) throw new Error('User not found');
-  const conversations = await getConversationList();
-
-  const name = (conversation: IMessageDocument): string => {
-    return session?.user?.username === conversation.senderUsername ? `${conversation.receiverUsername}` : `${conversation.senderUsername}`;
-  };
-
+const ConversationList = () => {
+  const session = useSession();
+  const { data, isLoading } = useConversations();
   return (
     <Card className="flex-1 col-span-2">
       <CardHeader>
@@ -23,8 +17,9 @@ const ConversationList = async () => {
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex flex-col flex-1 space-x-1 max-h-[calc(100vh-268px)]">
-          {conversations.map((conversation) => (
-            <ConversationItem conversation={conversation} user={name(conversation)} key={conversation.conversationId} />
+          {isLoading && <MessageSkeleton />}
+          {data?.map((conversation) => (
+            <ConversationItem conversation={conversation} currentUser={session?.data?.user?.username} key={conversation.conversationId} />
           ))}
         </ScrollArea>
       </CardContent>

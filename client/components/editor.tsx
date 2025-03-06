@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { Send } from 'lucide-react';
 import Quill, { type QuillOptions } from 'quill';
 import { Delta, Op } from 'quill/core';
-import { RefObject, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { RefObject, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Button } from './ui/button';
 
 type EditorValue = {
@@ -15,7 +15,6 @@ type EditorValue = {
 
 interface EditorProps {
   onSubmit: ({ body }: EditorValue) => void;
-  onCancel?: () => void;
   placeholder?: string;
   defaultValue?: Delta | Op[];
   disabled?: boolean;
@@ -24,7 +23,6 @@ interface EditorProps {
 }
 
 const Editor = ({
-  onCancel,
   onSubmit,
   placeholder = 'Write something...',
   defaultValue = [],
@@ -49,7 +47,6 @@ const Editor = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
-
     const container = containerRef.current;
     const editorContainer = container.appendChild(container.ownerDocument.createElement('div'));
 
@@ -64,10 +61,8 @@ const Editor = ({
               handler: () => {
                 const text = quill.getText();
                 const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
-
                 if (isEmpty) return;
-
-                const body = JSON.stringify(quill.getContents());
+                const body = JSON.stringify(quill.getText());
                 submitRef.current?.({ body });
               }
             },
@@ -112,7 +107,9 @@ const Editor = ({
     };
   }, [innerRef]);
 
-  const isEmpty = text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+  const isEmpty = useMemo(() => {
+    return text.replace(/<(.|\n)*?>/g, '').trim().length === 0;
+  }, [text]);
 
   return (
     <div className="flex flex-col w-full">
@@ -123,33 +120,13 @@ const Editor = ({
         )}
       >
         <div ref={containerRef} className="h-full ql-custom" />
-
-        <div className="flex px-2 pb-2 z-[5]">
-          {variant === 'update' && (
-            <div className="ml-auto flex items-center gap-x-2">
-              <Button variant="outline" size="sm" onClick={onCancel} disabled={disabled}>
-                Cancel
-              </Button>
-              <Button
-                disabled={disabled || isEmpty}
-                onClick={() => {
-                  onSubmit({
-                    body: JSON.stringify(quillRef.current?.getContents())
-                  });
-                }}
-                size="sm"
-                className="bg-blue-500 hover:bg-blue-500/80 text-white"
-              >
-                Save
-              </Button>
-            </div>
-          )}
+        <div className="flex px-2 pb-2 z-10">
           {variant === 'create' && (
             <Button
               disabled={disabled || isEmpty}
               onClick={() => {
                 onSubmit({
-                  body: JSON.stringify(quillRef.current?.getContents())
+                  body: quillRef.current?.getText() || ''
                 });
               }}
               size="icon"

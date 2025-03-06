@@ -12,7 +12,8 @@ import dynamic from 'next/dynamic';
 import Quill from 'quill';
 import { useEffect, useMemo, useRef } from 'react';
 import { toast } from 'sonner';
-import Message from './message';
+import MessageItem from './message-item';
+import MessageSkeleton from './message-skeleton';
 
 const Editor = dynamic(() => import('@/components/editor'), { ssr: false });
 
@@ -22,6 +23,7 @@ const MessageBox = () => {
   const id = useParamId();
   const session = useSession();
   const { data: messages, isLoading: fetchMessageLoading } = useMessages(id);
+
   const sendMessageMutation = useSendMessage();
   const { data: conversation, isLoading: fetchConversationLoading } = useConversation(id);
 
@@ -38,22 +40,21 @@ const MessageBox = () => {
     }
   }, [messages]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async ({ body }: { body: string }) => {
     try {
       editorRef?.current?.enable(false);
-      const content = editorRef.current?.getText();
       editorRef?.current?.setText('');
       if (!conversation) {
         throw new Error();
       }
-      if (!content?.length) {
+      if (!body?.length) {
         return null;
       }
       sendMessageMutation.mutate({
         conversationId: conversation.conversationId,
         senderUsername: name.sender!,
         receiverUsername: name.receiver!,
-        body: content
+        body: body
       });
     } catch (error) {
       toast.error('Failed to send message');
@@ -69,21 +70,13 @@ const MessageBox = () => {
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">
-          {fetchMessageLoading && (
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-4 w-1/4" />
-              <Skeleton className="h-4 w-1/3" />
-              <Skeleton className="h-4 w-1/2" />
-              <Skeleton className="h-4 w-3/4" />
-            </div>
-          )}
-          {messages?.map((message) => <Message key={`${message._id}`} message={message} />)}
+          {fetchMessageLoading && <MessageSkeleton />}
+          {messages?.map((message) => <MessageItem key={`${message._id}`} message={message} />)}
           <div ref={lastMessageRef} />
         </ScrollArea>
       </CardContent>
       <CardFooter className="flex flex-col w-full">
-        <Editor innerRef={editorRef} placeholder={'Type your message ...'} onSubmit={handleSubmit} />
+        <Editor innerRef={editorRef} onSubmit={handleSubmit} />
       </CardFooter>
     </Card>
   );
