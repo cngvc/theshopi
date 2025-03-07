@@ -4,21 +4,21 @@ import { SocketEvents } from '@/lib/constants/socket-events';
 import { socketClient } from '@/sockets/socket-client';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';
+import { useThrottle } from 'react-use';
 
 export default function SocketInitializer() {
   const session = useSession();
+  const throttledUsername = useThrottle(session.data?.user?.username, 5000);
 
-  const emitUserOnline = useCallback(() => {
-    const username = session.data?.user?.username;
-    if (username) {
+  useEffect(() => {
+    if (throttledUsername) {
       console.log('🟢 User online: ', socketClient.socket.connected);
-      socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, username);
+      socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, throttledUsername);
     }
-  }, [session.data?.user]);
+  }, [throttledUsername]);
 
   const emitUserOffline = useCallback(() => {
     const username = session.data?.user?.username;
-
     if (username) {
       console.log('🔴 User offline: ', socketClient.socket.connected);
       socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
@@ -35,9 +35,5 @@ export default function SocketInitializer() {
     };
   }, [emitUserOffline]);
 
-  useEffect(() => {
-    emitUserOnline();
-  }, [emitUserOnline]);
-
-  return null;
+  return <div className="check-online hidden" />;
 }

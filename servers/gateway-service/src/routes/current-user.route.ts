@@ -10,9 +10,10 @@ class CurrentUserRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/auth/me', AuthMiddleware.checkAuthentication, currentUserController.getCurrentUser);
-    this.router.post('/auth/resend-email', AuthMiddleware.checkAuthentication, currentUserController.resendEmail);
-    this.router.put('/auth/change-password', AuthMiddleware.checkAuthentication, passwordController.changePassword);
+    this.router.use(AuthMiddleware.checkAuthentication);
+    this.router.get('/auth/me', currentUserController.getCurrentUser);
+    this.router.post('/auth/resend-email', currentUserController.resendEmail);
+    this.router.put('/auth/change-password', passwordController.changePassword);
 
     return this.router;
   }

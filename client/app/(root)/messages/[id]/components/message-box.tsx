@@ -4,7 +4,6 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useConversation } from '@/lib/hooks/use-conversation.hook';
-import { useParamId } from '@/lib/hooks/use-id.hook';
 import { useMessages } from '@/lib/hooks/use-messages.hook';
 import { useSendMessage } from '@/lib/hooks/use-send-message.hook';
 import { useSession } from 'next-auth/react';
@@ -17,10 +16,9 @@ import MessageSkeleton from './message-skeleton';
 
 const Editor = dynamic(() => import('@/components/editor'), { ssr: false });
 
-const MessageBox = () => {
+const MessageBox = ({ id }: { id: string }) => {
   const editorRef = useRef<Quill | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
-  const id = useParamId();
   const session = useSession();
   const { data: messages, isLoading: fetchMessageLoading } = useMessages(id);
 

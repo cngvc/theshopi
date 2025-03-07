@@ -55,5 +55,5 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
 }
 
 export async function signoutUser() {
-  await signOut();
+  await signOut({ redirect: true });
 }

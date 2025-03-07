@@ -15,7 +15,7 @@ class BaseSocketClient {
 
   listen() {
     this.socket.on('connect', () => {
-      console.log('👆 Connected to server');
+      console.log('👆 Connected to gateway socket server');
     });
 
     this.socket.on('disconnect', (reason: Socket.DisconnectReason) => {

@@ -50,6 +50,16 @@ const config: NextAuthConfig = {
         session.user = { ...(token.user as any), accessToken: token.accessToken };
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      if (url === '/api/auth/signout') return `${baseUrl}/login`;
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    async authorized({ request, auth }: any) {
+      const protectedPaths = [/\/message\/(.*)/];
+      const { pathname } = request.nextUrl;
+      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
+      return true;
     }
   },
   pages: {

@@ -15,8 +15,8 @@ class ProductService extends AxiosService {
     const response: AxiosResponse = await this.put(`/${productId}`, payload);
     return response;
   }
-  async getProductById(productId: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get(`/${productId}`);
+  async getProductByIdentifier(identifier: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await this.get(`/${identifier}`);
     return response;
   }
   async getProductsByStore(storeId: string): Promise<AxiosResponse> {

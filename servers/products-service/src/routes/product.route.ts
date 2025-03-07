@@ -10,14 +10,10 @@ class ProductRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/', productController.getProducts);
-
-    this.router.get('/:productId', productController.getProductById);
-    this.router.get('/stores/:storeId', productController.getProductsByStore);
-
-    this.router.put('/:productId', AuthMiddleware.checkAuthentication, productController.updateProduct);
-    this.router.post('/', AuthMiddleware.checkAuthentication, productController.createProduct);
-    this.router.put('/seed/:count', AuthMiddleware.checkAuthentication, productSeedController.createdSeeds);
+    this.router.use(AuthMiddleware.checkAuthentication);
+    this.router.put('/:productId', productController.updateProduct);
+    this.router.post('/', productController.createProduct);
+    this.router.put('/seed/:count', productSeedController.createdSeeds);
     return this.router;
   }
 }

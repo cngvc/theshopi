@@ -8,18 +8,25 @@ import { productRoutes } from '@gateway/routes/product.route';
 import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
-import { Application } from 'express';
+import { Application, Router } from 'express';
 import { chatRoutes } from './routes/chat.route';
+import { productPublicRoutes } from './routes/product-public.route';
 
 export const appRoutes = (app: Application) => {
-  app.use(BASE_PATH, healthRoutes.routes());
-  app.use(BASE_PATH, authRoute.routes());
+  const publicRouter = Router();
+  publicRouter.use(healthRoutes.routes());
+  publicRouter.use(authRoute.routes());
+  publicRouter.use(productPublicRoutes.routes());
+  app.use(BASE_PATH, publicRouter);
 
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, seedRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, tokenRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, storeRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, buyerRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, currentUserRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, productRoutes.routes());
-  app.use(BASE_PATH, AuthMiddleware.verifySessionJWT, chatRoutes.routes());
+  const privateRouter = Router();
+  privateRouter.use(AuthMiddleware.verifySessionJWT);
+  privateRouter.use(productRoutes.routes());
+  privateRouter.use(seedRoutes.routes());
+  privateRouter.use(tokenRoutes.routes());
+  privateRouter.use(storeRoutes.routes());
+  privateRouter.use(buyerRoutes.routes());
+  privateRouter.use(currentUserRoutes.routes());
+  privateRouter.use(chatRoutes.routes());
+  app.use(BASE_PATH, privateRouter);
 };

@@ -1,5 +1,5 @@
 import { AuthMiddleware } from '@cngvc/shopi-shared';
-import { productController } from '@gateway/controllers/products/products.controller';
+import { productController } from '@gateway/controllers/product/product.controller';
 import express, { Router } from 'express';
 
 class ProductRoutes {
@@ -10,12 +10,9 @@ class ProductRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/products/', productController.getProducts);
-    this.router.get('/products/:productId', productController.getProductById);
-    this.router.get('/products/stores/:storeId', productController.getProductsByStore);
-
-    this.router.post('/products/', AuthMiddleware.checkAuthentication, productController.createProduct);
-    this.router.put('/products/:productId', AuthMiddleware.checkAuthentication, productController.updateProduct);
+    this.router.use(AuthMiddleware.checkAuthentication);
+    this.router.post('/products/', productController.createProduct);
+    this.router.put('/products/:productId', productController.updateProduct);
 
     return this.router;
   }

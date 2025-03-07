@@ -9,6 +9,7 @@ import { productChannel } from '@products/server';
 import { searchService } from '@products/services/search.service';
 import { log } from '@products/utils/logger.util';
 import { sample } from 'lodash';
+import slugify from 'slugify';
 
 class ProductService {
   createProduct = async (product: IProductDocument): Promise<IProductDocument> => {
@@ -36,8 +37,8 @@ class ProductService {
     await elasticSearch.deleteIndexedItem(elasticSearchIndexes.products, productId);
   };
 
-  getProductById = async (productId: string): Promise<IProductDocument> => {
-    const product: IProductDocument = await elasticSearch.getIndexedData(elasticSearchIndexes.products, productId);
+  getProductByIdentifier = async (identifier: string): Promise<IProductDocument> => {
+    const product: IProductDocument = await elasticSearch.getIndexedData(elasticSearchIndexes.products, identifier);
     return product;
   };
 
@@ -100,7 +101,8 @@ class ProductService {
         quantity: faker.number.int({ min: 10, max: 1000 }),
         thumb: faker.image.urlPicsumPhotos(),
         categories: [faker.commerce.product()],
-        tags: [faker.commerce.productMaterial()]
+        tags: [faker.commerce.productMaterial()],
+        slug: slugify(name, { lower: true })
       };
       log.info(`***Seeding product:*** - ${i + 1} of ${stores.length}`);
       await this.createProduct(product);

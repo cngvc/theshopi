@@ -1,9 +1,14 @@
-import { auth } from '@/auth';
+import ProductList from '@/components/shared/product/product-list';
+import { getProductList } from '@/lib/actions/product.action';
 
 const Page = async () => {
-  const session = await auth();
+  const products = await getProductList();
 
-  return <div></div>;
+  return (
+    <div>
+      <ProductList data={products} />
+    </div>
+  );
 };
 
 export default Page;

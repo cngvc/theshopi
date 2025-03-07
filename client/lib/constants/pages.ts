@@ -3,5 +3,6 @@ export default {
   signup: '/signup',
   home: '/',
   cart: '/cart',
-  messages: '/messages'
+  messages: '/messages',
+  products: '/products'
 };

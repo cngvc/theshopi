@@ -12,7 +12,8 @@ const productSchema: Schema = new Schema(
     },
     description: { type: String, required: true },
     slug: {
-      type: String
+      type: String,
+      unique: true
     },
     quantity: {
       type: Number,
@@ -55,8 +56,13 @@ const productSchema: Schema = new Schema(
   }
 );
 
-productSchema.pre('save', function (next) {
-  this.slug = slugify(this.name, { lower: true });
+productSchema.pre('validate', async function (next) {
+  let slug = slugify(this.name, { lower: true });
+  let counter = 1;
+  while (await ProductModel.findOne({ slug: slug })) {
+    slug = `${slug}-${counter}`;
+    counter++;
+  }
   next();
 });
 

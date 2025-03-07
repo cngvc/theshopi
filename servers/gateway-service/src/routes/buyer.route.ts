@@ -10,9 +10,10 @@ class BuyerRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/buyer/email', AuthMiddleware.checkAuthentication, buyerController.getBuyerByEmail);
-    this.router.get('/buyer/me', AuthMiddleware.checkAuthentication, buyerController.getCurrentBuyer);
-    this.router.get('/buyer/:username', AuthMiddleware.checkAuthentication, buyerController.getBuyerByUsername);
+    this.router.use(AuthMiddleware.checkAuthentication);
+    this.router.get('/buyer/email', buyerController.getBuyerByEmail);
+    this.router.get('/buyer/me', buyerController.getCurrentBuyer);
+    this.router.get('/buyer/:username', buyerController.getBuyerByUsername);
     return this.router;
   }
 }

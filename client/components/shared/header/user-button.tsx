@@ -50,6 +50,7 @@ const UserButton = async () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0">
             <form action={signoutUser} className="flex-1">
+              <input type="hidden" name="callbackUrl" value={'/sign-in'} />
               <Button className="w-full px-2 justify-start" variant={'ghost'}>
                 Signout
               </Button>

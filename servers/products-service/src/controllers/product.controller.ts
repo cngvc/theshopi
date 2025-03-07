@@ -56,8 +56,8 @@ class ProductController {
     new OkRequestSuccess('Get products.', { products }).send(res);
   };
 
-  getProductById = async (req: Request, res: Response): Promise<void> => {
-    const product = await productService.getProductById(req.params.productId);
+  getProductByIdentifier = async (req: Request, res: Response): Promise<void> => {
+    const product = await productService.getProductByIdentifier(req.params.identifier);
     new OkRequestSuccess('Get product by id.', { product }).send(res);
   };
 

@@ -1,12 +1,13 @@
 import ConversationList from './components/conversation-list';
 import MessageBox from './components/message-box';
 
-const Page = () => {
+const Page = async (props: { params: Promise<{ id: string }> }) => {
+  const { id } = await props.params;
   return (
     <div className="flex flex-col flex-1">
       <div className="flex-1 grid gap-4 md:grid-cols-6">
         <ConversationList />
-        <MessageBox />
+        <MessageBox id={id} />
       </div>
     </div>
   );
