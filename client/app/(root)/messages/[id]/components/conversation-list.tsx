@@ -29,14 +29,14 @@ const ConversationList = () => {
     return (
       <Card className="flex-1 col-span-2">
         <div className="p-6 text-center mt-4">
-          <h1 className="text-2xl mb-2">No chats history</h1>
+          <h2 className="text-xl mb-2">No chats history</h2>
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="flex-1 col-span-2">
+    <Card className="flex-1 md:col-span-3 lg:col-span-2">
       <CardHeader>
         <CardTitle>Conversations</CardTitle>
       </CardHeader>

@@ -13,7 +13,7 @@ export const useOnline = () => {
       $onlineUsers(_onlineUsers);
     });
     return () => {
-      socketClient.socket.off(SocketEvents.MESSAGE_RECEIVED);
+      socketClient.socket.off(SocketEvents.USER_ONLINE);
     };
   }, []);
 

@@ -1,5 +1,4 @@
-import { SocketEvents } from '@cngvc/shopi-shared';
-import { IMessageDocument } from '@cngvc/shopi-shared-types';
+import { IMessageDocument, SocketEvents } from '@cngvc/shopi-shared-types';
 import { config } from '@socket/config';
 import { SERVICE_NAME } from '@socket/constants';
 import { log } from '@socket/utils/logger.util';
@@ -10,7 +9,7 @@ import { io, Socket as SocketClient } from 'socket.io-client';
 export class SocketHandler {
   io: Server;
   onlineStatusSocket!: SocketClient;
-  chatStatusSocket!: SocketClient;
+  chatSocket!: SocketClient;
 
   constructor(httpServer: http.Server) {
     log.info(`🤜 ${SERVICE_NAME} inits socket server`);
@@ -24,7 +23,7 @@ export class SocketHandler {
       transports: ['websocket'],
       secure: false
     });
-    this.chatStatusSocket = io(`${config.CHAT_BASE_URL}`, {
+    this.chatSocket = io(`${config.CHAT_BASE_URL}`, {
       transports: ['websocket'],
       secure: false
     });
@@ -44,7 +43,16 @@ export class SocketHandler {
       socket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, async (username: string) => {
         this.onlineStatusSocket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
       });
+      socket.on(SocketEvents.USER_JOIN_ROOM, async (conversationId: string) => {
+        log.info('A new user joins room: ', conversationId);
+        socket.join(`chatroom:${conversationId}`);
+      });
+      socket.on(SocketEvents.USER_LEFT_ROOM, async (conversationId: string) => {
+        log.info('A user leaves room: ', conversationId);
+        socket.leave(`chatroom:${conversationId}`);
+      });
     });
+
     this.io.on('connect_error', (err) => {
       console.log(err);
     });
@@ -88,26 +96,31 @@ export class SocketHandler {
   }
 
   private chatSocketConnect(): void {
-    this.chatStatusSocket.on('connect', () => {
+    this.chatSocket.on('connect', () => {
       log.info('Chat service socket connected');
     });
-
-    this.chatStatusSocket.on('disconnect', (reason: SocketClient.DisconnectReason) => {
+    this.chatSocket.on('disconnect', (reason: SocketClient.DisconnectReason) => {
       log.log('error', 'Chat service socket disconnect reason:', reason);
       setTimeout(() => {
-        this.chatStatusSocket.connect();
+        this.chatSocket.connect();
       }, 5000);
     });
-    this.chatStatusSocket.on('connect_error', (error: Error) => {
+    this.chatSocket.on('connect_error', (error: Error) => {
       log.log('error', 'Chat service socket connection error:', error.message);
       setTimeout(() => {
-        this.chatStatusSocket.connect();
+        this.chatSocket.connect();
       }, 5000);
     });
-
-    this.chatStatusSocket.on(SocketEvents.MESSAGE_RECEIVED, (data: IMessageDocument) => {
+    this.chatSocket.on(SocketEvents.MESSAGE_RECEIVED, (data: IMessageDocument) => {
       log.info(`📥 New message from ${data.senderUsername} to ${data.receiverUsername}`);
-      this.io.emit(SocketEvents.MESSAGE_RECEIVED, data);
+      const roomId = `chatroom:${data.conversationId}`;
+      const socketsInRoom = this.io.sockets.adapter.rooms.get(roomId);
+      if (socketsInRoom) {
+        log.info(`👥 Users in room ${roomId}: ${socketsInRoom.size}`);
+      } else {
+        log.info(`🚫 Room ${roomId} is empty or does not exist.`);
+      }
+      this.io.to(roomId).emit(SocketEvents.MESSAGE_RECEIVED, data);
     });
   }
 }

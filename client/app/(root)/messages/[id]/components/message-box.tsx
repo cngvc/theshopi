@@ -63,16 +63,16 @@ const MessageBox = ({ id }: { id: string }) => {
 
   if (!conversation) {
     return (
-      <Card className="flex-1 md:col-span-4 max-md:hidden pb-0">
+      <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
         <div className="p-6 text-center mt-4">
-          <h1 className="text-2xl mb-2">No chats selected</h1>
+          <h2 className="text-xl mb-2">No chats selected</h2>
         </div>
       </Card>
     );
   }
 
   return (
-    <Card className="flex-1 md:col-span-4 max-md:hidden pb-0">
+    <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
       <CardHeader>
         <CardTitle>{fetchConversationLoading ? <Skeleton className="h-4 w-2/5" /> : name.receiver}</CardTitle>
       </CardHeader>

@@ -16,6 +16,13 @@ export const useMessages = (id?: string | null) => {
   });
 
   useEffect(() => {
+    if (id) socketClient.socket.emit(SocketEvents.USER_JOIN_ROOM, id);
+    return () => {
+      if (id) socketClient.socket.emit(SocketEvents.USER_LEFT_ROOM, id);
+    };
+  }, [id]);
+
+  useEffect(() => {
     socketClient.socket.on(SocketEvents.MESSAGE_RECEIVED, (newMessage: IMessageDocument) => {
       console.log(`📥 Receiving new message from ${newMessage.senderUsername}`);
       queryClient.setQueryData(['messages', id], (prevMessages: IMessageDocument[] | undefined) => {

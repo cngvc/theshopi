@@ -97,6 +97,7 @@ export class UsersServer {
       const socketHandler = new SocketHandler(httpServer);
       socketServer = socketHandler.io;
       this.startHttpServer(httpServer);
+      socketHandler.listen();
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
       logCatch(error, 'startServer');
