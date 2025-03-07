@@ -1,11 +1,10 @@
 import { NotFoundError } from '@cngvc/shopi-shared';
 import { IProductDocument } from '@cngvc/shopi-shared-types';
 import { Client } from '@elastic/elasticsearch';
-import { CountResponse, GetResponse, QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
+import { CountResponse, QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';
 import { SERVICE_NAME } from '@products/constants';
 import { log, logCatch } from '@products/utils/logger.util';
-import { isValidObjectId } from 'mongoose';
 
 type QueryListType = QueryDslQueryContainer | QueryDslQueryContainer[];
 
@@ -49,24 +48,7 @@ class ElasticSearch {
 
   async getIndexedData(index: string, identifier: string): Promise<IProductDocument> {
     try {
-      let result: GetResponse | null = null;
-      if (isValidObjectId(identifier)) {
-        result = await this.elasticSearchClient.get({ index, id: identifier });
-      } else {
-        const searchResult = await this.elasticSearchClient.search({
-          index,
-          query: {
-            term: { 'slug.keyword': identifier }
-          }
-        });
-
-        if (searchResult.hits.hits.length > 0) {
-          result = searchResult.hits.hits[0] as GetResponse;
-        }
-      }
-      if (!result || !result._source) {
-        throw new NotFoundError('Product not found', 'getIndexedData method');
-      }
+      const result = await this.elasticSearchClient.get({ index, id: identifier });
       return result?._source as IProductDocument;
     } catch (error) {
       logCatch(error, 'getIndexedData');

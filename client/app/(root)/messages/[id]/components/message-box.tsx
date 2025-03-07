@@ -61,6 +61,16 @@ const MessageBox = ({ id }: { id: string }) => {
     }
   };
 
+  if (!conversation) {
+    return (
+      <Card className="flex-1 md:col-span-4 max-md:hidden pb-0">
+        <div className="p-6 text-center mt-4">
+          <h1 className="text-2xl mb-2">No chats selected</h1>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="flex-1 md:col-span-4 max-md:hidden pb-0">
       <CardHeader>

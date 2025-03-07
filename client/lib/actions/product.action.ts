@@ -10,7 +10,11 @@ export async function getProductList() {
 }
 
 export async function getProductByIdentifier(identifier: string) {
-  const { data } = await axiosInstance.get(`/products/${identifier}`);
-  const product: IProductDocument = data.metadata?.product;
-  return product;
+  try {
+    const { data } = await axiosInstance.get(`/products/${identifier}`);
+    const product: IProductDocument = data.metadata?.product;
+    return product;
+  } catch (error) {
+    return null;
+  }
 }

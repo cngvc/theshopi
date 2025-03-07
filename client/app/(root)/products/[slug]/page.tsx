@@ -8,9 +8,11 @@ import { notFound } from 'next/navigation';
 
 const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
-  const product = await getProductByIdentifier(slug);
+  const match = slug.match(/-i\.(.+)$/);
+  const productId = match ? match[1] : null;
+  if (!productId) notFound();
+  const product = await getProductByIdentifier(productId);
   if (!product) notFound();
-
   return (
     <>
       <section>

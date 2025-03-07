@@ -25,6 +25,16 @@ const ConversationList = () => {
     });
   }, [session?.data?.user, onlineUsers, data]);
 
+  if (!data?.length) {
+    return (
+      <Card className="flex-1 col-span-2">
+        <div className="p-6 text-center mt-4">
+          <h1 className="text-2xl mb-2">No chats history</h1>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <Card className="flex-1 col-span-2">
       <CardHeader>
