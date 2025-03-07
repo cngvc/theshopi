@@ -2,15 +2,16 @@ import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { BASE_PATH } from '@gateway/constants/path';
 import { authRoute } from '@gateway/routes/auth.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
+import { cartRoutes } from '@gateway/routes/cart.route';
+import { chatRoutes } from '@gateway/routes/chat.route';
 import { currentUserRoutes } from '@gateway/routes/current-user.route';
 import { healthRoutes } from '@gateway/routes/health.route';
+import { productPublicRoutes } from '@gateway/routes/product-public.route';
 import { productRoutes } from '@gateway/routes/product.route';
 import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
-import { chatRoutes } from './routes/chat.route';
-import { productPublicRoutes } from './routes/product-public.route';
 
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
@@ -28,5 +29,6 @@ export const appRoutes = (app: Application) => {
   privateRouter.use(buyerRoutes.routes());
   privateRouter.use(currentUserRoutes.routes());
   privateRouter.use(chatRoutes.routes());
+  privateRouter.use(cartRoutes.routes());
   app.use(BASE_PATH, privateRouter);
 };

@@ -18,5 +18,5 @@ COPY .npmrc ./
 RUN npm i -g pm2 npm@latest
 RUN npm ci --production
 COPY --from=builder /app/build ./build
-EXPOSE 4010
+EXPOSE 4011
 CMD [ "npm", "run", "start" ]

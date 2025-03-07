@@ -19,7 +19,18 @@ import crypto from 'crypto';
 import { Request, Response } from 'express';
 
 class AuthController {
-  async signup(req: Request, res: Response): Promise<void> {
+  async signup(
+    req: Request<
+      {},
+      {},
+      {
+        username: string;
+        email: string;
+        password: string;
+      }
+    >,
+    res: Response
+  ): Promise<void> {
     const { error } = await Promise.resolve(signupSchema.validate(req.body));
     if (error?.details) {
       throw new BadRequestError(error?.details[0].message, 'signup method error validation');
@@ -63,7 +74,17 @@ class AuthController {
       }
     }).send(res);
   }
-  async signin(req: Request, res: Response): Promise<void> {
+  async signin(
+    req: Request<
+      {},
+      {},
+      {
+        username: string;
+        password: string;
+      }
+    >,
+    res: Response
+  ): Promise<void> {
     const { error } = await Promise.resolve(signinSchema.validate(req.body));
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'signin method error validation');

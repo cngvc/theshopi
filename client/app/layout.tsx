@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(SERVER_URL)
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>

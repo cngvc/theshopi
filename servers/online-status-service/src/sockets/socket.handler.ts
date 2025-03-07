@@ -39,16 +39,16 @@ export class SocketHandler {
     this.io.on('connection', async (socket: Socket) => {
       log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
-        const response: string[] = await onlineStatusCache.saveLoggedInUserToCache(SocketEvents.LOGGED_IN_USERS, username);
+        const response: string[] = await onlineStatusCache.saveLoggedInUser(SocketEvents.LOGGED_IN_USERS, username);
         this.io.emit(SocketEvents.LOGGED_IN_USERS, response);
       });
       socket.on(SocketEvents.GET_LOGGED_IN_USERS, async () => {
-        const response: string[] = await onlineStatusCache.getLoggedInUsersFromCache(SocketEvents.LOGGED_IN_USERS);
+        const response: string[] = await onlineStatusCache.getLoggedInUsers(SocketEvents.LOGGED_IN_USERS);
         this.io.emit(SocketEvents.GET_LOGGED_IN_USERS, response);
       });
 
       socket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, async (username: string) => {
-        const response: string[] = await onlineStatusCache.removeLoggedInUserFromCache(SocketEvents.LOGGED_IN_USERS, username);
+        const response: string[] = await onlineStatusCache.removeLoggedInUser(SocketEvents.LOGGED_IN_USERS, username);
         this.io.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, response);
       });
     });

@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import pages from '@/lib/constants/pages';
 import { EllipsisVerticalIcon, MessageCircle, ShoppingCartIcon } from 'lucide-react';
 import Link from 'next/link';
+import CartButton from './cart-button';
 import ModeToggle from './mode-toggle';
 import UserButton from './user-button';
 
@@ -11,11 +12,7 @@ const Menu = () => {
     <div className="flex justify-end gap-3">
       <nav className="hidden md:flex w-full max-w-xs gap-2 items-center">
         <ModeToggle />
-        <Button asChild variant={'ghost'}>
-          <Link href={pages.cart}>
-            <ShoppingCartIcon />
-          </Link>
-        </Button>
+        <CartButton />
         <Button asChild variant={'ghost'}>
           <Link href={pages.messages}>
             <MessageCircle />

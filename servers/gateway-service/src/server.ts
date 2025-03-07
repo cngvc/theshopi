@@ -20,6 +20,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
+import { cartService } from './services/api/cart.service';
 import { productService } from './services/api/product.service';
 
 export class GatewayServer {
@@ -59,6 +60,7 @@ export class GatewayServer {
         storeService.setHeaderAuthorization(headerAuthorization);
         productService.setHeaderAuthorization(headerAuthorization);
         chatService.setHeaderAuthorization(headerAuthorization);
+        cartService.setHeaderAuthorization(headerAuthorization);
       }
       next();
     });

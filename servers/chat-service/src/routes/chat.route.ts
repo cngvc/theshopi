@@ -1,6 +1,5 @@
 import { chatSeedController } from '@chat/controllers/chat-seed.controller';
 import { chatController } from '@chat/controllers/chat.controller';
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import express, { Router } from 'express';
 
 class ChatRoutes {
@@ -10,7 +9,6 @@ class ChatRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
     this.router.get('/conversations', chatController.getCurrentUserConversations);
     this.router.get('/conversations/latest', chatController.getCurrentUserLastConversation);
     this.router.get('/conversations/:conversationId', chatController.getConversationByConversationId);

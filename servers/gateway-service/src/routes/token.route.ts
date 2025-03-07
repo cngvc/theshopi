@@ -9,7 +9,8 @@ class TokenRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/auth/refresh-token', AuthMiddleware.checkAuthentication, tokenController.refreshToken);
+    this.router.use(AuthMiddleware.checkAuthentication);
+    this.router.get('/auth/refresh-token', tokenController.refreshToken);
     return this.router;
   }
 }

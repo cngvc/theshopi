@@ -8,6 +8,6 @@ COPY src ./src
 RUN ls -a
 RUN npm install
 RUN npm i -g nodemon
-EXPOSE 4009
+EXPOSE 4010
 
 CMD [ "npm", "run", "dev" ]
