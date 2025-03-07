@@ -24,7 +24,7 @@ export const useMessages = (id?: string | null) => {
 
   useEffect(() => {
     socketClient.socket.on(SocketEvents.MESSAGE_RECEIVED, (newMessage: IMessageDocument) => {
-      console.log(`📥 Receiving new message from ${newMessage.senderUsername}`);
+      console.log(`📥 Receiving new message from ${newMessage.senderId}`);
       queryClient.setQueryData(['messages', id], (prevMessages: IMessageDocument[] | undefined) => {
         if (newMessage.conversationId === id) {
           return prevMessages ? [...prevMessages, newMessage] : [newMessage];

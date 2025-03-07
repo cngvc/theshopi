@@ -4,8 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const conversationSchema: Schema = new Schema({
   conversationId: { type: String, unique: true, index: true, default: uuidv4 },
-  senderUsername: { type: String, required: true, index: true },
-  receiverUsername: { type: String, required: true, index: true }
+  participants: { type: [String], required: true }
 });
 
 conversationSchema.pre('validate', async function (next) {

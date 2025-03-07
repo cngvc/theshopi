@@ -112,7 +112,7 @@ export class SocketHandler {
       }, 5000);
     });
     this.chatSocket.on(SocketEvents.MESSAGE_RECEIVED, (data: IMessageDocument) => {
-      log.info(`📥 New message from ${data.senderUsername} to ${data.receiverUsername}`);
+      log.info(`📥 New message from ${data.senderId} to ${data.receiverId}`);
       const roomId = `chatroom:${data.conversationId}`;
       const socketsInRoom = this.io.sockets.adapter.rooms.get(roomId);
       if (socketsInRoom) {

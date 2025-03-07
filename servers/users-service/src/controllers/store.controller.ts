@@ -1,5 +1,6 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IStoreDocument, storeSchema } from '@cngvc/shopi-shared-types';
+import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { Request, Response } from 'express';
 
@@ -7,18 +8,23 @@ class StoreController {
   createStore = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(storeSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'createStoremethod error');
+      throw new BadRequestError(error.details[0].message, 'createStore method error');
     }
     const existingStore = await storeService.getStoreByEmail(req.body.email);
     if (existingStore) {
-      throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStoremethod error');
+      throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStore method error');
+    }
+    const buyer = await buyerService.getBuyerByAuthId(`${req.currentUser!.id}`);
+    if (!buyer) {
+      throw new BadRequestError('Buyer with auth id not found', 'createStore method error');
     }
     const store: IStoreDocument = {
-      fullName: req.body.fullName,
-      username: req.currentUser!.username,
-      email: req.body.email,
+      ownerId: buyer.authId,
+      authOwnerId: buyer.authId,
+      username: req.body.username || buyer.username,
+      name: req.body.name,
+      email: req.body.email || buyer.email,
       description: req.body.description,
-      responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks
     };
     const createdStore: IStoreDocument = await storeService.createStore(store);
@@ -43,12 +49,11 @@ class StoreController {
   updateStore = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(storeSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'updateStoremethod error');
+      throw new BadRequestError(error.details[0].message, 'updateStore method error');
     }
     const store: IStoreDocument = {
-      fullName: req.body.fullName,
+      name: req.body.name,
       description: req.body.description,
-      responseTime: req.body.responseTime,
       socialLinks: req.body.socialLinks
     };
     const updatedStore: IStoreDocument = await storeService.updateStore(req.params.storeId, store);

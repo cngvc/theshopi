@@ -6,7 +6,7 @@ import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from
 @Entity('auths')
 export class AuthModel extends BaseEntity implements IAuthDocument {
   @PrimaryGeneratedColumn('uuid')
-  id!: number;
+  id!: string;
 
   @Column({ unique: true })
   username!: string;

@@ -3,9 +3,11 @@ import { Model, Schema, model } from 'mongoose';
 
 const storeSchema: Schema = new Schema(
   {
-    fullName: { type: String, required: true },
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
+    ownerId: { type: String, required: true, index: true },
+    authOwnerId: { type: String, required: true, index: true },
+
     description: { type: String, required: true },
     ratingsCount: { type: Number, default: 0 },
     ratingSum: { type: Number, default: 0 },
@@ -16,7 +18,6 @@ const storeSchema: Schema = new Schema(
       two: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } },
       one: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } }
     },
-    responseTime: { type: Number, default: 0 },
     socialLinks: [{ type: String, default: '' }],
     completedOrders: { type: Number, default: 0 },
     cancelledOrders: { type: Number, default: 0 },

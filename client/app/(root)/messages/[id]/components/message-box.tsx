@@ -10,7 +10,6 @@ import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Quill from 'quill';
 import { useEffect, useMemo, useRef } from 'react';
-import { toast } from 'sonner';
 import MessageItem from './message-item';
 import MessageSkeleton from './message-skeleton';
 
@@ -25,11 +24,9 @@ const MessageBox = ({ id }: { id: string }) => {
   const sendMessageMutation = useSendMessage();
   const { data: conversation, isLoading: fetchConversationLoading } = useConversation(id);
 
-  const name = useMemo(() => {
-    if (!conversation) return { sender: 'Username', receiver: null };
-    return session?.data?.user?.username === conversation?.senderUsername
-      ? { sender: `${conversation.senderUsername}`, receiver: `${conversation.receiverUsername}` }
-      : { sender: `${conversation.receiverUsername}`, receiver: `${conversation.senderUsername}` };
+  const sub = useMemo(() => {
+    if (!conversation) return undefined;
+    return conversation?.participants.find((e) => e !== session?.data?.user?.id);
   }, [conversation, session]);
 
   useEffect(() => {
@@ -39,26 +36,17 @@ const MessageBox = ({ id }: { id: string }) => {
   }, [messages]);
 
   const handleSubmit = async ({ content }: { content: string }) => {
-    try {
-      editorRef?.current?.enable(false);
-      editorRef?.current?.setText('');
-      if (!conversation) {
-        throw new Error();
-      }
-      if (!content?.length) {
-        return null;
-      }
-      sendMessageMutation.mutate({
-        conversationId: conversation.conversationId,
-        senderUsername: name.sender!,
-        receiverUsername: name.receiver!,
-        body: content
-      });
-    } catch (error) {
-      toast.error('Failed to send message');
-    } finally {
-      editorRef?.current?.enable(true);
-    }
+    editorRef?.current?.enable(false);
+    editorRef?.current?.setText('');
+    if (!conversation || !sub) throw new Error();
+    if (!content?.length) return null;
+    sendMessageMutation.mutate({
+      conversationId: conversation.conversationId,
+      receiverId: sub,
+      body: content
+    });
+
+    editorRef?.current?.enable(true);
   };
 
   if (!conversation) {
@@ -74,7 +62,7 @@ const MessageBox = ({ id }: { id: string }) => {
   return (
     <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
       <CardHeader>
-        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-4 w-2/5" /> : name.receiver}</CardTitle>
+        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-4 w-2/5" /> : sub}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">

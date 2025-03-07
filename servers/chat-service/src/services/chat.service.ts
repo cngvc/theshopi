@@ -2,8 +2,7 @@ import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { socketServer } from '@chat/server';
 import { log } from '@chat/utils/logger.util';
-import { SocketEvents } from '@cngvc/shopi-shared';
-import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument, SocketEvents } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 
 class ChatService {
@@ -13,8 +12,7 @@ class ChatService {
       return existingConversation;
     }
     return await ConversationModel.create({
-      senderUsername: sender,
-      receiverUsername: receiver
+      participants: [sender, receiver]
     });
   };
 
@@ -26,12 +24,7 @@ class ChatService {
   getConversationBySenderAndReceiver = async (sender: string, receiver: string) => {
     const conversations = await ConversationModel.aggregate([
       {
-        $match: {
-          $or: [
-            { senderUsername: sender, receiverUsername: receiver },
-            { senderUsername: receiver, receiverUsername: sender }
-          ]
-        }
+        $match: { participants: { $all: [sender, receiver] } }
       },
       {
         $limit: 1
@@ -58,25 +51,11 @@ class ChatService {
     return messages.reverse();
   };
 
-  marksMessagesAsRead = async (receiver: string, sender: string, messageId: string): Promise<IMessageDocument> => {
-    await MessageModel.updateMany(
-      { senderUsername: sender, receiverUsername: receiver, isRead: false },
-      {
-        $set: {
-          isRead: true
-        }
-      }
-    );
-    const message = (await MessageModel.findOne({ _id: messageId }).exec()) as IMessageDocument;
-    socketServer.emit(SocketEvents.MESSAGE_UPDATED, message);
-    return message;
-  };
-
-  getCurrentUserConversations = async (username: string): Promise<IMessageDocument[]> => {
+  getCurrentUserConversations = async (authId: string): Promise<IMessageDocument[]> => {
     const conversationLastMessages: IMessageDocument[] = await MessageModel.aggregate([
       {
         $match: {
-          $or: [{ senderUsername: username }, { receiverUsername: username }]
+          $or: [{ senderId: authId }, { receiverId: authId }]
         }
       },
       {
@@ -89,8 +68,8 @@ class ChatService {
         $project: {
           _id: '$result._id',
           conversationId: '$result.conversationId',
-          receiverUsername: '$result.receiverUsername',
-          senderUsername: '$result.senderUsername',
+          receiverId: '$result.receiverId',
+          senderId: '$result.senderId',
           body: '$result.body',
           isRead: '$result.isRead',
           createdAt: '$result.createdAt'
@@ -105,11 +84,11 @@ class ChatService {
     return conversationLastMessages;
   };
 
-  getCurrentUserLastConversation = async (username: string): Promise<IMessageDocument> => {
+  getCurrentUserLastConversation = async (authId: string): Promise<IMessageDocument> => {
     const conversationLastMessage: IMessageDocument[] = await MessageModel.aggregate([
       {
         $match: {
-          $or: [{ senderUsername: username }, { receiverUsername: username }]
+          $or: [{ senderId: authId }, { receiverId: authId }]
         }
       },
       {
@@ -122,8 +101,8 @@ class ChatService {
         $project: {
           _id: '$result._id',
           conversationId: '$result.conversationId',
-          receiverUsername: '$result.receiverUsername',
-          senderUsername: '$result.senderUsername',
+          receiverId: '$result.receiverId',
+          senderId: '$result.senderId',
           body: '$result.body',
           isRead: '$result.isRead',
           createdAt: '$result.createdAt'
@@ -145,15 +124,16 @@ class ChatService {
       const receiver = stores[i];
       const sender = buyers[i];
       for (let i = 0; i < count; i++) {
-        const savedConversation = await this.createConversation(`${sender.username}`, `${receiver.username}`);
+        if (sender.authId === receiver.authOwnerId) {
+          continue;
+        }
+        const savedConversation = await this.createConversation(`${sender.authId}`, `${receiver.authOwnerId}`);
         const messages: IMessageDocument[] = [];
         for (let i = 0; i < count * 5; i++) {
           messages.push({
             conversationId: savedConversation.conversationId,
-            senderUsername: savedConversation.senderUsername,
-            receiverUsername: savedConversation.receiverUsername,
-            buyerId: `${sender._id}`,
-            storeId: `${receiver._id}`,
+            senderId: savedConversation.participants[0],
+            receiverId: savedConversation.participants[1],
             body: faker.lorem.sentence()
           });
         }

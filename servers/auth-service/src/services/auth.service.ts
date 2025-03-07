@@ -3,7 +3,7 @@ import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
-import { ExchangeNames, IAuthBuyerMessageDetails, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
 import { sign } from 'jsonwebtoken';
 import { MoreThan, Repository } from 'typeorm';
 
@@ -14,21 +14,23 @@ export class AuthService {
   }
   async createAuthUser(data: IAuthDocument): Promise<IAuthDocument> {
     const user = this.authRepository.create(data);
+    const createdUser = await this.authRepository.save(user);
     await authProducer.publishDirectMessage(
       authChannel,
       ExchangeNames.USERS_BUYER_UPDATE,
       RoutingKeys.USERS_BUYER_UPDATE,
       JSON.stringify({
-        username: user.username!,
-        email: user.email!,
-        createdAt: user.createdAt!,
+        username: createdUser.username!,
+        email: createdUser.email!,
+        createdAt: createdUser.createdAt!,
+        id: createdUser.id!,
         type: 'auth'
-      } as IAuthBuyerMessageDetails)
+      })
     );
-    return await this.authRepository.save(user);
+    return createdUser;
   }
 
-  async getAuthUserById(authId: number): Promise<IAuthDocument | null> {
+  async getAuthUserById(authId: string): Promise<IAuthDocument | null> {
     return this.authRepository.findOne({ where: { id: authId } });
   }
 
@@ -59,7 +61,7 @@ export class AuthService {
     });
   }
 
-  async updateVerifyEmailField(authId: number, emailVerified: boolean, emailVerificationToken?: string): Promise<boolean> {
+  async updateVerifyEmailField(authId: string, emailVerified: boolean, emailVerificationToken?: string): Promise<boolean> {
     const result = await this.authRepository.update(authId, {
       emailVerified,
       emailVerificationToken
@@ -67,7 +69,7 @@ export class AuthService {
     return !!result.affected && result?.affected > 0;
   }
 
-  async updatePasswordToken(authId: number, token: string, tokenExpiration: Date): Promise<boolean> {
+  async updatePasswordToken(authId: string, token: string, tokenExpiration: Date): Promise<boolean> {
     const result = await this.authRepository.update(authId, {
       passwordResetToken: token,
       passwordResetExpires: tokenExpiration
@@ -75,7 +77,7 @@ export class AuthService {
     return !!result.affected && result?.affected > 0;
   }
 
-  async updatePassword(authId: number, password: string): Promise<boolean> {
+  async updatePassword(authId: string, password: string): Promise<boolean> {
     const result = await this.authRepository.update(authId, {
       password,
       passwordResetToken: undefined,
@@ -84,7 +86,7 @@ export class AuthService {
     return !!result.affected && result?.affected > 0;
   }
 
-  signToken(id: number, email: string, username: string): string {
+  signToken(id: string, email: string, username: string): string {
     return sign(
       {
         id,

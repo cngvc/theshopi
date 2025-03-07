@@ -14,11 +14,11 @@ const ConversationItem = ({ conversation, name, isOnline }: { conversation: IMes
       key={conversation.conversationId}
     >
       <div className="flex items-start pt-1 justify-start relative">
-        <Avatar className="h-12 w-12">
+        <Avatar className="h-12 w-12 overflow-visible">
           <AvatarImage src="" alt={`User avatar ${name}`} />
           <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
+          {!isOnline && <div className="w-3 h-3 rounded-full bg-green-500 absolute bottom-0.5 right-0.5"></div>}
         </Avatar>
-        {isOnline && <div className="w-3 h-3 rounded-full bg-green-500 absolute bottom-0 right-0"></div>}
       </div>
       <div className="flex flex-col flex-1 justify-center">
         <p className="font-medium">{name}</p>

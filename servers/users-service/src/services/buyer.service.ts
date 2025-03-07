@@ -2,13 +2,18 @@ import { IBuyerDocument } from '@cngvc/shopi-shared-types';
 import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {
+  getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {
+    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).exec()) as IBuyerDocument;
+    return buyer;
+  };
+
   getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
     const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ email }).exec()) as IBuyerDocument;
     return buyer;
   };
 
-  getBuyerByUsername = async (username: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ username }).exec()) as IBuyerDocument;
+  getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
+    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).exec()) as IBuyerDocument;
     return buyer;
   };
 
@@ -18,18 +23,18 @@ class BuyerService {
   };
 
   createBuyer = async (payload: IBuyerDocument): Promise<void> => {
-    const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByEmail(`${payload.email}`);
+    const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
     if (!checkIfBuyerExist) {
       await BuyerModel.create(payload);
     }
   };
 
-  updateBuyerIsStoreProp = async (email: string): Promise<void> => {
+  updateBuyerBecomeStore = async (buyerId: string, storeId: string): Promise<void> => {
     await BuyerModel.updateOne(
-      { email },
+      { _id: buyerId },
       {
         $set: {
-          isStore: true
+          storeId: storeId
         }
       }
     ).exec();

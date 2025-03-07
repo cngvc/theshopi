@@ -8,12 +8,12 @@ const MessageItem = ({ message }: { message: IMessageDocument }) => {
     <div className="py-2 border-b flex space-x-4">
       <div className="flex items-start pt-1 justify-start">
         <Avatar className="h-12 w-12">
-          <AvatarImage src="" alt={`User avatar ${message.senderUsername}`} />
-          <AvatarFallback>{message.senderUsername?.[0].toUpperCase()}</AvatarFallback>
+          <AvatarImage src="" alt={`User avatar ${message.senderId}`} />
+          <AvatarFallback>{message.senderId?.[0].toUpperCase()}</AvatarFallback>
         </Avatar>
       </div>
       <div className="flex flex-col flex-1 justify-center">
-        <p className="font-medium">{message.senderUsername}</p>
+        <p className="font-medium">{message.senderId}</p>
         <div>
           <Tooltip>
             <TooltipTrigger>

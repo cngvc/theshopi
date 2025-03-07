@@ -1,4 +1,4 @@
-import { IRatingTypes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { StoreModel } from '@users/models/store.schema';
 import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';
@@ -28,7 +28,7 @@ class StoreService {
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
     const createdStore: IStoreDocument = (await StoreModel.create(payload)) as IStoreDocument;
-    await buyerService.updateBuyerIsStoreProp(`${createdStore.email}`);
+    await buyerService.updateBuyerBecomeStore(`${createdStore.ownerId}`, `${createdStore._id}`);
     return createdStore;
   };
 
@@ -37,9 +37,8 @@ class StoreService {
       { _id: storeId },
       {
         $set: {
-          fullName: payload.fullName,
+          name: payload.name,
           description: payload.description,
-          responseTime: payload.responseTime,
           socialLinks: payload.socialLinks
         }
       },
@@ -57,7 +56,7 @@ class StoreService {
   };
 
   updateStoreReview = async (data: IReviewMessageDetails): Promise<void> => {
-    const ratingTypes: IRatingTypes = {
+    const ratingTypes: Record<string, string> = {
       '1': 'one',
       '2': 'two',
       '3': 'three',

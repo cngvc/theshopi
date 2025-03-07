@@ -1,4 +1,4 @@
-import { SocketEvents } from '@cngvc/shopi-shared';
+import { SocketEvents } from '@cngvc/shopi-shared-types';
 import { config } from '@online-status/config';
 import { SERVICE_NAME } from '@online-status/constants';
 import { onlineStatusCache } from '@online-status/redis/online-status-cache';

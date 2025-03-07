@@ -6,14 +6,14 @@ import { Request, Response } from 'express';
 
 class ChatController {
   getCurrentUserConversations = async (req: Request, res: Response): Promise<void> => {
-    const conversationLastMessages: IMessageDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.username);
+    const conversationLastMessages: IMessageDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.id);
     new OkRequestSuccess('Conversation list', {
       conversations: conversationLastMessages
     }).send(res);
   };
 
   getCurrentUserLastConversation = async (req: Request, res: Response): Promise<void> => {
-    const conversationLastMessage: IMessageDocument = await chatService.getCurrentUserLastConversation(req.currentUser!.username);
+    const conversationLastMessage: IMessageDocument = await chatService.getCurrentUserLastConversation(req.currentUser!.id);
     new OkRequestSuccess('Last conversation', {
       conversations: conversationLastMessage
     }).send(res);
@@ -40,7 +40,8 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createConversation method error');
     }
-    const conversation = await chatService.createConversation(req.body.senderUsername, req.body.receiverUsername);
+    const senderId = req.currentUser!.id;
+    const conversation = await chatService.createConversation(senderId, req.body.receiverId);
     new CreatedRequestSuccess('Conversation has been created.', {
       conversation
     }).send(res);
@@ -51,24 +52,24 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'sendMessage method error');
     }
-    const { conversationId, senderUsername, receiverUsername, body } = req.body;
+    const { conversationId, receiverId, body } = req.body;
+    const senderId = req.currentUser!.id;
     let conversation: IConversationDocument | null = null;
     if (conversationId) {
       conversation = await chatService.getConversationByConversationId(conversationId);
     } else {
-      conversation = await chatService.getConversationBySenderAndReceiver(senderUsername, receiverUsername);
+      conversation = await chatService.getConversationBySenderAndReceiver(senderId, receiverId);
     }
     if (!conversation) {
       conversation = await ConversationModel.create({
-        senderUsername,
-        receiverUsername
+        participants: [senderId, receiverId]
       });
     }
     const message: IMessageDocument = {
       conversationId: conversation!.conversationId,
       body: body,
-      senderUsername: senderUsername,
-      receiverUsername: receiverUsername
+      senderId: senderId,
+      receiverId: receiverId
     };
     await chatService.createMessage(message);
     new OkRequestSuccess('Message has been sent.', {

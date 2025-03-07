@@ -42,9 +42,8 @@ export async function sendMessage(payload: IMessageDocument) {
   if (!session) notFound();
   const { error, value } = sendMessageSchema.validate(payload);
   if (error) {
-    return { success: false, message: error.details[0].message };
+    throw new Error(error.details[0].message);
   }
-
   const { data } = await axiosInstance.post('/chat/conversations/messages', value);
   const message: IMessageDocument = data.metadata?.message || [];
   return message;

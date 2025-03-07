@@ -27,7 +27,7 @@ done
 echo "🔄 Updating $LIB_TYPE in all services..."
 for SERVICE in "${SERVICES[@]}"; do
   echo "📦 Updating $LIB_TYPE in $SERVICE..."
-  "cd ../servers/$SERVICE" || continue
+  cd "../servers/$SERVICE" || continue
   npm install $LIB_TYPE@latest
   cd - > /dev/null
 done

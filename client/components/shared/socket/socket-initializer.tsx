@@ -1,27 +1,27 @@
 'use client';
 
-import { SocketEvents } from '@/lib/constants/socket-events';
 import { socketClient } from '@/sockets/socket-client';
+import { SocketEvents } from '@cngvc/shopi-shared-types';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';
 import { useThrottle } from 'react-use';
 
 export default function SocketInitializer() {
   const session = useSession();
-  const throttledUsername = useThrottle(session.data?.user?.username, 5000);
+  const throttledId = useThrottle(session.data?.user?.id, 5000);
 
   useEffect(() => {
-    if (throttledUsername) {
+    if (throttledId) {
       console.log('🟢 User online: ', socketClient.socket.connected);
-      socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, throttledUsername);
+      socketClient.socket.emit(SocketEvents.LOGGED_IN_USERS, throttledId);
     }
-  }, [throttledUsername]);
+  }, [throttledId]);
 
   const emitUserOffline = useCallback(() => {
-    const username = session.data?.user?.username;
-    if (username) {
+    const id = session.data?.user?.id;
+    if (id) {
       console.log('🔴 User offline: ', socketClient.socket.connected);
-      socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
+      socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, id);
     }
   }, [session.data?.user]);
 

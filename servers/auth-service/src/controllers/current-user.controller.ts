@@ -18,7 +18,7 @@ class CurrentUserController {
   async getCurrentUser(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new NotFoundError('User not found', 'getCurrentUser() method');
+      throw new NotFoundError('User not found', 'getCurrentUser method');
     }
     new OkRequestSuccess('Authenticated user', { user: existingUser }).send(res);
   }
@@ -26,10 +26,10 @@ class CurrentUserController {
   async resendEmail(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new BadRequestError('Email is invalid', 'resentEmailmethod error');
+      throw new BadRequestError('Email is invalid', 'resentEmail method error');
     }
     if (existingUser.emailVerified) {
-      throw new BadRequestError('Email has been verified', 'resentEmailmethod error');
+      throw new BadRequestError('Email has been verified', 'resentEmail method error');
     }
     const randomCharacters = await generateRandomCharacters();
     await authService.updateVerifyEmailField(existingUser.id!, false, randomCharacters);

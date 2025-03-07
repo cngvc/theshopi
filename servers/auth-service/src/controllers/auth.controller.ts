@@ -46,7 +46,8 @@ class AuthController {
       username: lowerCase(username),
       email: lowerCase(email),
       password,
-      emailVerificationToken: randomCharacters
+      emailVerificationToken: randomCharacters,
+      emailVerified: false
     };
     const result = await authService.createAuthUser(authData);
     const verificationLink = `${config.CLIENT_URL}/confirm_email?v_token${authData.emailVerificationToken}`;
