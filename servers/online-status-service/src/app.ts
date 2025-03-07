@@ -7,7 +7,7 @@ class Application {
     const app: Express = express();
     const server = new OnlineStatusServer(app);
     server.start();
-    redisCache.connect();
+    redisCache.checkConnection();
   }
 }
 

@@ -5,7 +5,7 @@ import { onlineStatusCache } from '@online-status/redis/online-status-cache';
 import { log } from '@online-status/utils/logger.util';
 import { createAdapter } from '@socket.io/redis-adapter';
 import http from 'http';
-import { createClient } from 'redis';
+import Redis from 'ioredis';
 import { Server, Socket } from 'socket.io';
 
 export class SocketHandler {
@@ -22,11 +22,11 @@ export class SocketHandler {
   }
 
   async createSocket(): Promise<void> {
-    const pub = createClient({ url: config.REDIS_HOST });
+    const pub = new Redis(`${config.REDIS_HOST}`);
     const sub = pub.duplicate();
     try {
       await Promise.all([pub.connect(), sub.connect()]);
-      if (!pub.isOpen || !sub.isOpen) {
+      if (pub.status !== 'ready' || sub.status !== 'ready') {
         throw new Error(`${SERVICE_NAME} createSocket method`);
       }
       this.io.adapter(createAdapter(pub, sub));

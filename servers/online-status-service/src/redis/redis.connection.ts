@@ -1,25 +1,29 @@
 import { config } from '@online-status/config';
 import { SERVICE_NAME } from '@online-status/constants';
-import { RedisClient } from '@online-status/redis/types';
 import { log, logCatch } from '@online-status/utils/logger.util';
-import { createClient } from '@redis/client';
+import Redis from 'ioredis';
 
 class RedisCache {
-  client: RedisClient;
+  client: Redis;
 
   constructor() {
-    this.client = createClient({ url: config.REDIS_HOST });
+    this.client = new Redis(`${config.REDIS_HOST}`);
+
+    this.client.on('connect', () => {
+      log.info(`${SERVICE_NAME}: Redis Connected`);
+    });
+
+    this.client.on('error', (error: unknown) => {
+      logCatch(error, 'Redis connect listener error');
+    });
   }
 
-  async connect() {
+  async checkConnection() {
     try {
-      await this.client.connect();
-      log.info(SERVICE_NAME + ` Redis Connection: ${await this.client.ping()}`);
-      this.client.on('error', (error: unknown) => {
-        logCatch(error, 'redisConnect listener error');
-      });
+      await this.client.ping();
     } catch (error) {
-      logCatch(error, 'redisConnect');
+      logCatch(error, 'checkConnection');
+      this.client = new Redis(`${config.REDIS_HOST}`);
     }
   }
 }
