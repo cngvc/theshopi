@@ -1,5 +1,6 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IProductDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-shared-types';
+import { DefaultSearchQuery } from '@products/constants';
 import { productService } from '@products/services/product.service';
 import { Request, Response } from 'express';
 
@@ -41,6 +42,18 @@ class ProductController {
     };
     const updatedProduct = await productService.updateProduct(req.params.productId, product);
     new OkRequestSuccess('Product has been updated successfully.', { product: updatedProduct }).send(res);
+  };
+
+  getProducts = async (req: Request, res: Response): Promise<void> => {
+    const { query, min_price, max_price, from, size, type } = req.query;
+
+    const products = await productService.getProducts(
+      `${query || ''}`,
+      { from: parseInt(`${from || DefaultSearchQuery.from}`), size: parseInt(`${size || DefaultSearchQuery.size}`, 10) },
+      parseInt(`${min_price}`, 10),
+      parseInt(`${max_price}`, 10)
+    );
+    new OkRequestSuccess('Get products.', { products }).send(res);
   };
 
   getProductById = async (req: Request, res: Response): Promise<void> => {

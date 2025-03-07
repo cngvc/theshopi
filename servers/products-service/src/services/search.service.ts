@@ -1,3 +1,4 @@
+import { IHitsTotal, IPaginateProps, IQueryList } from '@cngvc/shopi-shared';
 import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
@@ -20,6 +21,40 @@ class SearchService {
     };
   }
 
-  async productsSearch() {}
+  async productsSearch(searchQuery: string, paginate: IPaginateProps, min?: number, max?: number) {
+    const { from = 0, size = 10 } = paginate;
+    const queryList: IQueryList[] = [
+      {
+        query_string: {
+          fields: ['name', 'description', 'description', 'tags', 'categories'],
+          query: `*${searchQuery}*`
+        }
+      },
+      {
+        term: {
+          isPublished: true
+        }
+      }
+    ];
+    if (!isNaN(parseInt(`${min}`)) && !isNaN(parseInt(`${max}`))) {
+      queryList.push({
+        range: {
+          price: {
+            gte: min,
+            lte: max
+          }
+        }
+      });
+    }
+    const { hits }: SearchResponse = await elasticSearch.search(elasticSearchIndexes.products, queryList, {
+      size,
+      ...(from != 0 && { search_after: [from] })
+    });
+    const total: IHitsTotal = hits.total as IHitsTotal;
+    return {
+      total: total.value,
+      hits: hits.hits
+    };
+  }
 }
 export const searchService = new SearchService();

@@ -12,6 +12,10 @@ class ProductController {
     const response: AxiosResponse = await productService.updateProduct(req.params.productId, req.body);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
+  async getProducts(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await productService.getProducts();
+    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+  }
   async getProductById(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await productService.getProductById(req.params.productId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);

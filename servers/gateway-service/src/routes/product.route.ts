@@ -10,10 +10,13 @@ class ProductRoutes {
   }
 
   public routes(): Router {
+    this.router.get('/products/', productController.getProducts);
+    this.router.get('/products/:productId', productController.getProductById);
+    this.router.get('/products/stores/:storeId', productController.getProductsByStore);
+
     this.router.post('/products/', AuthMiddleware.checkAuthentication, productController.createProduct);
     this.router.put('/products/:productId', AuthMiddleware.checkAuthentication, productController.updateProduct);
-    this.router.get('/products/:productId', AuthMiddleware.checkAuthentication, productController.getProductById);
-    this.router.get('/products/stores/:storeId', AuthMiddleware.checkAuthentication, productController.getProductsByStore);
+
     return this.router;
   }
 }

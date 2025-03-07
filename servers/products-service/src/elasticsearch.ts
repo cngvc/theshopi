@@ -1,7 +1,7 @@
 import { NotFoundError } from '@cngvc/shopi-shared';
 import { IProductDocument } from '@cngvc/shopi-shared-types';
 import { Client } from '@elastic/elasticsearch';
-import { CountResponse, GetResponse, QueryDslQueryContainer } from '@elastic/elasticsearch/lib/api/types';
+import { CountResponse, GetResponse, QueryDslQueryContainer, SearchRequest } from '@elastic/elasticsearch/lib/api/types';
 import { config } from '@products/config';
 import { SERVICE_NAME } from '@products/constants';
 import { log, logCatch } from '@products/utils/logger.util';
@@ -107,14 +107,15 @@ class ElasticSearch {
     }
   }
 
-  async search(index: string, queryList: QueryListType) {
+  async search(index: string, queryList: QueryListType, params?: Omit<SearchRequest, 'index' | 'query'>) {
     return await this.elasticSearchClient.search({
       index,
       query: {
         bool: {
           must: queryList
         }
-      }
+      },
+      ...params
     });
   }
 }

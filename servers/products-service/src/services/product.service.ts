@@ -1,4 +1,4 @@
-import { ExchangeNames, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, IPaginateProps, RoutingKeys } from '@cngvc/shopi-shared';
 import { IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
@@ -42,8 +42,8 @@ class ProductService {
   };
 
   getStoreProducts = async (storeId: string): Promise<IProductDocument[]> => {
-    const products: IProductDocument[] = [];
     const queryResults = await searchService.productsSearchByStoreId(storeId);
+    const products: IProductDocument[] = [];
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);
     }
@@ -106,6 +106,15 @@ class ProductService {
       await this.createProduct(product);
     }
   }
+
+  getProducts = async (searchQuery: string, paginate: IPaginateProps, min?: number, max?: number): Promise<IProductDocument[]> => {
+    const queryResults = await searchService.productsSearch(searchQuery, paginate, min, max);
+    const products: IProductDocument[] = [];
+    for (const item of queryResults.hits) {
+      products.push(item._source as IProductDocument);
+    }
+    return products;
+  };
 }
 
 export const productService = new ProductService();

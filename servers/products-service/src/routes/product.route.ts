@@ -10,6 +10,8 @@ class ProductRoutes {
   }
 
   public routes(): Router {
+    this.router.get('/', productController.getProducts);
+
     this.router.get('/:productId', productController.getProductById);
     this.router.get('/stores/:storeId', productController.getProductsByStore);
 
