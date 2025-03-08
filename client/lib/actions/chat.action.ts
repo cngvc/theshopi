@@ -6,11 +6,15 @@ import { notFound } from 'next/navigation';
 import axiosInstance from '../axios';
 
 export async function getConversationList() {
-  const session = await auth();
-  if (!session) notFound();
-  const { data } = await axiosInstance.get('/chat/conversations/');
-  const conversations: IMessageDocument[] = data.metadata?.conversations || [];
-  return conversations;
+  try {
+    const session = await auth();
+    if (!session) notFound();
+    const { data } = await axiosInstance.get('/chat/conversations/');
+    const conversations: IMessageDocument[] = data.metadata?.conversations || [];
+    return conversations;
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function getConversationByConversationId(id: string) {
@@ -30,11 +34,15 @@ export async function getConversationMessages(id: string) {
 }
 
 export async function getLatestConversation() {
-  const session = await auth();
-  if (!session) notFound();
-  const { data } = await axiosInstance.get('/chat/conversations/latest');
-  const conversation: IMessageDocument = data.metadata?.conversations || [];
-  return conversation;
+  try {
+    const session = await auth();
+    if (!session) notFound();
+    const { data } = await axiosInstance.get('/chat/conversations/latest');
+    const conversation: IMessageDocument = data.metadata?.conversations || [];
+    return conversation;
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function sendMessage(payload: IMessageDocument) {

@@ -30,8 +30,8 @@ const MessageBox = ({ id }: { id: string }) => {
   }, [conversation, session]);
 
   useEffect(() => {
-    if (lastMessageRef.current) {
-      lastMessageRef.current!.scrollIntoView(false);
+    if (messages && lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView(false);
     }
   }, [messages]);
 
@@ -62,7 +62,7 @@ const MessageBox = ({ id }: { id: string }) => {
   return (
     <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
       <CardHeader>
-        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-4 w-2/5" /> : sub}</CardTitle>
+        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-5 w-2/5" /> : sub}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">

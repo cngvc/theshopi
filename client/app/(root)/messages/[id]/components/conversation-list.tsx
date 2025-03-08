@@ -22,7 +22,7 @@ const ConversationList = () => {
     });
   }, [session?.data?.user, onlineUsers, data]);
 
-  if (!data?.length) {
+  if (!data?.length && !isLoading) {
     return (
       <Card className="flex-1 md:col-span-3 lg:col-span-2">
         <div className="p-6 text-center mt-4">

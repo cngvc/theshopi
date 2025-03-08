@@ -31,6 +31,23 @@ _(-v flag for volumes if needed)_
 
 ---
 
+### **🗂️ Service Domains**
+
+| Service                   | Base URL                |
+| ------------------------- | ----------------------- |
+| **Gateway Service**       | `http://localhost:4000` |
+| **Notification Service**  | `http://localhost:4001` |
+| **Auth Service**          | `http://localhost:4002` |
+| **Client (Frontend)**     | `http://localhost:3000` |
+| **Chat Service**          | `http://localhost:4005` |
+| **Users Service**         | `http://localhost:4003` |
+| **Products Service**      | `http://localhost:4004` |
+| **Online Status Service** | `http://localhost:4009` |
+| **Socket Service**        | `http://localhost:4010` |
+| **Cart Service**          | `http://localhost:4011` |
+
+---
+
 ### **📌 Notes:**
 
 - Ensure **Docker** and **Docker Compose** are installed before running the script.

@@ -1,4 +1,3 @@
-# docker-compose up -d mongodb mysql rabbitmq elasticsearch kibana
 name: "theshopi-containers"
 services:
   # requirement technical
@@ -10,20 +9,20 @@ services:
       - "6379:6379"
     command: redis-server --loglevel warning
     volumes:
-      - ./docker-volumes/cache:/data
+      - redis-data:/data
   mongodb:
     container_name: mongodb_container
-    image: mongodb/mongodb-community-server:latest
+    image: arm64v8/mongo:7-jammy
     restart: always
     ports:
       - "27017:27017"
     environment:
       - MONGO_INITDB_DATABASE=theshopi_users
     volumes:
-      - ./docker-volumes/mongodb:/data/db
+      - mongodb-data:/data/db
   mysql:
     container_name: mysql_container
-    image: arm64v8/mysql:latest
+    image: arm64v8/mysql:oracle
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=Asdfgh123
@@ -33,7 +32,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./docker-volumes/mysql:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
 
   rabbitmq:
     container_name: rabbitmq_container
@@ -45,10 +44,12 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
 
   elasticsearch:
     container_name: elasticsearch_container
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.3
+    image: arm64v8/elasticsearch:8.17.3
     restart: always
     ports:
       - "9200:9200"
@@ -67,13 +68,13 @@ services:
       - cluster.routing.allocation.disk.watermark.low=3gb
       - cluster.routing.allocation.disk.watermark.high=2gb
     volumes:
-      - ./docker-volumes/elasticsearch-data:/usr/share/elasticsearch/data
+      - elasticsearch-data:/usr/share/elasticsearch/data
     networks:
       - elastic
 
   kibana:
     container_name: kibana_container
-    image: docker.elastic.co/kibana/kibana:8.17.3
+    image: arm64v8/kibana:8.17.3
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
@@ -109,3 +110,9 @@ services:
 networks:
   elastic:
     name: elastic
+volumes:
+  mysql-data:
+  redis-data:
+  mongodb-data:
+  rabbitmq-data:
+  elasticsearch-data:

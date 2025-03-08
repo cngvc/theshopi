@@ -8,9 +8,13 @@ import axiosInstance from '../axios';
 export async function getCart() {
   const session = await auth();
   if (!session) notFound();
-  const { data } = await axiosInstance.get('/cart/');
-  const cart: ICartItem[] = data.metadata?.cart || [];
-  return cart;
+  try {
+    const { data } = await axiosInstance.get('/cart/');
+    const cart: ICartItem[] = data.metadata?.cart || [];
+    return cart;
+  } catch (error) {
+    return [];
+  }
 }
 
 export async function addToCart(productId: string) {

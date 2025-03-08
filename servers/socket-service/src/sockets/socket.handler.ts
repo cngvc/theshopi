@@ -1,4 +1,5 @@
 import { IMessageDocument, SocketEvents } from '@cngvc/shopi-shared-types';
+import { instrument } from '@socket.io/admin-ui';
 import { config } from '@socket/config';
 import { SERVICE_NAME } from '@socket/constants';
 import { log } from '@socket/utils/logger.util';
@@ -15,10 +16,21 @@ export class SocketHandler {
     log.info(`🤜 ${SERVICE_NAME} inits socket server`);
     this.io = new Server(httpServer, {
       cors: {
-        origin: `${config.GATEWAY_URL}`,
+        origin: [`${config.GATEWAY_URL}`, 'https://admin.socket.io'],
+        credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       }
     });
+    instrument(this.io, {
+      auth: {
+        type: 'basic',
+        username: 'admin',
+        password: '$2a$12$3RPdZuzEHr2TtUsv5slatuRPYbCDM1fdaW2szuCT14QunE24ukeUu'
+      },
+      namespaceName: '/admin',
+      mode: 'development'
+    });
+
     this.onlineStatusSocket = io(`${config.ONLINE_STATUS_BASE_URL}`, {
       transports: ['websocket'],
       secure: false
