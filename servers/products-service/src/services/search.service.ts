@@ -13,7 +13,7 @@ class SearchService {
         }
       }
     ];
-    const { hits }: SearchResponse = await elasticSearch.client.search(ElasticsearchIndexes.products, queryList);
+    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
     const total = hits.total as SearchTotalHits;
     return {
       total: total.value,
@@ -46,7 +46,7 @@ class SearchService {
         }
       });
     }
-    const { hits }: SearchResponse = await elasticSearch.client.search(ElasticsearchIndexes.products, queryList, {
+    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList, {
       size,
       ...(from != 0 && { search_after: [from] })
     });

@@ -69,7 +69,7 @@ export class AuthServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.client.checkConnection();
+    elasticSearch.checkConnection();
   }
 
   private async startQueues() {

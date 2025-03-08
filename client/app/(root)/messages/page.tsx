@@ -1,11 +1,11 @@
-import { getLatestConversation } from '@/lib/actions/chat.action';
+import { getCurrentUserLastConversation } from '@/lib/actions/chat.action';
 import { requireAuth } from '@/lib/auth-guard';
 import pages from '@/lib/constants/pages';
 import { redirect } from 'next/navigation';
 
 const Page = async () => {
   await requireAuth();
-  const conversation = await getLatestConversation();
+  const conversation = await getCurrentUserLastConversation();
   if (conversation?.conversationId) {
     redirect(`${pages.messages}/${conversation?.conversationId}`);
   }

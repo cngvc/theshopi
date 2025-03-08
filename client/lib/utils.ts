@@ -21,8 +21,8 @@ export const formatDate = (isoString?: string) => {
   if (isToday(date)) {
     const diffHours = differenceInHours(now, date);
     const diffMinutes = differenceInMinutes(now, date);
-    if (diffHours > 0) return `${diffHours} hours ago`;
-    if (diffMinutes > 0) return `${diffMinutes} minutes ago`;
+    if (diffHours > 0) return `${diffHours} hrs ago`;
+    if (diffMinutes > 0) return `${diffMinutes} mins ago`;
     return 'Just now';
   }
   if (isYesterday(date)) {

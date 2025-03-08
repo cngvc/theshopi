@@ -76,8 +76,8 @@ export class ProductServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.client.checkConnection();
-    elasticSearch.client.createIndex(ElasticsearchIndexes.products);
+    elasticSearch.checkConnection();
+    elasticSearch.createIndex(ElasticsearchIndexes.products);
   }
 
   private errorHandler(): void {

@@ -33,12 +33,12 @@ export async function getConversationMessages(id: string) {
   return messages;
 }
 
-export async function getLatestConversation() {
+export async function getCurrentUserLastConversation() {
   try {
     const session = await auth();
     if (!session) notFound();
     const { data } = await axiosInstance.get('/chat/conversations/latest');
-    const conversation: IConversationDocument = data.metadata?.conversations || [];
+    const conversation: IConversationDocument = data.metadata?.conversation || null;
     return conversation;
   } catch (error) {
     return null;

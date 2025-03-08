@@ -13,15 +13,15 @@ class ChatController {
   };
 
   getCurrentUserLastConversation = async (req: Request, res: Response): Promise<void> => {
-    const conversationLastMessage: IMessageDocument = await chatService.getCurrentUserLastConversation(req.currentUser!.id);
+    const conversation: IConversationDocument | null = await chatService.getCurrentUserLastConversation(req.currentUser!.id);
     new OkRequestSuccess('Last conversation', {
-      conversations: conversationLastMessage
+      conversation: conversation
     }).send(res);
   };
 
   getConversationByConversationId = async (req: Request, res: Response): Promise<void> => {
     const { conversationId } = req.params;
-    const conversation = await chatService.getConversationByConversationId(conversationId);
+    const conversation = await chatService.getConversationByConversationId(conversationId, req.currentUser!.id);
     new OkRequestSuccess('Chat conversation.', {
       conversation
     }).send(res);
@@ -57,9 +57,9 @@ class ChatController {
     const senderId = req.currentUser!.id;
     let conversation: IConversationDocument | null = null;
     if (conversationId) {
-      conversation = await chatService.getConversationByConversationId(conversationId);
+      conversation = await chatService.getConversationByConversationId(conversationId, senderId);
     } else {
-      conversation = await chatService.getConversationBySenderAndReceiver(senderId, receiverId);
+      conversation = await chatService.getUserConversation(senderId, receiverId);
     }
     if (!conversation) {
       conversation = await ConversationModel.create({

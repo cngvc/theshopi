@@ -1,10 +1,9 @@
 import { ElasticSearch as BaseElasticSearch } from '@cngvc/shopi-shared';
-import { config } from '@products/config';
+import { config } from './config';
 
-class ElasticSearch {
-  client: BaseElasticSearch;
+class ElasticSearch extends BaseElasticSearch {
   constructor() {
-    this.client = new BaseElasticSearch(`${config.ELASTIC_SEARCH_URL}`);
+    super(`${config.ELASTIC_SEARCH_URL}`);
   }
 }
 

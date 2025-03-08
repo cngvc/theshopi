@@ -33,7 +33,7 @@ export class NotificationServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.client.checkConnection();
+    elasticSearch.checkConnection();
   }
 
   private startServer() {

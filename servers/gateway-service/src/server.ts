@@ -67,7 +67,7 @@ export class GatewayServer {
   }
 
   private startElasticSearch(): void {
-    elasticSearch.client.checkConnection();
+    elasticSearch.checkConnection();
   }
 
   private standardMiddleware(): void {
