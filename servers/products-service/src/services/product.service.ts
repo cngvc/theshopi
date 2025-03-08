@@ -12,7 +12,7 @@ import slugify from 'slugify';
 
 class ProductService {
   createProduct = async (product: IProductDocument): Promise<IProductDocument> => {
-    const newProduct: IProductDocument = await ProductModel.create(product);
+    const newProduct = await ProductModel.create(product);
     if (newProduct) {
       await productProducer.publishDirectMessage(
         productChannel,
@@ -20,7 +20,7 @@ class ProductService {
         RoutingKeys.USERS_STORE_UPDATE,
         JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 })
       );
-      const data = newProduct.toJSON?.();
+      const data = newProduct.toJSON();
       await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${newProduct._id}`, data);
     }
     return newProduct;
@@ -38,6 +38,7 @@ class ProductService {
 
   getProductByIdentifier = async (identifier: string): Promise<IProductDocument> => {
     const product: IProductDocument = await elasticSearch.getIndexedData<IProductDocument>(ElasticsearchIndexes.products, identifier);
+    console.log(product);
     return product;
   };
 
@@ -51,7 +52,7 @@ class ProductService {
   };
 
   updateProduct = async (productId: string, payload: IProductDocument): Promise<IProductDocument> => {
-    const document: IProductDocument = (await ProductModel.findOneAndUpdate(
+    const document = await ProductModel.findOneAndUpdate(
       { _id: productId },
       {
         $set: {
@@ -66,14 +67,12 @@ class ProductService {
         }
       },
       { new: true }
-    ).exec()) as IProductDocument;
-
+    ).exec();
     if (document) {
-      const data = document.toJSON?.() as IProductDocument;
+      const data = document.toJSON() as IProductDocument;
       await elasticSearch.updateIndexedItem(ElasticsearchIndexes.products, `${document._id}`, data);
     }
-
-    return document;
+    return document as IProductDocument;
   };
 
   async createSeeds(stores: IStoreDocument[]): Promise<void> {

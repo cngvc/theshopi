@@ -1,4 +1,5 @@
-import { IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { elasticSearch } from '@users/elasticsearch';
 import { StoreModel } from '@users/models/store.schema';
 import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';
@@ -28,6 +29,21 @@ class StoreService {
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
     const createdStore: IStoreDocument = (await StoreModel.create(payload)) as IStoreDocument;
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore._id}`, {
+      username: createdStore.username,
+      email: createdStore.email,
+      ownerId: createdStore.ownerId,
+      authOwnerId: createdStore.authOwnerId,
+      description: createdStore.description,
+      ratingsCount: createdStore.ratingsCount,
+      ratingSum: createdStore.ratingSum,
+      ratingCategories: createdStore.ratingCategories,
+      socialLinks: createdStore.socialLinks,
+      completedOrders: createdStore.completedOrders,
+      cancelledOrders: createdStore.cancelledOrders,
+      totalEarnings: createdStore.totalEarnings,
+      totalProducts: createdStore.totalProducts
+    });
     await buyerService.updateBuyerBecomeStore(`${createdStore.ownerId}`, `${createdStore._id}`);
     return createdStore;
   };

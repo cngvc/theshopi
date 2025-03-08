@@ -71,6 +71,7 @@ export class UsersServer {
   private startElasticSearch() {
     elasticSearch.checkConnection();
     elasticSearch.createIndex(ElasticsearchIndexes.auth);
+    elasticSearch.createIndex(ElasticsearchIndexes.stores);
   }
 
   private async startQueues() {

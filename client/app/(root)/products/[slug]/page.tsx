@@ -27,8 +27,8 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
               ]}
             />
           </div>
-          <div className="col-span-2 p-5">
-            <div className="flex flex-col gap-6">
+          <div className="col-span-2 p-4">
+            <div className="flex flex-col gap-4">
               <h1 className="h3-bold">{product.name}</h1>
               <p>{product.ratingsCount} reviews</p>
               <div className="flex flex-col sm:flex-row sm:items-center gap-3">
