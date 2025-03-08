@@ -23,7 +23,7 @@ export class SocketServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.checkConnection();
+    elasticSearch.client.checkConnection();
   }
 
   private startServer() {

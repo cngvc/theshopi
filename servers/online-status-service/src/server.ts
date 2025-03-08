@@ -23,7 +23,7 @@ export class OnlineStatusServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.checkConnection();
+    elasticSearch.client.checkConnection();
   }
 
   private startServer() {

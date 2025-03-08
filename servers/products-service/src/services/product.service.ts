@@ -1,7 +1,6 @@
 import { ExchangeNames, IPaginateProps, RoutingKeys } from '@cngvc/shopi-shared';
-import { IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
-import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
 import { ProductModel } from '@products/models/product.schema';
 import { productProducer } from '@products/queues/product.producer';
@@ -22,7 +21,7 @@ class ProductService {
         JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 })
       );
       const data = newProduct.toJSON?.();
-      await elasticSearch.addItemToIndex(elasticSearchIndexes.products, `${newProduct._id}`, data);
+      await elasticSearch.client.addItemToIndex(ElasticsearchIndexes.products, `${newProduct._id}`, data);
     }
     return newProduct;
   };
@@ -34,11 +33,14 @@ class ProductService {
       RoutingKeys.USERS_STORE_UPDATE,
       JSON.stringify({ type: 'update-store-product-count', storeId: `${storeId}`, count: 1 })
     );
-    await elasticSearch.deleteIndexedItem(elasticSearchIndexes.products, productId);
+    await elasticSearch.client.deleteIndexedItem(ElasticsearchIndexes.products, productId);
   };
 
   getProductByIdentifier = async (identifier: string): Promise<IProductDocument> => {
-    const product: IProductDocument = await elasticSearch.getIndexedData(elasticSearchIndexes.products, identifier);
+    const product: IProductDocument = await elasticSearch.client.getIndexedData<IProductDocument>(
+      ElasticsearchIndexes.products,
+      identifier
+    );
     return product;
   };
 
@@ -71,7 +73,7 @@ class ProductService {
 
     if (document) {
       const data = document.toJSON?.() as IProductDocument;
-      await elasticSearch.updateIndexedItem(elasticSearchIndexes.products, `${document._id}`, data);
+      await elasticSearch.client.updateIndexedItem(ElasticsearchIndexes.products, `${document._id}`, data);
     }
 
     return document;

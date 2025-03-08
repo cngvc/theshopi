@@ -1,5 +1,5 @@
-import { BASE_PATH } from '@cart/constants/path';
-import { healthRoutes } from '@cart/routes/health.route';
+import { BASE_PATH } from '@reviews/constants/path';
+import { healthRoutes } from '@reviews/routes/health.route';
 import { Application } from 'express';
 
 const appRoutes = (app: Application): void => {

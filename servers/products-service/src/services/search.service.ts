@@ -1,6 +1,6 @@
 import { IHitsTotal, IPaginateProps, IQueryList } from '@cngvc/shopi-shared';
+import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
 import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
-import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
 import { elasticSearch } from '@products/elasticsearch';
 
 class SearchService {
@@ -13,7 +13,7 @@ class SearchService {
         }
       }
     ];
-    const { hits }: SearchResponse = await elasticSearch.search(elasticSearchIndexes.products, queryList);
+    const { hits }: SearchResponse = await elasticSearch.client.search(ElasticsearchIndexes.products, queryList);
     const total = hits.total as SearchTotalHits;
     return {
       total: total.value,
@@ -46,7 +46,7 @@ class SearchService {
         }
       });
     }
-    const { hits }: SearchResponse = await elasticSearch.search(elasticSearchIndexes.products, queryList, {
+    const { hits }: SearchResponse = await elasticSearch.client.search(ElasticsearchIndexes.products, queryList, {
       size,
       ...(from != 0 && { search_after: [from] })
     });

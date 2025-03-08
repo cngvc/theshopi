@@ -1,11 +1,11 @@
 import 'express-async-errors';
 
-import { config } from '@cart/config';
-import { SERVER_PORT, SERVICE_NAME } from '@cart/constants';
-import { queueConnection } from '@cart/queues/connection';
-import { appRoutes } from '@cart/routes';
-import { log, logCatch } from '@cart/utils/logger.util';
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { config } from '@reviews/config';
+import { SERVER_PORT, SERVICE_NAME } from '@reviews/constants';
+import { queueConnection } from '@reviews/queues/connection';
+import { appRoutes } from '@reviews/routes';
+import { log, logCatch } from '@reviews/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';

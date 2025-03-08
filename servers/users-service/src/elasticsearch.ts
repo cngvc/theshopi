@@ -1,3 +1,4 @@
+import { IAuthDocument } from '@cngvc/shopi-shared';
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@users/config';
 import { SERVICE_NAME } from '@users/constants';
@@ -12,7 +13,7 @@ class ElasticSearch {
     });
   }
 
-  public async checkConnection(): Promise<void> {
+  async checkConnection(): Promise<void> {
     let isConnected = false;
     while (!isConnected) {
       try {
@@ -23,6 +24,19 @@ class ElasticSearch {
         logCatch(error, 'checkConnection, connection to elasticsearch failed, retrying');
         await new Promise((resolve) => setTimeout(resolve, 5000));
       }
+    }
+  }
+
+  async addItemToIndex(index: string, itemId: string, doc: unknown): Promise<void> {
+    try {
+      log.info(`Adding new doc named ${(doc as IAuthDocument).username ?? 'Buyer'} to index ${index}`);
+      await this.elasticSearchClient.index({
+        index,
+        id: itemId,
+        document: doc
+      });
+    } catch (error) {
+      logCatch(error, 'addItemToIndex');
     }
   }
 }

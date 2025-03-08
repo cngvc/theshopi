@@ -1,13 +1,4 @@
-import { config } from '@cart/config';
-import { SERVICE_NAME } from '@cart/constants';
-import { getErrorMessage, winstonLogger } from '@cngvc/shopi-shared';
-import { Logger } from 'winston';
+import { createLogger } from '@cngvc/shopi-shared';
+import { SERVICE_NAME } from '@reviews/constants';
 
-const logger = (name: string, level: string) => {
-  const log: Logger = winstonLogger(`${config.ELASTIC_SEARCH_URL}`, name, level);
-  return log;
-};
-
-export const log = logger(SERVICE_NAME, 'debug');
-
-export const logCatch = (error: unknown, comingFrom: string) => log.log('error', `${SERVICE_NAME} ${comingFrom}`, getErrorMessage(error));
+export const { log, logCatch } = createLogger(SERVICE_NAME, `${process.env.ELASTIC_SEARCH_URL}`);

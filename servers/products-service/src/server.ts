@@ -1,10 +1,9 @@
 import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
 import { config } from '@products/config';
 import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
-import { elasticSearchIndexes } from '@products/constants/elasticsearch-indexes';
-import { elasticSearch } from '@products/elasticsearch';
 import { queueConnection } from '@products/queues/connection';
 import { productConsumes } from '@products/queues/product.consumer';
 import { appRoutes } from '@products/routes';
@@ -17,6 +16,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
+import { elasticSearch } from './elasticsearch';
 
 export let productChannel: Channel;
 
@@ -76,8 +76,8 @@ export class ProductServer {
   }
 
   private startElasticSearch() {
-    elasticSearch.checkConnection();
-    elasticSearch.createIndex(elasticSearchIndexes.products);
+    elasticSearch.client.checkConnection();
+    elasticSearch.client.createIndex(ElasticsearchIndexes.products);
   }
 
   private errorHandler(): void {

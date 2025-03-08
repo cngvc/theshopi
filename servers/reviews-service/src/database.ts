@@ -1,6 +1,6 @@
-import { config } from '@cart/config';
-import { SERVICE_NAME } from '@cart/constants';
-import { log } from '@cart/utils/logger.util';
+import { config } from '@reviews/config';
+import { SERVICE_NAME } from '@reviews/constants';
+import { log } from '@reviews/utils/logger.util';
 import mongoose from 'mongoose';
 
 export class Database {

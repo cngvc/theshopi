@@ -1,4 +1,5 @@
-import { IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { elasticSearch } from '@users/elasticsearch';
 import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {
@@ -26,6 +27,10 @@ class BuyerService {
     const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
     if (!checkIfBuyerExist) {
       await BuyerModel.create(payload);
+      await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
+        username: payload.username,
+        email: payload.email
+      });
     }
   };
 
