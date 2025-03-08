@@ -1,13 +1,13 @@
-import { ElasticsearchIndexes, IReviewMessageDetails, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { elasticSearch } from '@users/elasticsearch';
 import { StoreModel } from '@users/models/store.schema';
 import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';
 
 class StoreService {
-  getStoreById = async (storeId: string): Promise<IStoreDocument | null> => {
+  getStoreById = async (storePublicId: string): Promise<IStoreDocument | null> => {
     const store: IStoreDocument | null = (await StoreModel.findOne({
-      _id: new mongoose.Types.ObjectId(storeId)
+      _id: new mongoose.Types.ObjectId(storePublicId)
     }).lean()) as IStoreDocument;
     return store;
   };
@@ -29,28 +29,26 @@ class StoreService {
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
     const createdStore: IStoreDocument = (await StoreModel.create(payload)) as IStoreDocument;
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore._id}`, {
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.ownerAuthId}`, {
+      storePublicId: createdStore.storePublicId,
       username: createdStore.username,
       email: createdStore.email,
-      ownerId: createdStore.ownerId,
-      authOwnerId: createdStore.authOwnerId,
+      ownerAuthId: createdStore.ownerAuthId,
+      ownerPublicId: createdStore.ownerPublicId,
       description: createdStore.description,
-      ratingsCount: createdStore.ratingsCount,
-      ratingSum: createdStore.ratingSum,
-      ratingCategories: createdStore.ratingCategories,
       socialLinks: createdStore.socialLinks,
       completedOrders: createdStore.completedOrders,
       cancelledOrders: createdStore.cancelledOrders,
       totalEarnings: createdStore.totalEarnings,
       totalProducts: createdStore.totalProducts
-    });
-    await buyerService.updateBuyerBecomeStore(`${createdStore.ownerId}`, `${createdStore._id}`);
+    } as IStoreDocument);
+    await buyerService.updateBuyerBecomeStore(`${createdStore.ownerPublicId}`, `${createdStore.storePublicId}`);
     return createdStore;
   };
 
-  updateStore = async (storeId: string, payload: IStoreDocument): Promise<IStoreDocument> => {
+  updateStore = async (storePublicId: string, payload: IStoreDocument): Promise<IStoreDocument> => {
     const updatedStore: IStoreDocument = (await StoreModel.findOneAndUpdate(
-      { _id: storeId },
+      { storePublicId: storePublicId },
       {
         $set: {
           name: payload.name,
@@ -63,34 +61,12 @@ class StoreService {
     return updatedStore;
   };
 
-  updateTotalProductsCount = async (storeId: string, count: number): Promise<void> => {
-    await StoreModel.updateOne({ _id: storeId }, { $inc: { totalProducts: count } }).exec();
+  updateTotalProductsCount = async (storePublicId: string, count: number): Promise<void> => {
+    await StoreModel.updateOne({ storePublicId: storePublicId }, { $inc: { totalProducts: count } }).exec();
   };
 
-  updateStoreCancelledJobsProp = async (storeId: string): Promise<void> => {
-    await StoreModel.updateOne({ _id: storeId }, { $inc: { cancelledOrders: 1 } }).exec();
-  };
-
-  updateStoreReview = async (data: IReviewMessageDetails): Promise<void> => {
-    const ratingTypes: Record<string, string> = {
-      '1': 'one',
-      '2': 'two',
-      '3': 'three',
-      '4': 'four',
-      '5': 'five'
-    };
-    const ratingKey: string = ratingTypes[`${data.rating}`];
-    await StoreModel.updateOne(
-      { _id: data.storeId },
-      {
-        $inc: {
-          ratingsCount: 1,
-          ratingSum: data.rating,
-          [`ratingCategories.${ratingKey}.value`]: data.rating,
-          [`ratingCategories.${ratingKey}.count`]: 1
-        }
-      }
-    ).exec();
+  updateStoreCancelledOrdersProp = async (storePublicId: string): Promise<void> => {
+    await StoreModel.updateOne({ storePublicId: storePublicId }, { $inc: { cancelledOrders: 1 } }).exec();
   };
 }
 

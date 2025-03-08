@@ -12,6 +12,7 @@ import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
+import { VerifyUserMiddleware } from './middlewares/verify-user-exist.middleware';
 
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
@@ -22,13 +23,14 @@ export const appRoutes = (app: Application) => {
 
   const privateRouter = Router();
   privateRouter.use(AuthMiddleware.verifySessionJWT);
+  privateRouter.use(VerifyUserMiddleware.verifyUserExists);
   privateRouter.use(productRoutes.routes());
-  privateRouter.use(seedRoutes.routes());
   privateRouter.use(tokenRoutes.routes());
   privateRouter.use(storeRoutes.routes());
   privateRouter.use(buyerRoutes.routes());
   privateRouter.use(currentUserRoutes.routes());
   privateRouter.use(chatRoutes.routes());
   privateRouter.use(cartRoutes.routes());
+  privateRouter.use(seedRoutes.routes());
   app.use(BASE_PATH, privateRouter);
 };

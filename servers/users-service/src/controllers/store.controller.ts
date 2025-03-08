@@ -19,8 +19,8 @@ class StoreController {
       throw new BadRequestError('Buyer with auth id not found', 'createStore method error');
     }
     const store: IStoreDocument = {
-      ownerId: buyer.authId,
-      authOwnerId: buyer.authId,
+      ownerAuthId: buyer.authId,
+      ownerPublicId: buyer.buyerPublicId,
       username: req.body.username || buyer.username,
       name: req.body.name,
       email: req.body.email || buyer.email,
@@ -32,7 +32,7 @@ class StoreController {
   };
 
   getStoreById = async (req: Request, res: Response): Promise<void> => {
-    const store: IStoreDocument | null = await storeService.getStoreById(req.params.storeId);
+    const store: IStoreDocument | null = await storeService.getStoreById(req.params.storePublicId);
     new OkRequestSuccess('Store profile.', { store }).send(res);
   };
 
@@ -56,7 +56,7 @@ class StoreController {
       description: req.body.description,
       socialLinks: req.body.socialLinks
     };
-    const updatedStore: IStoreDocument = await storeService.updateStore(req.params.storeId, store);
+    const updatedStore: IStoreDocument = await storeService.updateStore(req.params.storePublicId, store);
     new OkRequestSuccess('Store has been updated successfully.', { store: updatedStore }).send(res);
   };
 }

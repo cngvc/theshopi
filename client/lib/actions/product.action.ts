@@ -1,6 +1,6 @@
 'use server';
 
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import axiosInstance from '../axios';
 
 export async function getProductList() {
@@ -16,8 +16,8 @@ export async function getProductList() {
 export async function getProductByIdentifier(identifier: string) {
   try {
     const { data } = await axiosInstance.get(`/products/${identifier}`);
-    const product: IProductDocument = data.metadata?.product;
-    return product;
+    const { product, store }: { product: IProductDocument; store: IStoreDocument | null } = data.metadata;
+    return { product, store };
   } catch (error) {
     return null;
   }

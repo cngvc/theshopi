@@ -15,24 +15,24 @@ import { faker } from '@faker-js/faker';
 import { get } from 'lodash';
 
 class ChatService {
-  createConversation = async (sender: string, receiver: string): Promise<IConversationDocument> => {
-    const existingConversation = await this.getUserConversation(sender, receiver);
+  createConversation = async (senderAuthId: string, receiverAuthId: string): Promise<IConversationDocument> => {
+    const existingConversation = await this.findUserConversation(senderAuthId, receiverAuthId);
     if (existingConversation) {
       return existingConversation;
     }
     const conversation = await ConversationModel.create({
-      participants: [sender, receiver]
+      participants: [senderAuthId, receiverAuthId]
     });
     const defaultMessage = await MessageModel.create({
-      conversationId: conversation._id,
-      senderId: receiver,
-      receiverId: sender,
+      conversationPublicId: conversation.conversationPublicId,
+      senderAuthId: receiverAuthId,
+      receiverAuthId: senderAuthId,
       body: 'Hello! How can I help you?',
       isRead: false
     });
     conversation.lastMessage = {
-      messageId: `${defaultMessage._id}`,
-      senderId: defaultMessage.senderId,
+      messagePublicId: `${defaultMessage.messagePublicId}`,
+      senderAuthId: defaultMessage.senderAuthId,
       body: defaultMessage.body,
       createdAt: defaultMessage.createdAt
     };
@@ -42,26 +42,31 @@ class ChatService {
 
   createMessage = async (data: IMessageDocument) => {
     const message = await MessageModel.create(data);
+
+    const _message = message.toJSON();
+    const obj = await this.findElasticsearchAuthByMessage(_message);
+    _message['counterpartName'] = obj[message.senderAuthId]?.username || null;
+    _message['counterpartId'] = message.senderAuthId;
+    socketServer.emit(SocketEvents.MESSAGE_RECEIVED, _message);
     await ConversationModel.updateOne(
-      { conversationId: data.conversationId },
+      { conversationPublicId: data.conversationPublicId },
       {
         $set: {
           lastMessage: {
-            messageId: message.id,
-            senderId: message.senderId,
-            body: message.body
+            messagePublicId: _message.messagePublicId,
+            senderAuthId: _message.senderAuthId,
+            body: _message.body
           }
         },
         $currentDate: { updatedAt: true }
       }
     );
-    socketServer.emit(SocketEvents.MESSAGE_RECEIVED, message);
   };
 
-  getUserConversation = async (sender: string, receiver: string) => {
+  findUserConversation = async (senderPublicId: string, receiverPublicId: string) => {
     const conversations = await ConversationModel.aggregate([
       {
-        $match: { participants: { $all: [sender, receiver] } }
+        $match: { participants: { $all: [senderPublicId, receiverPublicId] } }
       },
       {
         $limit: 1
@@ -70,15 +75,19 @@ class ChatService {
     return conversations[0];
   };
 
-  getConversationByConversationId = async (conversationPublicId: string, currentId: string) => {
-    const conversation = await ConversationModel.findOne({ conversationId: conversationPublicId }).lean();
+  findConversationByConversationPublicId = async (conversationPublicId: string) => {
+    const conversation = await ConversationModel.findOne({ conversationPublicId: conversationPublicId }).lean();
+    return conversation;
+  };
+
+  getConversationByConversationPublicId = async (conversationPublicId: string, currentId: string) => {
+    const conversation = await this.findConversationByConversationPublicId(conversationPublicId);
     if (!conversation) return null;
-    const objUsers = await this.getElasticsearchAuthByConversations(conversation);
+    const obj = await this.findElasticsearchAuthByConversations(conversation);
     conversation.participants.forEach((participant) => {
       if (participant !== currentId) {
-        conversation['counterpartName'] = objUsers[participant]?.username || null;
+        conversation['counterpartName'] = obj[participant]?.username || null;
         conversation['counterpartId'] = participant;
-        console.log(conversation);
       }
     });
     return conversation;
@@ -88,17 +97,20 @@ class ChatService {
     const messages: IMessageDocument[] = await MessageModel.aggregate([
       {
         $match: {
-          conversationId: conversationPublicId
+          conversationPublicId: conversationPublicId
         }
       },
       { $sort: { createdAt: -1 } },
       { $limit: 20 }
     ]);
     if (messages.length) {
-      const objUsers = await this.getElasticsearchAuthByMessage(messages[0]);
-      messages.forEach((message) => {
-        message['counterpartName'] = objUsers[message.senderId!]?.username || null;
-      });
+      try {
+        const obj = await this.findElasticsearchAuthByMessage(messages[0]);
+        messages.forEach((message) => {
+          message['counterpartName'] = obj[message.senderAuthId]?.username || null;
+          message['counterpartId'] = message.senderAuthId;
+        });
+      } catch (error) {}
       return messages.reverse();
     }
     return [];
@@ -120,15 +132,18 @@ class ChatService {
         }
       }
     ]);
-    const objUsers = await this.getElasticsearchAuthByConversations(conversations);
-    conversations.forEach((conversation) => {
-      conversation.participants.forEach((participant) => {
-        if (participant !== authId) {
-          conversation['counterpartName'] = objUsers[participant]?.username || null;
-          conversation['counterpartId'] = participant;
-        }
+    try {
+      const obj = await this.findElasticsearchAuthByConversations(conversations);
+      conversations.forEach((conversation) => {
+        conversation.participants.forEach((participant) => {
+          if (participant !== authId) {
+            conversation['counterpartName'] = obj[participant]?.username || null;
+            conversation['counterpartId'] = participant;
+          }
+        });
       });
-    });
+    } catch (error) {}
+
     return conversations;
   };
 
@@ -161,16 +176,16 @@ class ChatService {
       const receiver = stores[i];
       const sender = buyers[i];
       for (let i = 0; i < count; i++) {
-        if (sender.authId === receiver.authOwnerId) {
+        if (sender.authId === receiver.ownerAuthId) {
           continue;
         }
-        const savedConversation = await this.createConversation(`${sender.authId}`, `${receiver.authOwnerId}`);
+        const savedConversation = await this.createConversation(`${sender.authId}`, `${receiver.ownerAuthId}`);
         const messages: IMessageDocument[] = [];
         for (let i = 0; i < count * 5; i++) {
           messages.push({
-            conversationId: savedConversation.conversationId,
-            senderId: savedConversation.participants[0],
-            receiverId: savedConversation.participants[1],
+            conversationPublicId: savedConversation.conversationPublicId!,
+            senderAuthId: savedConversation.participants[0],
+            receiverAuthId: savedConversation.participants[1],
             body: faker.lorem.sentence()
           });
         }
@@ -178,12 +193,12 @@ class ChatService {
         const lastMessage = messages.at(-1);
         if (lastMessage) {
           await ConversationModel.updateOne(
-            { conversationId: savedConversation.conversationId },
+            { conversationPublicId: savedConversation.conversationPublicId },
             {
               $set: {
                 lastMessage: {
-                  messageId: lastMessage._id,
-                  senderId: lastMessage.senderId,
+                  messagePublicId: lastMessage.messagePublicId,
+                  senderAuthId: lastMessage.senderAuthId,
                   body: lastMessage.body
                 }
               },
@@ -196,7 +211,7 @@ class ChatService {
     }
   };
 
-  private getElasticsearchAuthByConversations = async (conversations: IConversationDocument | IConversationDocument[]) => {
+  private findElasticsearchAuthByConversations = async (conversations: IConversationDocument | IConversationDocument[]) => {
     const uniqueUserIds = new Set<string>();
     if (Array.isArray(conversations)) {
       conversations.forEach((conversation) => {
@@ -213,29 +228,29 @@ class ChatService {
       index: ElasticsearchIndexes.auth,
       body: { ids: [...new Set(uniqueUserIds)] }
     });
-    const objUsers = docs.reduce(
+    const obj = docs.reduce(
       (acc, doc) => {
         if (doc._id) acc[doc._id] = get(doc, ['_source']);
         return acc;
       },
       {} as Record<string, any>
     );
-    return objUsers;
+    return obj;
   };
 
-  private getElasticsearchAuthByMessage = async (message: IMessageDocument) => {
+  private findElasticsearchAuthByMessage = async (message: IMessageDocument) => {
     const { docs } = await elasticSearch.client.mget({
       index: ElasticsearchIndexes.auth,
-      body: { ids: [message.senderId!, message.receiverId!] }
+      body: { ids: [message.senderAuthId!, message.receiverAuthId!] }
     });
-    const objUsers = docs.reduce(
+    const obj = docs.reduce(
       (acc, doc) => {
         if (doc._id) acc[doc._id] = get(doc, ['_source']);
         return acc;
       },
       {} as Record<string, any>
     );
-    return objUsers;
+    return obj;
   };
 }
 

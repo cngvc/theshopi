@@ -9,7 +9,7 @@ class ProductController {
     new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
   async updateProduct(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await productService.updateProduct(req.params.productId, req.body);
+    const response: AxiosResponse = await productService.updateProduct(req.params.productPublicId, req.body);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
   async getProducts(req: Request, res: Response): Promise<void> {
@@ -21,7 +21,7 @@ class ProductController {
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
   async getProductsByStore(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await productService.getProductsByStore(req.params.storeId);
+    const response: AxiosResponse = await productService.getProductsByStore(req.params.storePublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
 }

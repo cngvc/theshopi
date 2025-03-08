@@ -9,7 +9,7 @@ class ProductRoutes {
   }
 
   public routes(): Router {
-    this.router.put('/:productId', productController.updateProduct);
+    this.router.put('/:productPublicId', productController.updateProduct);
     this.router.post('/', productController.createProduct);
     this.router.put('/seed/:count', productSeedController.createdSeeds);
     return this.router;

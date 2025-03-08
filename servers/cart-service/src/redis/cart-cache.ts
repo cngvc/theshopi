@@ -5,12 +5,12 @@ import { ICartItem } from '@cngvc/shopi-shared-types';
 class CartCache {
   private async modifyCart(
     key: string,
-    productId: string,
+    productPublicId: string,
     modifier: (items: ICartItem[], index: number) => ICartItem[]
   ): Promise<ICartItem[]> {
     const savedCart = await redisCache.client.lrange(key, 0, -1);
     let items: ICartItem[] = savedCart.map((item) => JSON.parse(item));
-    const index = items.findIndex((item) => item.productId === productId);
+    const index = items.findIndex((item) => item.productPublicId === productPublicId);
 
     const updatedItems = modifier(items, index);
     if (updatedItems) {
@@ -30,30 +30,30 @@ class CartCache {
     return response.map((e) => JSON.parse(e));
   }
 
-  async updateCart(key: string, productId: string, amount: number = 1): Promise<ICartItem[]> {
-    return this.modifyCart(key, productId, (items, index) => {
+  async updateCart(key: string, productPublicId: string, amount: number = 1): Promise<ICartItem[]> {
+    return this.modifyCart(key, productPublicId, (items, index) => {
       if (index !== -1) {
         items[index].quantity = Math.max(amount, 1);
       } else {
-        items.push({ productId, quantity: Math.max(amount, 1) });
+        items.push({ productPublicId, quantity: Math.max(amount, 1) });
       }
       return items;
     });
   }
 
-  async saveCart(key: string, productId: string, amount: number = 1): Promise<ICartItem[]> {
-    return this.modifyCart(key, productId, (items, index) => {
+  async saveCart(key: string, productPublicId: string, amount: number = 1): Promise<ICartItem[]> {
+    return this.modifyCart(key, productPublicId, (items, index) => {
       if (index !== -1) {
         items[index].quantity += Math.max(amount, 1);
       } else {
-        items.push({ productId, quantity: Math.max(amount, 1) });
+        items.push({ productPublicId, quantity: Math.max(amount, 1) });
       }
       return items;
     });
   }
 
-  async increaseItemInCart(key: string, productId: string): Promise<ICartItem[]> {
-    return this.modifyCart(key, productId, (items, index) => {
+  async increaseItemInCart(key: string, productPublicId: string): Promise<ICartItem[]> {
+    return this.modifyCart(key, productPublicId, (items, index) => {
       if (index !== -1) {
         items[index].quantity += 1;
       }
@@ -61,8 +61,8 @@ class CartCache {
     });
   }
 
-  async decreaseItemInCart(key: string, productId: string): Promise<ICartItem[]> {
-    return this.modifyCart(key, productId, (items, index) => {
+  async decreaseItemInCart(key: string, productPublicId: string): Promise<ICartItem[]> {
+    return this.modifyCart(key, productPublicId, (items, index) => {
       if (index !== -1) {
         items[index].quantity -= 1;
         if (items[index].quantity <= 0) {
@@ -73,9 +73,9 @@ class CartCache {
     });
   }
 
-  async removeItemInCart(key: string, productId: string): Promise<ICartItem[]> {
-    return this.modifyCart(key, productId, (items) => {
-      return items.filter((item) => item.productId !== productId);
+  async removeItemInCart(key: string, productPublicId: string): Promise<ICartItem[]> {
+    return this.modifyCart(key, productPublicId, (items) => {
+      return items.filter((item) => item.productPublicId !== productPublicId);
     });
   }
 }

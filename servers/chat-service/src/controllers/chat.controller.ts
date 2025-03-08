@@ -19,17 +19,17 @@ class ChatController {
     }).send(res);
   };
 
-  getConversationByConversationId = async (req: Request, res: Response): Promise<void> => {
-    const { conversationId } = req.params;
-    const conversation = await chatService.getConversationByConversationId(conversationId, req.currentUser!.id);
+  getConversationByConversationPublicId = async (req: Request, res: Response): Promise<void> => {
+    const { conversationPublicId } = req.params;
+    const conversation = await chatService.getConversationByConversationPublicId(conversationPublicId, req.currentUser!.id);
     new OkRequestSuccess('Chat conversation.', {
       conversation
     }).send(res);
   };
 
   getConversationMessages = async (req: Request, res: Response): Promise<void> => {
-    const { conversationId } = req.params;
-    const messages: IMessageDocument[] = await chatService.getConversationMessages(conversationId);
+    const { conversationPublicId } = req.params;
+    const messages: IMessageDocument[] = await chatService.getConversationMessages(conversationPublicId);
     new OkRequestSuccess('Conversation messages.', {
       messages
     }).send(res);
@@ -40,8 +40,8 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createConversation method error');
     }
-    const senderId = req.currentUser!.id;
-    const conversation = await chatService.createConversation(senderId, req.body.receiverId);
+    const senderAuthId = req.currentUser!.id;
+    const conversation = await chatService.createConversation(senderAuthId, req.body.receiverAuthId);
     new CreatedRequestSuccess('Conversation has been created.', {
       conversation
     }).send(res);
@@ -52,25 +52,24 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'sendMessage method error');
     }
-    const { conversationId, receiverId, body } = req.body;
-
-    const senderId = req.currentUser!.id;
+    const { conversationPublicId, receiverAuthId, body } = req.body;
+    const senderAuthId = req.currentUser!.id;
     let conversation: IConversationDocument | null = null;
-    if (conversationId) {
-      conversation = await chatService.getConversationByConversationId(conversationId, senderId);
+    if (conversationPublicId) {
+      conversation = await chatService.findConversationByConversationPublicId(conversationPublicId);
     } else {
-      conversation = await chatService.getUserConversation(senderId, receiverId);
+      conversation = await chatService.findUserConversation(senderAuthId, receiverAuthId);
     }
     if (!conversation) {
       conversation = await ConversationModel.create({
-        participants: [senderId, receiverId]
+        participants: [senderAuthId, receiverAuthId]
       });
     }
     const message: IMessageDocument = {
-      conversationId: conversation!.conversationId,
+      conversationPublicId: conversation.conversationPublicId!,
       body: body,
-      senderId: senderId,
-      receiverId: receiverId
+      senderAuthId: senderAuthId,
+      receiverAuthId: receiverAuthId
     };
     await chatService.createMessage(message);
     new OkRequestSuccess('Message has been sent.', {

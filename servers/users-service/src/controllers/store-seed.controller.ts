@@ -19,8 +19,8 @@ class StoreSeedController {
           name: faker.person.fullName(),
           username: buyer.username,
           email: buyer.email,
-          ownerId: `${buyer._id}`,
-          authOwnerId: `${buyer.authId}`,
+          ownerAuthId: `${buyer.authId}`,
+          ownerPublicId: `${buyer.buyerPublicId}`,
           description: basicDescription.length <= 250 ? basicDescription : basicDescription.slice(0, 250),
           socialLinks: ['http://youtube.com', 'https://facebook.com']
         };

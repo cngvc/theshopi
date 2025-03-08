@@ -29,34 +29,35 @@ class BuyerService {
       await BuyerModel.create(payload);
       await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
         username: payload.username,
-        email: payload.email
+        email: payload.email,
+        storePublicId: payload.storePublicId
       });
     }
   };
 
-  updateBuyerBecomeStore = async (buyerId: string, storeId: string): Promise<void> => {
+  updateBuyerBecomeStore = async (buyerPublicId: string, storePublicId: string): Promise<void> => {
     await BuyerModel.updateOne(
-      { _id: buyerId },
+      { buyerPublicId: buyerPublicId },
       {
         $set: {
-          storeId: storeId
+          storePublicId: storePublicId
         }
       }
     ).exec();
   };
 
-  updateBuyerPurchasedProductsProp = async (buyerId: string, purchasedProductId: string, type: string): Promise<void> => {
+  updateBuyerPurchasedProductsProp = async (buyerPublicId: string, purchasedProductPublicId: string, type: string): Promise<void> => {
     await BuyerModel.updateOne(
-      { _id: buyerId },
+      { buyerPublicId: buyerPublicId },
       type === 'purchased-product'
         ? {
             $push: {
-              purchasedProducts: purchasedProductId
+              purchasedProducts: purchasedProductPublicId
             }
           }
         : {
             $pull: {
-              purchasedProducts: purchasedProductId
+              purchasedProducts: purchasedProductPublicId
             }
           }
     ).exec();

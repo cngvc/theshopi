@@ -6,8 +6,8 @@ import { redirect } from 'next/navigation';
 const Page = async () => {
   await requireAuth();
   const conversation = await getCurrentUserLastConversation();
-  if (conversation?.conversationId) {
-    redirect(`${pages.messages}/${conversation?.conversationId}`);
+  if (conversation?.conversationPublicId) {
+    redirect(`${pages.messages}/${conversation?.conversationPublicId}`);
   }
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-6">

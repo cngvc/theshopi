@@ -1,6 +1,13 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { IProductDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-shared-types';
+import {
+  ElasticsearchIndexes,
+  IProductDocument,
+  IStoreDocument,
+  productCreateSchema,
+  productUpdateSchema
+} from '@cngvc/shopi-shared-types';
 import { DefaultSearchQuery } from '@products/constants';
+import { elasticSearch } from '@products/elasticsearch';
 import { productService } from '@products/services/product.service';
 import { Request, Response } from 'express';
 
@@ -8,10 +15,16 @@ class ProductController {
   createProduct = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(productCreateSchema.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'createProduct() method');
+      throw new BadRequestError(error.details[0].message, 'createProduct method');
     }
+    const storePublicId = ((await elasticSearch.getIndexedData(ElasticsearchIndexes.stores, req.currentUser!.id)) as IStoreDocument | null)
+      ?.ownerAuthId;
+    if (!storePublicId) {
+      throw new BadRequestError('Store not found or you are not store user', 'createProduct method');
+    }
+
     const product: IProductDocument = {
-      storeId: req.body.storeId,
+      storePublicId: storePublicId,
       thumb: req.body.thumb,
       name: req.body.name,
       description: req.body.description,
@@ -30,7 +43,14 @@ class ProductController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createProduct() method');
     }
+    const storePublicId = ((await elasticSearch.getIndexedData(ElasticsearchIndexes.stores, req.currentUser!.id)) as IStoreDocument | null)
+      ?.ownerAuthId;
+    if (!storePublicId) {
+      throw new BadRequestError('Store not found or you are not store user', 'createProduct method');
+    }
+
     const product: IProductDocument = {
+      storePublicId: storePublicId,
       thumb: req.body.thumb,
       name: req.body.name,
       description: req.body.description,
@@ -40,13 +60,12 @@ class ProductController {
       categories: req.body.categories,
       tags: req.body.tags
     };
-    const updatedProduct = await productService.updateProduct(req.params.productId, product);
+    const updatedProduct = await productService.updateProduct(req.params.productPublicId, product);
     new OkRequestSuccess('Product has been updated successfully.', { product: updatedProduct }).send(res);
   };
 
   getProducts = async (req: Request, res: Response): Promise<void> => {
     const { query, min_price, max_price, from, size, type } = req.query;
-
     const products = await productService.getProducts(
       `${query || ''}`,
       { from: parseInt(`${from || DefaultSearchQuery.from}`), size: parseInt(`${size || DefaultSearchQuery.size}`, 10) },
@@ -57,12 +76,12 @@ class ProductController {
   };
 
   getProductByIdentifier = async (req: Request, res: Response): Promise<void> => {
-    const product = await productService.getProductByIdentifier(req.params.identifier);
-    new OkRequestSuccess('Get product by id.', { product }).send(res);
+    const { product, store } = await productService.getProductByIdentifier(req.params.identifier);
+    new OkRequestSuccess('Get product by id.', { product, store }).send(res);
   };
 
   getProductsByStore = async (req: Request, res: Response): Promise<void> => {
-    const products: IProductDocument[] = await productService.getStoreProducts(req.params.storeId);
+    const products: IProductDocument[] = await productService.getStoreProducts(req.params.storePublicId);
     new OkRequestSuccess('Get store products.', { products }).send(res);
   };
 }

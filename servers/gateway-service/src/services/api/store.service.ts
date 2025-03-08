@@ -8,8 +8,8 @@ class StoreService extends AxiosService {
     super(`${config.USERS_BASE_URL}/api/v1/store`, 'store');
   }
 
-  async getStoreById(storeId: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get(`/${storeId}`);
+  async getStoreById(storePublicId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await this.get(`/${storePublicId}`);
     return response;
   }
 
@@ -28,8 +28,8 @@ class StoreService extends AxiosService {
     return response;
   }
 
-  async updateStore(storeId: string, body: IStoreDocument): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.put(`/${storeId}`, body);
+  async updateStore(storePublicId: string, body: IStoreDocument): Promise<AxiosResponse> {
+    const response: AxiosResponse = await this.put(`/${storePublicId}`, body);
     return response;
   }
 

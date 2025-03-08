@@ -16,12 +16,12 @@ const AddToCart = ({ item }: { item: IProductDocument }) => {
   const { mutate: addToCart, isPending } = useAddToCart();
 
   const existItems = useMemo(() => {
-    return data?.find((ci) => ci.productId === item.id)?.quantity || 0;
+    return data?.find((ci) => ci.productPublicId === item.productPublicId)?.quantity || 0;
   }, [data, item]);
 
   const handleAddToCart = async () => {
     try {
-      await addToCart(`${item.id}`);
+      await addToCart(`${item.productPublicId}`);
       toast.success('Update your cart', {
         description: 'The product has been added to the cart',
         action: {
@@ -30,7 +30,8 @@ const AddToCart = ({ item }: { item: IProductDocument }) => {
         }
       });
     } catch (error: unknown) {
-      toast(String(error));
+      console.log(error);
+      toast.error('Something was wrong');
     }
   };
 

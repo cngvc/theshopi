@@ -49,12 +49,12 @@ class UsersConsumes {
       const assertQueue = await channel.assertQueue(QueueNames.USERS_STORE_UPDATE, { durable: true, autoDelete: false });
       await channel.bindQueue(assertQueue.queue, ExchangeNames.USERS_STORE_UPDATE, RoutingKeys.USERS_STORE_UPDATE);
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { type, storeId, count } = JSON.parse(msg!.content.toString());
+        const { type, storePublicId, count } = JSON.parse(msg!.content.toString());
         if (type === 'create-order') {
         } else if (type === 'approve-order') {
         } else if (type === 'cancel-order') {
         } else if (type === 'update-store-product-count') {
-          await storeService.updateTotalProductsCount(storeId, count);
+          await storeService.updateTotalProductsCount(storePublicId, count);
         }
         channel.ack(msg!);
       });

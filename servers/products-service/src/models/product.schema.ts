@@ -1,10 +1,12 @@
 import { IProductDocument } from '@cngvc/shopi-shared-types';
-import mongoose, { Model, Schema, model } from 'mongoose';
+import { Model, Schema, model } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 const { default: slugify } = require('slugify');
 
 const productSchema: Schema = new Schema(
   {
-    storeId: { type: mongoose.Schema.Types.ObjectId, index: true },
+    productPublicId: { type: String, unique: true, index: true, default: uuidv4 },
+    storePublicId: { type: String, required: true, index: true },
     name: {
       type: String,
       required: true,
@@ -48,7 +50,6 @@ const productSchema: Schema = new Schema(
     versionKey: false,
     toJSON: {
       transform(_doc, rec) {
-        rec.id = rec._id;
         delete rec._id;
         return rec;
       }
@@ -57,17 +58,17 @@ const productSchema: Schema = new Schema(
 );
 
 productSchema.pre('validate', async function (next) {
+  if (!this.productPublicId) {
+    this.productPublicId = uuidv4();
+  }
   let slug = slugify(this.name, { lower: true });
   let counter = 1;
   while (await ProductModel.findOne({ slug: slug })) {
     slug = `${slug}-${counter}`;
     counter++;
   }
+  this.slug = slug;
   next();
-});
-
-productSchema.virtual('id').get(function () {
-  return this._id;
 });
 
 const ProductModel: Model<IProductDocument> = model<IProductDocument>('Product', productSchema, 'Product');

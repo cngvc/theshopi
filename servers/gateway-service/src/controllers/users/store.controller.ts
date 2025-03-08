@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 
 class StoreController {
   getStoreById = async (req: Request, res: Response) => {
-    const response: AxiosResponse = await storeService.getStoreById(req.params.storeId);
+    const response: AxiosResponse = await storeService.getStoreById(req.params.storePublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
   getStoreByUsername = async (req: Request, res: Response) => {
@@ -21,7 +21,7 @@ class StoreController {
     new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
   updateStore = async (req: Request, res: Response) => {
-    const response: AxiosResponse = await storeService.updateStore(req.params.storeId, req.body);
+    const response: AxiosResponse = await storeService.updateStore(req.params.storePublicId, req.body);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
 }

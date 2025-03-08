@@ -1,13 +1,14 @@
 'use server';
 
 import { auth } from '@/auth';
+import axiosInstance from '@/lib/axios';
+import pages from '@/lib/constants/pages';
 import { ICartItem } from '@cngvc/shopi-shared-types';
-import { notFound } from 'next/navigation';
-import axiosInstance from '../axios';
+import { redirect } from 'next/navigation';
 
 export async function getCart() {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   try {
     const { data } = await axiosInstance.get('/cart/');
     const cart: ICartItem[] = data.metadata?.cart || [];
@@ -17,53 +18,53 @@ export async function getCart() {
   }
 }
 
-export async function addToCart(productId: string) {
+export async function addToCart(productPublicId: string) {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   const { data } = await axiosInstance.post('/cart/', {
-    productId,
+    productPublicId,
     quantity: 1
   });
   const cart: ICartItem[] = data.metadata?.cart || [];
   return cart;
 }
 
-export async function updateCart(productId: string, quantity = 1) {
+export async function updateCart(productPublicId: string, quantity = 1) {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   const { data } = await axiosInstance.put('/cart/', {
-    productId,
+    productPublicId,
     quantity
   });
   const cart: ICartItem[] = data.metadata?.cart || [];
   return cart;
 }
 
-export async function increaseItemInCart(productId: string) {
+export async function increaseItemInCart(productPublicId: string) {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   const { data } = await axiosInstance.put('/cart/increase', {
-    productId
+    productPublicId
   });
   const cart: ICartItem[] = data.metadata?.cart || [];
   return cart;
 }
 
-export async function decreaseItemInCart(productId: string) {
+export async function decreaseItemInCart(productPublicId: string) {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   const { data } = await axiosInstance.put('/cart/decrease', {
-    productId
+    productPublicId
   });
   const cart: ICartItem[] = data.metadata?.cart || [];
   return cart;
 }
 
-export async function removeItemInCart(productId: string) {
+export async function removeItemInCart(productPublicId: string) {
   const session = await auth();
-  if (!session) notFound();
+  if (!session) redirect(pages.signin);
   const { data } = await axiosInstance.put('/cart/remove-item', {
-    productId
+    productPublicId
   });
   const cart: ICartItem[] = data.metadata?.cart || [];
   return cart;

@@ -14,31 +14,31 @@ class CartService {
 
   async addToCart(userId: string, item: ICartItem) {
     const key = this.generateCartKey(userId);
-    const cart = await cartCache.saveCart(key, item.productId, item.quantity);
+    const cart = await cartCache.saveCart(key, item.productPublicId, item.quantity);
     return cart;
   }
 
   async updateCart(userId: string, item: ICartItem) {
     const key = this.generateCartKey(userId);
-    const cart = await cartCache.updateCart(key, item.productId, item.quantity);
+    const cart = await cartCache.updateCart(key, item.productPublicId, item.quantity);
     return cart;
   }
 
   async increaseItemInCart(userId: string, item: ICartItem) {
     const key = this.generateCartKey(userId);
-    const cart = await cartCache.increaseItemInCart(key, item.productId);
+    const cart = await cartCache.increaseItemInCart(key, item.productPublicId);
     return cart;
   }
 
   async decreaseItemInCart(userId: string, item: ICartItem) {
     const key = this.generateCartKey(userId);
-    const cart = await cartCache.decreaseItemInCart(key, item.productId);
+    const cart = await cartCache.decreaseItemInCart(key, item.productPublicId);
     return cart;
   }
 
   async removeItemInCart(userId: string, item: ICartItem) {
     const key = this.generateCartKey(userId);
-    const cart = await cartCache.removeItemInCart(key, item.productId);
+    const cart = await cartCache.removeItemInCart(key, item.productPublicId);
     return cart;
   }
 }

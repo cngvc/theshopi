@@ -1,5 +1,5 @@
 import { IHitsTotal, IPaginateProps, IQueryList } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { elasticSearch } from '@products/elasticsearch';
 
@@ -8,7 +8,7 @@ class SearchService {
     const queryList = [
       {
         query_string: {
-          fields: ['storeId'],
+          fields: ['storePublicId'],
           query: `${searchQuery}`
         }
       }
@@ -55,6 +55,15 @@ class SearchService {
       total: total.value,
       hits: hits.hits
     };
+  }
+
+  async storeSearchByStorePublicId(storePublicId: string) {
+    const queryList = [{ term: { 'storePublicId.keyword': storePublicId } }];
+    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.stores, queryList, { size: 1 });
+    if (hits.hits.length === 0) {
+      return null;
+    }
+    return hits.hits[0]._source as IStoreDocument;
   }
 }
 export const searchService = new SearchService();

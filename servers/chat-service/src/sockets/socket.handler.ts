@@ -19,14 +19,13 @@ export class SocketHandler {
   }
   public listen() {
     this.io.on('connection', async (socket: Socket) => {
-      log.info(`🔈 ${SERVICE_NAME} is listening`);
-      socket.on(SocketEvents.USER_JOIN_ROOM, async (conversationId: string) => {
-        log.info('A new user joins room: ', conversationId);
-        socket.join(`chatroom:${conversationId}`);
+      socket.on(SocketEvents.USER_JOIN_ROOM, async (conversationPublicId: string) => {
+        log.info('A new user joins room: ', conversationPublicId);
+        socket.join(`chatroom:${conversationPublicId}`);
       });
-      socket.on(SocketEvents.USER_LEFT_ROOM, async (conversationId: string) => {
-        log.info('A user leaves room: ', conversationId);
-        socket.leave(`chatroom:${conversationId}`);
+      socket.on(SocketEvents.USER_LEFT_ROOM, async (conversationPublicId: string) => {
+        log.info('A user leaves room: ', conversationPublicId);
+        socket.leave(`chatroom:${conversationPublicId}`);
       });
     });
     this.io.on('connect_error', (err) => {

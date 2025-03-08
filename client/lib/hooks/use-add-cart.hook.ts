@@ -1,12 +1,13 @@
+import { addToCart } from '@/lib/actions/cart.action';
+import queryKeys from '@/lib/constants/query-keys';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { addToCart } from '../actions/cart.action';
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (productId: string) => addToCart(productId),
+    mutationFn: (productPublicId: string) => addToCart(productPublicId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.cart] });
     }
   });
 };

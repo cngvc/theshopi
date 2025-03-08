@@ -20,16 +20,10 @@ class BaseSocketClient {
 
     this.socket.on('disconnect', (reason: Socket.DisconnectReason) => {
       console.log(`😞 Gateway socket disconnect, reason: ${reason}`);
-      setTimeout(() => {
-        this.socket.connect();
-      }, 2500);
     });
 
     this.socket.on('connect_error', (error: Error) => {
       console.log(`👇 Gateway socket connect error: ${error.message}`);
-      setTimeout(() => {
-        this.socket.connect();
-      }, 2500);
     });
   }
 }

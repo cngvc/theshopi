@@ -7,7 +7,7 @@ import ProductPrice from './product-price';
 
 const ProductCard = ({ product }: { product: IProductDocument }) => {
   return (
-    <Link href={`${pages.products}/${product.slug}-i.${product.id}`}>
+    <Link href={`${pages.products}/${product.slug}-i.${product.productPublicId}`}>
       <Card className="col-span-1">
         <CardHeader>
           <Image

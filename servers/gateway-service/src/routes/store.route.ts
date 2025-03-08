@@ -11,11 +11,11 @@ class StoreRoutes {
 
   public routes(): Router {
     this.router.use(AuthMiddleware.checkAuthentication);
-    this.router.get('/store/:storeId', storeController.getStoreById);
+    this.router.get('/store/:storePublicId', storeController.getStoreById);
     this.router.get('/store/username/:username', storeController.getStoreByUsername);
     this.router.get('/store/random/:size', storeController.getRandomStores);
     this.router.post('/store', storeController.createStore);
-    this.router.put('/store/:storeId', storeController.updateStore);
+    this.router.put('/store/:storePublicId', storeController.updateStore);
 
     return this.router;
   }

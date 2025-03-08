@@ -4,13 +4,13 @@ import { formatDate } from '@/lib/utils';
 import { IMessageDocument } from '@cngvc/shopi-shared-types';
 
 const MessageItem = ({ message }: { message: IMessageDocument }) => {
-  const name = (message?.counterpartName || message._id || '-') as string;
+  const name = (message.counterpartName || message.messagePublicId || '-') as string;
   return (
     <div className="py-2 border-b flex space-x-4">
       <div className="flex items-start pt-1 justify-start">
         <Avatar className="h-12 w-12">
           <AvatarImage src="" alt={`User avatar ${name}`} />
-          <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
+          <AvatarFallback>{(name || '-')[0].toUpperCase()}</AvatarFallback>
         </Avatar>
       </div>
       <div className="flex flex-col flex-1 justify-center">

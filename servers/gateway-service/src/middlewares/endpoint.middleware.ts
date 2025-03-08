@@ -5,7 +5,7 @@ class EndpointMiddleware {
   gatewayRequestLogger = (req: Request, res: Response, next: NextFunction) => {
     const endpoint = req.originalUrl;
     const method = req.method;
-    log.info(`📌 Endpoint: [${method}] ${endpoint}`);
+    log.info(`📌 [${method}] ${endpoint}`);
     next();
   };
 }

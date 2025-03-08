@@ -18,32 +18,32 @@ class ProductService {
         productChannel,
         ExchangeNames.USERS_STORE_UPDATE,
         RoutingKeys.USERS_STORE_UPDATE,
-        JSON.stringify({ type: 'update-store-product-count', storeId: `${newProduct.storeId}`, count: 1 })
+        JSON.stringify({ type: 'update-store-product-count', storePublicId: `${newProduct.storePublicId}`, count: 1 })
       );
       const data = newProduct.toJSON();
-      await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${newProduct._id}`, data);
+      await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${newProduct.productPublicId}`, data);
     }
     return newProduct;
   };
-  deleteProduct = async (productId: string, storeId: string): Promise<void> => {
-    await ProductModel.deleteOne({ _id: productId }).exec();
+  deleteProduct = async (productPublicId: string, storePublicId: string): Promise<void> => {
+    await ProductModel.deleteOne({ productPublicId: productPublicId }).exec();
     await productProducer.publishDirectMessage(
       productChannel,
       ExchangeNames.USERS_STORE_UPDATE,
       RoutingKeys.USERS_STORE_UPDATE,
-      JSON.stringify({ type: 'update-store-product-count', storeId: `${storeId}`, count: 1 })
+      JSON.stringify({ type: 'update-store-product-count', storePublicId: `${storePublicId}`, count: 1 })
     );
-    await elasticSearch.deleteIndexedItem(ElasticsearchIndexes.products, productId);
+    await elasticSearch.deleteIndexedItem(ElasticsearchIndexes.products, productPublicId);
   };
 
-  getProductByIdentifier = async (identifier: string): Promise<IProductDocument> => {
+  getProductByIdentifier = async (identifier: string): Promise<{ product: IProductDocument; store: IStoreDocument | null }> => {
     const product: IProductDocument = await elasticSearch.getIndexedData<IProductDocument>(ElasticsearchIndexes.products, identifier);
-    console.log(product);
-    return product;
+    const store = await searchService.storeSearchByStorePublicId(product.storePublicId);
+    return { product, store };
   };
 
-  getStoreProducts = async (storeId: string): Promise<IProductDocument[]> => {
-    const queryResults = await searchService.productsSearchByStoreId(storeId);
+  getStoreProducts = async (storePublicId: string): Promise<IProductDocument[]> => {
+    const queryResults = await searchService.productsSearchByStoreId(storePublicId);
     const products: IProductDocument[] = [];
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);
@@ -51,9 +51,9 @@ class ProductService {
     return products;
   };
 
-  updateProduct = async (productId: string, payload: IProductDocument): Promise<IProductDocument> => {
+  updateProduct = async (productPublicId: string, payload: IProductDocument): Promise<IProductDocument> => {
     const document = await ProductModel.findOneAndUpdate(
-      { _id: productId },
+      { productPublicId: productPublicId },
       {
         $set: {
           name: payload.name,
@@ -70,7 +70,7 @@ class ProductService {
     ).exec();
     if (document) {
       const data = document.toJSON() as IProductDocument;
-      await elasticSearch.updateIndexedItem(ElasticsearchIndexes.products, `${document._id}`, data);
+      await elasticSearch.updateIndexedItem(ElasticsearchIndexes.products, `${document.productPublicId}`, data);
     }
     return document as IProductDocument;
   };
@@ -88,8 +88,9 @@ class ProductService {
       const name = faker.commerce.productName();
       const description = faker.commerce.productDescription();
       const rating = sample(randomRatings);
+
       const product: IProductDocument = {
-        storeId: store._id,
+        storePublicId: `${store.storePublicId}`,
         name: name,
         description: description,
         price: parseInt(faker.commerce.price({ min: 20, max: 100, dec: 0 })),

@@ -12,7 +12,7 @@ class ProductRoutes {
   public routes(): Router {
     this.router.use(AuthMiddleware.checkAuthentication);
     this.router.post('/products/', productController.createProduct);
-    this.router.put('/products/:productId', productController.updateProduct);
+    this.router.put('/products/:productPublicId', productController.updateProduct);
 
     return this.router;
   }

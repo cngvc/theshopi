@@ -37,7 +37,6 @@ export class SocketHandler {
 
   public listen() {
     this.io.on('connection', async (socket: Socket) => {
-      log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
         const response: string[] = await onlineStatusCache.saveLoggedInUser(SocketEvents.LOGGED_IN_USERS, username);
         this.io.emit(SocketEvents.LOGGED_IN_USERS, response);

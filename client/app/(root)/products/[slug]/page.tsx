@@ -1,23 +1,25 @@
-import AddToCart from '@/components/shared/product/add-to-cart';
 import ProductImages from '@/components/shared/product/product-images';
 import ProductPrice from '@/components/shared/product/product-price';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
 import { getProductByIdentifier } from '@/lib/actions/product.action';
 import { notFound } from 'next/navigation';
+import StockCard from './components/stock-card';
+import StoreCard from './components/store-card';
 
 const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) => {
   const { slug } = await props.params;
   const match = slug.match(/-i\.(.+)$/);
-  const productId = match ? match[1] : null;
-  if (!productId) notFound();
-  const product = await getProductByIdentifier(productId);
-  if (!product) notFound();
+  const productPublicId = match ? match[1] : null;
+  if (!productPublicId) notFound();
+
+  const data = await getProductByIdentifier(productPublicId);
+  if (!data) notFound();
+
+  const { product, store } = data;
   return (
     <>
-      <section>
-        <div className="grid grid-cols-1 md:grid-cols-5">
-          <div className="col-span-2">
+      <section className="mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-5 gap-5">
+          <div className="col-span-1 sm:col-span-2">
             <ProductImages
               images={[
                 'https://placehold.co/1000x1000/png',
@@ -27,7 +29,8 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
               ]}
             />
           </div>
-          <div className="col-span-2 p-4">
+
+          <div className="col-span-1 sm:col-span-2">
             <div className="flex flex-col gap-4">
               <h1 className="h3-bold">{product.name}</h1>
               <p>{product.ratingsCount} reviews</p>
@@ -41,27 +44,14 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
             </div>
           </div>
 
-          <div>
-            <Card>
-              <CardContent>
-                <div className="mb-2 flex justify-between items-center">
-                  <div className="text-sm">Price</div>
-                  <div>
-                    <ProductPrice value={Number(product.price)} />
-                  </div>
-                </div>
-                <div className="mb-4 flex justify-between items-center">
-                  <div className="text-sm">Status</div>
-                  {product.quantity! > 0 ? <Badge variant="outline">In Stock</Badge> : <Badge variant="destructive">Out Of Stock</Badge>}
-                </div>
-
-                {product.quantity! > 0 && <AddToCart item={product} />}
-              </CardContent>
-            </Card>
+          <div className="flex flex-col space-y-5 col-span-full lg:col-span-1">
+            {store && <StoreCard store={store} />}
+            <StockCard product={product} />
           </div>
         </div>
       </section>
-      <section className="mt-10">
+
+      <section>
         <h2 className="h2-bold mb-5">Customer Reviews</h2>
       </section>
     </>

@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { getConversationByConversationId } from '../actions/chat.action';
+import { getConversationByConversationPublicId } from '../actions/chat.action';
+import queryKeys from '../constants/query-keys';
 
 export const useConversation = (id?: string | null) => {
   const { data, isLoading } = useQuery({
-    queryKey: ['conversation', id],
-    queryFn: () => getConversationByConversationId(id!),
+    queryKey: [queryKeys.conversation, id],
+    queryFn: () => getConversationByConversationPublicId(id!),
     enabled: !!id
   });
   return { data, isLoading };

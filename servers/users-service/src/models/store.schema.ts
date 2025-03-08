@@ -1,23 +1,16 @@
 import { IStoreDocument } from '@cngvc/shopi-shared-types';
 import { Model, Schema, model } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 const storeSchema: Schema = new Schema(
   {
+    storePublicId: { type: String, unique: true, index: true, default: uuidv4 },
+    name: { type: String, require: true },
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
-    ownerId: { type: String, required: true, index: true },
-    authOwnerId: { type: String, required: true, index: true },
-
+    ownerPublicId: { type: String, required: true, index: true },
+    ownerAuthId: { type: String, required: true, index: true },
     description: { type: String, required: true },
-    ratingsCount: { type: Number, default: 0 },
-    ratingSum: { type: Number, default: 0 },
-    ratingCategories: {
-      five: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } },
-      four: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } },
-      three: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } },
-      two: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } },
-      one: { value: { type: Number, default: 0 }, count: { type: Number, default: 0 } }
-    },
     socialLinks: [{ type: String, default: '' }],
     completedOrders: { type: Number, default: 0 },
     cancelledOrders: { type: Number, default: 0 },
@@ -29,6 +22,13 @@ const storeSchema: Schema = new Schema(
     versionKey: false
   }
 );
+
+storeSchema.pre('validate', async function (next) {
+  if (!this.storePublicId) {
+    this.storePublicId = uuidv4();
+  }
+  next();
+});
 
 const StoreModel: Model<IStoreDocument> = model<IStoreDocument>('Store', storeSchema, 'Store');
 export { StoreModel };

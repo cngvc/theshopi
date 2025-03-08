@@ -45,7 +45,6 @@ export class SocketHandler {
     this.onlineStatusSocketConnect();
     this.chatSocketConnect();
     this.io.on('connection', async (socket: Socket) => {
-      log.info(`🚗 ${SERVICE_NAME} is listening`);
       socket.on(SocketEvents.LOGGED_IN_USERS, async (username: string) => {
         this.onlineStatusSocket.emit(SocketEvents.LOGGED_IN_USERS, username);
       });
@@ -55,13 +54,13 @@ export class SocketHandler {
       socket.on(SocketEvents.REMOVE_LOGGED_IN_USERS, async (username: string) => {
         this.onlineStatusSocket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, username);
       });
-      socket.on(SocketEvents.USER_JOIN_ROOM, async (conversationId: string) => {
-        log.info('A new user joins room: ', conversationId);
-        socket.join(`chatroom:${conversationId}`);
+      socket.on(SocketEvents.USER_JOIN_ROOM, async (conversationPublicId: string) => {
+        log.info('A new user joins room: ', conversationPublicId);
+        socket.join(`chatroom:${conversationPublicId}`);
       });
-      socket.on(SocketEvents.USER_LEFT_ROOM, async (conversationId: string) => {
-        log.info('A user leaves room: ', conversationId);
-        socket.leave(`chatroom:${conversationId}`);
+      socket.on(SocketEvents.USER_LEFT_ROOM, async (conversationPublicId: string) => {
+        log.info('A user leaves room: ', conversationPublicId);
+        socket.leave(`chatroom:${conversationPublicId}`);
       });
     });
 
@@ -124,8 +123,8 @@ export class SocketHandler {
       }, 5000);
     });
     this.chatSocket.on(SocketEvents.MESSAGE_RECEIVED, (data: IMessageDocument) => {
-      log.info(`📥 New message from ${data.senderId} to ${data.receiverId}`);
-      const roomId = `chatroom:${data.conversationId}`;
+      log.info(`📥 New message from ${data.senderAuthId} to ${data.receiverAuthId}`);
+      const roomId = `chatroom:${data.conversationPublicId}`;
       const socketsInRoom = this.io.sockets.adapter.rooms.get(roomId);
       if (socketsInRoom) {
         log.info(`👥 Users in room ${roomId}: ${socketsInRoom.size}`);
