@@ -7,7 +7,7 @@ import { IConversationDocument } from '@cngvc/shopi-shared-types';
 import Link from 'next/link';
 
 const ConversationItem = ({ conversation, isOnline }: { conversation: IConversationDocument; isOnline: boolean }) => {
-  const name = `${conversation.displayname || ''}`;
+  const name = `${conversation.counterpartName || ''}`;
   return (
     <Link
       className="py-2 border-b flex w-full space-x-4"

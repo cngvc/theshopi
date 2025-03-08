@@ -16,7 +16,7 @@ const ConversationList = () => {
 
   const list = useMemo(() => {
     return data?.map((conversation) => {
-      const isOnline = onlineUsers.includes(`${conversation.lastMessage!.senderId}`);
+      const isOnline = onlineUsers.includes(`${conversation.counterpartId}`);
       return <ConversationItem isOnline={isOnline} conversation={conversation} key={conversation.conversationId} />;
     });
   }, [session?.data?.user, onlineUsers, data]);

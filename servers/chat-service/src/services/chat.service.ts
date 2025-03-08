@@ -66,17 +66,19 @@ class ChatService {
       {
         $limit: 1
       }
-    ]).exec();
+    ]);
     return conversations[0];
   };
 
   getConversationByConversationId = async (conversationPublicId: string, currentId: string) => {
-    const conversation = await ConversationModel.findOne({ conversationId: conversationPublicId });
+    const conversation = await ConversationModel.findOne({ conversationId: conversationPublicId }).lean();
     if (!conversation) return null;
     const objUsers = await this.getElasticsearchAuthByConversations(conversation);
     conversation.participants.forEach((participant) => {
       if (participant !== currentId) {
-        conversation['displayname'] = objUsers[participant]?.username || null;
+        conversation['counterpartName'] = objUsers[participant]?.username || null;
+        conversation['counterpartId'] = participant;
+        console.log(conversation);
       }
     });
     return conversation;
@@ -95,7 +97,7 @@ class ChatService {
     if (messages.length) {
       const objUsers = await this.getElasticsearchAuthByMessage(messages[0]);
       messages.forEach((message) => {
-        message['displayname'] = objUsers[message.senderId!]?.username || null;
+        message['counterpartName'] = objUsers[message.senderId!]?.username || null;
       });
       return messages.reverse();
     }
@@ -122,7 +124,8 @@ class ChatService {
     conversations.forEach((conversation) => {
       conversation.participants.forEach((participant) => {
         if (participant !== authId) {
-          conversation['displayname'] = objUsers[participant]?.username || null;
+          conversation['counterpartName'] = objUsers[participant]?.username || null;
+          conversation['counterpartId'] = participant;
         }
       });
     });
@@ -147,7 +150,7 @@ class ChatService {
       {
         $limit: 1
       }
-    ]).exec();
+    ]);
     if (latestConversation.length) return latestConversation[0];
     return null;
   };

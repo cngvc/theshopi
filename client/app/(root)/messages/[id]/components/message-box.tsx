@@ -26,7 +26,6 @@ const MessageBox = ({ id }: { id: string }) => {
 
   const sub = useMemo(() => {
     if (!conversation) return undefined;
-    return conversation?.participants.find((e) => e !== session?.data?.user?.id);
   }, [conversation, session]);
 
   useEffect(() => {
@@ -62,7 +61,7 @@ const MessageBox = ({ id }: { id: string }) => {
   return (
     <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
       <CardHeader>
-        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-5 w-2/5" /> : sub}</CardTitle>
+        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-5 w-2/5" /> : `${conversation.counterpartName}`}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
         <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">

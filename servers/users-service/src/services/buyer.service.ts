@@ -4,17 +4,17 @@ import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {
   getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).exec()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).lean()) as IBuyerDocument;
     return buyer;
   };
 
   getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ email }).exec()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ email }).lean()) as IBuyerDocument;
     return buyer;
   };
 
   getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).exec()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).lean()) as IBuyerDocument;
     return buyer;
   };
 

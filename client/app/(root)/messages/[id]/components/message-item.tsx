@@ -4,7 +4,7 @@ import { formatDate } from '@/lib/utils';
 import { IMessageDocument } from '@cngvc/shopi-shared-types';
 
 const MessageItem = ({ message }: { message: IMessageDocument }) => {
-  const name = (message?.displayname || message._id || '-') as string;
+  const name = (message?.counterpartName || message._id || '-') as string;
   return (
     <div className="py-2 border-b flex space-x-4">
       <div className="flex items-start pt-1 justify-start">

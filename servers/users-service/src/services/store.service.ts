@@ -7,17 +7,17 @@ class StoreService {
   getStoreById = async (storeId: string): Promise<IStoreDocument | null> => {
     const store: IStoreDocument | null = (await StoreModel.findOne({
       _id: new mongoose.Types.ObjectId(storeId)
-    }).exec()) as IStoreDocument;
+    }).lean()) as IStoreDocument;
     return store;
   };
 
   getStoreByUsername = async (username: string): Promise<IStoreDocument | null> => {
-    const store: IStoreDocument | null = (await StoreModel.findOne({ username }).exec()) as IStoreDocument;
+    const store: IStoreDocument | null = (await StoreModel.findOne({ username }).lean()) as IStoreDocument;
     return store;
   };
 
   getStoreByEmail = async (email: string): Promise<IStoreDocument | null> => {
-    const store: IStoreDocument | null = (await StoreModel.findOne({ email }).exec()) as IStoreDocument;
+    const store: IStoreDocument | null = (await StoreModel.findOne({ email }).lean()) as IStoreDocument;
     return store;
   };
 
