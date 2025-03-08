@@ -1,6 +1,7 @@
 import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
 import { config } from '@users/config';
 import { SERVER_PORT, SERVICE_NAME } from '@users/constants';
 import { queueConnection } from '@users/queues/connection';
@@ -15,6 +16,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
+import { elasticSearch } from './elasticsearch';
 
 export class UsersServer {
   private app: Application;
@@ -27,6 +29,7 @@ export class UsersServer {
     this.securityMiddleware();
     this.routesMiddleware();
     this.startQueues();
+    this.startElasticSearch();
     this.errorHandler();
     this.startServer();
   };
@@ -63,6 +66,11 @@ export class UsersServer {
 
   private routesMiddleware() {
     appRoutes(this.app);
+  }
+
+  private startElasticSearch() {
+    elasticSearch.client.checkConnection();
+    elasticSearch.client.createIndex(ElasticsearchIndexes.auth);
   }
 
   private async startQueues() {

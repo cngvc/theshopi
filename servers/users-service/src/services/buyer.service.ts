@@ -27,7 +27,7 @@ class BuyerService {
     const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
     if (!checkIfBuyerExist) {
       await BuyerModel.create(payload);
-      await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
+      await elasticSearch.client.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
         username: payload.username,
         email: payload.email
       });

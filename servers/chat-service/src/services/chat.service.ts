@@ -19,6 +19,19 @@ class ChatService {
   createMessage = async (data: IMessageDocument) => {
     const message = await MessageModel.create(data);
     socketServer.emit(SocketEvents.MESSAGE_RECEIVED, message);
+    await ConversationModel.updateOne(
+      { conversationId: data.conversationId },
+      {
+        $set: {
+          lastMessage: {
+            messageId: message.id,
+            senderId: message.senderId,
+            body: message.body
+          }
+        },
+        $currentDate: { updatedAt: true }
+      }
+    );
   };
 
   getConversationBySenderAndReceiver = async (sender: string, receiver: string) => {
@@ -51,69 +64,46 @@ class ChatService {
     return messages.reverse();
   };
 
-  getCurrentUserConversations = async (authId: string): Promise<IMessageDocument[]> => {
-    const conversationLastMessages: IMessageDocument[] = await MessageModel.aggregate([
+  getCurrentUserConversations = async (authId: string): Promise<IConversationDocument[]> => {
+    const conversations: IConversationDocument[] = await ConversationModel.aggregate([
       {
         $match: {
-          $or: [{ senderId: authId }, { receiverId: authId }]
-        }
-      },
-      {
-        $group: {
-          _id: '$conversationId',
-          result: { $top: { output: '$$ROOT', sortBy: { createdAt: -1 } } }
-        }
-      },
-      {
-        $project: {
-          _id: '$result._id',
-          conversationId: '$result.conversationId',
-          receiverId: '$result.receiverId',
-          senderId: '$result.senderId',
-          body: '$result.body',
-          isRead: '$result.isRead',
-          createdAt: '$result.createdAt'
+          participants: {
+            $in: [authId]
+          },
+          lastMessage: { $ne: null }
         }
       },
       {
         $sort: {
-          createdAt: -1
+          updatedAt: -1
         }
       }
     ]);
-    return conversationLastMessages;
+    return conversations;
   };
 
   getCurrentUserLastConversation = async (authId: string): Promise<IMessageDocument> => {
-    const conversationLastMessage: IMessageDocument[] = await MessageModel.aggregate([
+    const latestConversation: IMessageDocument[] = await ConversationModel.aggregate([
       {
         $match: {
-          $or: [{ senderId: authId }, { receiverId: authId }]
+          participants: {
+            $in: [authId]
+          },
+          lastMessage: { $ne: null }
         }
       },
       {
-        $group: {
-          _id: '$conversationId',
-          result: { $top: { output: '$$ROOT', sortBy: { createdAt: -1 } } }
-        }
-      },
-      {
-        $project: {
-          _id: '$result._id',
-          conversationId: '$result.conversationId',
-          receiverId: '$result.receiverId',
-          senderId: '$result.senderId',
-          body: '$result.body',
-          isRead: '$result.isRead',
-          createdAt: '$result.createdAt'
+        $sort: {
+          updatedAt: -1
         }
       },
       {
         $limit: 1
       }
     ]).exec();
-    if (conversationLastMessage.length) {
-      return conversationLastMessage[0];
+    if (latestConversation.length) {
+      return latestConversation[0];
     }
     return {};
   };
@@ -138,6 +128,22 @@ class ChatService {
           });
         }
         await MessageModel.insertMany(messages);
+        const lastMessage = messages.at(-1);
+        if (lastMessage) {
+          await ConversationModel.updateOne(
+            { conversationId: savedConversation.conversationId },
+            {
+              $set: {
+                lastMessage: {
+                  messageId: lastMessage._id,
+                  senderId: lastMessage.senderId,
+                  body: lastMessage.body
+                }
+              },
+              $currentDate: { updatedAt: true }
+            }
+          );
+        }
       }
       log.info(`***Seeding chat:*** - ${i + 1} of ${count}`);
     }

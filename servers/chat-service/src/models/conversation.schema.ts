@@ -9,7 +9,7 @@ const conversationSchema: Schema = new Schema({
     messageId: { type: String, default: null },
     senderId: { type: String, default: null },
     body: { type: String, default: null },
-    createdAt: { type: Date, default: null }
+    createdAt: { type: Date, default: Date.now }
   },
   updatedAt: { type: Date, default: Date.now }
 });

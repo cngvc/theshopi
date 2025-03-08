@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from 'clsx';
-import { differenceInHours, differenceInMinutes, format, isToday, isYesterday, parseISO } from 'date-fns';
+import { differenceInHours, differenceInMinutes, format, isToday, isValid, isYesterday, parseISO } from 'date-fns';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -14,10 +14,10 @@ export function formatError(error: any) {
   return typeof error.message === 'string' ? error.message : JSON.stringify(error.message);
 }
 
-export const formatDate = (isoString: string) => {
+export const formatDate = (isoString?: string) => {
+  if (!isoString || isValid(isoString)) return '-';
   const date = parseISO(isoString);
   const now = new Date();
-
   if (isToday(date)) {
     const diffHours = differenceInHours(now, date);
     const diffMinutes = differenceInMinutes(now, date);

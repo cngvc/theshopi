@@ -10,7 +10,7 @@ export async function getConversationList() {
     const session = await auth();
     if (!session) notFound();
     const { data } = await axiosInstance.get('/chat/conversations/');
-    const conversations: IMessageDocument[] = data.metadata?.conversations || [];
+    const conversations: IConversationDocument[] = data.metadata?.conversations || [];
     return conversations;
   } catch (error) {
     return [];
@@ -38,7 +38,7 @@ export async function getLatestConversation() {
     const session = await auth();
     if (!session) notFound();
     const { data } = await axiosInstance.get('/chat/conversations/latest');
-    const conversation: IMessageDocument = data.metadata?.conversations || [];
+    const conversation: IConversationDocument = data.metadata?.conversations || [];
     return conversation;
   } catch (error) {
     return null;

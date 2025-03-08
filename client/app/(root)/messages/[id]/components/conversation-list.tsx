@@ -16,9 +16,15 @@ const ConversationList = () => {
 
   const list = useMemo(() => {
     return data?.map((conversation) => {
-      const name = session?.data?.user?.id === conversation.senderId ? `${conversation.receiverId}` : `${conversation.senderId}`;
-      const isOnline = onlineUsers.includes(name);
-      return <ConversationItem isOnline={isOnline} conversation={conversation} name={name} key={conversation.conversationId} />;
+      const isOnline = onlineUsers.includes(conversation.lastMessage!.senderId!);
+      return (
+        <ConversationItem
+          isOnline={isOnline}
+          conversation={conversation}
+          name={conversation.lastMessage!.senderId ?? '-'}
+          key={conversation.conversationId}
+        />
+      );
     });
   }, [session?.data?.user, onlineUsers, data]);
 

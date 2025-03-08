@@ -8,7 +8,7 @@ const buyerSchema: mongoose.Schema = new mongoose.Schema(
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
     purchasedProducts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
-    createdAt: { type: Date }
+    createdAt: { type: Date, default: Date.now }
   },
   {
     versionKey: false

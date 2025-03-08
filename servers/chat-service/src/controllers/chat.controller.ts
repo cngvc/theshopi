@@ -6,9 +6,9 @@ import { Request, Response } from 'express';
 
 class ChatController {
   getCurrentUserConversations = async (req: Request, res: Response): Promise<void> => {
-    const conversationLastMessages: IMessageDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.id);
+    const conversations: IConversationDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.id);
     new OkRequestSuccess('Conversation list', {
-      conversations: conversationLastMessages
+      conversations: conversations
     }).send(res);
   };
 
@@ -53,6 +53,7 @@ class ChatController {
       throw new BadRequestError(error.details[0].message, 'sendMessage method error');
     }
     const { conversationId, receiverId, body } = req.body;
+
     const senderId = req.currentUser!.id;
     let conversation: IConversationDocument | null = null;
     if (conversationId) {
