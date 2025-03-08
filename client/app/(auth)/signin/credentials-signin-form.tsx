@@ -41,7 +41,7 @@ const CredentialsSigninForm = () => {
             type="text"
             autoComplete="username"
             placeholder="Enter your email or username"
-            defaultValue={'overheadhesi'}
+            defaultValue={'fadingdrill'}
           />
         </div>
         <div className="space-y-2">

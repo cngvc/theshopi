@@ -38,12 +38,12 @@ const UserButton = async () => {
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
-          <div className="py-1 space-y-1">
-            <DropdownMenuLabel>
-              <div className="text-sm font-medium leading-0">{session?.user?.name}</div>
+          <div className="flex flex-col py-1">
+            <DropdownMenuLabel className="py-0 text-sm font-medium leading-tight line-clamp-1 break-all">
+              {session?.user?.name}
             </DropdownMenuLabel>
-            <DropdownMenuLabel>
-              <div className="text-sm text-muted-foreground font-medium leading-0">{session?.user?.email}</div>
+            <DropdownMenuLabel className="py-0 text-sm text-muted-foreground font-medium break-all leading-tight">
+              {session?.user?.email}
             </DropdownMenuLabel>
           </div>
 
