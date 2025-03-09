@@ -19,17 +19,9 @@ interface EditorProps {
   defaultValue?: Delta | Op[];
   disabled?: boolean;
   innerRef?: RefObject<Quill | null>;
-  variant?: 'create' | 'update';
 }
 
-const Editor = ({
-  onSubmit,
-  placeholder = 'Write something...',
-  defaultValue = [],
-  disabled = false,
-  innerRef,
-  variant = 'create'
-}: EditorProps) => {
+const Editor = ({ onSubmit, placeholder = 'Write something...', defaultValue = [], disabled = false, innerRef }: EditorProps) => {
   const [text, $text] = useState('');
   const submitRef = useRef(onSubmit);
   const placeholderRef = useRef(placeholder);
@@ -123,32 +115,23 @@ const Editor = ({
       >
         <div ref={containerRef} className="h-full ql-custom" />
         <div className="flex px-2 pb-2 z-10">
-          {variant === 'create' && (
-            <Button
-              disabled={disabled || isEmpty}
-              onClick={() => {
-                onSubmit({
-                  content: text
-                });
-              }}
-              size="icon"
-              className={cn(
-                'ml-auto',
-                isEmpty ? 'bg-white hover:bg-white text-muted-foreground' : 'bg-blue-500 hover:bg-blue-500/80 text-white'
-              )}
-            >
-              <Send className="size-4" />
-            </Button>
-          )}
+          <Button
+            disabled={disabled || isEmpty}
+            onClick={() => {
+              onSubmit({
+                content: text
+              });
+            }}
+            size="icon"
+            className={cn(
+              'ml-auto',
+              isEmpty ? 'bg-white hover:bg-white text-muted-foreground' : 'bg-blue-500 hover:bg-blue-500/80 text-white'
+            )}
+          >
+            <Send className="size-4" />
+          </Button>
         </div>
       </div>
-      {variant === 'create' && (
-        <div className={cn('p-2 text-sm text-muted-foreground flex justify-end opacity-0 transition', !isEmpty && 'opacity-100')}>
-          <p>
-            <strong>Shift + Return</strong> to add a new line
-          </p>
-        </div>
-      )}
     </div>
   );
 };

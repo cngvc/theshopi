@@ -2,7 +2,6 @@
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Skeleton } from '@/components/ui/skeleton';
 import { useConversation } from '@/lib/hooks/use-conversation.hook';
 import { useMessages } from '@/lib/hooks/use-messages.hook';
 import { useSendMessage } from '@/lib/hooks/use-send-message.hook';
@@ -45,23 +44,34 @@ const MessageBox = ({ id }: { id: string }) => {
     }
   };
 
-  if (!conversation) {
+  if (fetchConversationLoading) {
     return (
-      <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
-        <div className="p-6 text-center mt-4">
-          <h2 className="text-xl mb-2">No chats selected</h2>
-        </div>
+      <Card className="flex-1 max-md:hidden  pb-0">
+        <CardHeader>
+          <CardTitle>@username</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col flex-1">
+          <MessageSkeleton />
+        </CardContent>
       </Card>
     );
   }
 
-  return (
+  if (!fetchConversationLoading && !conversation) {
     <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
+      <div className="p-6 text-center mt-4">
+        <h2 className="text-xl mb-2">No chats selected</h2>
+      </div>
+    </Card>;
+  }
+
+  return (
+    <Card className="flex-1 max-md:hidden">
       <CardHeader>
-        <CardTitle>{fetchConversationLoading ? <Skeleton className="h-5 w-2/5" /> : `${conversation.counterpartName}`}</CardTitle>
+        <CardTitle>@{`${conversation!.counterpartName}`}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col flex-1">
-        <ScrollArea className="flex-1 max-h-[calc(100vh-388px)]">
+        <ScrollArea className="flex-1 max-h-[calc(100vh-348px)] border-b">
           {fetchMessageLoading && <MessageSkeleton />}
           {messages?.map((message) => <MessageItem key={`${message.messagePublicId}`} message={message} />)}
           <div ref={lastMessageRef} />

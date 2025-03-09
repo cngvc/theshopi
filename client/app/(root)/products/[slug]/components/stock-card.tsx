@@ -6,8 +6,8 @@ import { IProductDocument } from '@cngvc/shopi-shared-types';
 
 const StockCard = ({ product }: { product: IProductDocument }) => {
   return (
-    <Card className="py-4">
-      <CardContent className="px-4">
+    <Card>
+      <CardContent>
         <div className="mb-2 flex justify-between items-center gap-2">
           <div className="text-sm">Price</div>
           <ProductPrice value={Number(product.price)} />

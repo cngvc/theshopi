@@ -42,7 +42,6 @@ class ChatService {
 
   createMessage = async (data: IMessageDocument) => {
     const message = await MessageModel.create(data);
-
     const _message = message.toJSON();
     const obj = await this.findElasticsearchAuthByMessage(_message);
     _message['counterpartName'] = obj[message.senderAuthId]?.username || null;

@@ -7,9 +7,9 @@ import ProductPrice from './product-price';
 
 const ProductCard = ({ product }: { product: IProductDocument }) => {
   return (
-    <Link href={`${pages.products}/${product.slug}-i.${product.productPublicId}`}>
-      <Card className="col-span-1">
-        <CardHeader>
+    <Link href={`${pages.products}/${product.slug}-i.${product.productPublicId}`} className="col-span-1 flex flex-col">
+      <Card className="flex-1 pt-0 overflow-hidden">
+        <CardHeader className="!p-0">
           <Image
             src={'https://placehold.co/320x320/png'}
             width={320}
@@ -19,7 +19,7 @@ const ProductCard = ({ product }: { product: IProductDocument }) => {
             className="object-cover"
           />
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1">
           <h2 className="text-sm font-medium">{product.name}</h2>
         </CardContent>
         <CardFooter className="flex justify-between gap-4">

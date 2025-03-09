@@ -6,9 +6,9 @@ import { IMessageDocument } from '@cngvc/shopi-shared-types';
 const MessageItem = ({ message }: { message: IMessageDocument }) => {
   const name = (message.counterpartName || message.messagePublicId || '-') as string;
   return (
-    <div className="py-2 border-b flex space-x-4">
+    <div className="py-2 border-b grid grid-cols-[48px_1fr] gap-2">
       <div className="flex items-start pt-1 justify-start">
-        <Avatar className="h-12 w-12">
+        <Avatar className="h-10 w-10">
           <AvatarImage src="" alt={`User avatar ${name}`} />
           <AvatarFallback>{(name || '-')[0].toUpperCase()}</AvatarFallback>
         </Avatar>

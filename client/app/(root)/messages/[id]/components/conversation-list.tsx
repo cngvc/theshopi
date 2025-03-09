@@ -23,7 +23,7 @@ const ConversationList = () => {
 
   if (!data?.length && !isLoading) {
     return (
-      <Card className="flex-1 md:col-span-3 lg:col-span-2">
+      <Card className="flex-1">
         <div className="p-6 text-center mt-4">
           <h2 className="text-xl mb-2">No chats history</h2>
         </div>
@@ -32,7 +32,7 @@ const ConversationList = () => {
   }
 
   return (
-    <Card className="flex-1 md:col-span-3 lg:col-span-2">
+    <Card className="flex-1 py-4">
       <CardHeader>
         <CardTitle>Conversations</CardTitle>
       </CardHeader>

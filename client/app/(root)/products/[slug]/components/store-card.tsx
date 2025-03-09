@@ -19,8 +19,8 @@ const StoreCard = ({ store }: { store: IStoreDocument }) => {
     }
   };
   return (
-    <Card className="py-4">
-      <CardContent className="px-4">
+    <Card>
+      <CardContent>
         <div className="flex w-full space-x-2">
           <div className="flex items-start justify-start relative">
             <Avatar className="h-8 w-8 overflow-visible pt-1">
