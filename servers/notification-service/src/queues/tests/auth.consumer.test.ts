@@ -6,6 +6,12 @@ import amqp from 'amqplib';
 jest.mock('@notification/queues/connection');
 jest.mock('amqplib');
 jest.mock('@cngvc/shopi-shared');
+jest.mock('@notification/utils/logger.util', () => ({
+  createLogger: jest.fn(() => ({
+    log: jest.fn(),
+    logCatch: jest.fn()
+  }))
+}));
 
 describe('Auth Consumer', () => {
   beforeEach(() => {
