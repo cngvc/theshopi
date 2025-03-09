@@ -75,7 +75,7 @@ class ChatService {
   };
 
   findConversationByConversationPublicId = async (conversationPublicId: string) => {
-    const conversation = await ConversationModel.findOne({ conversationPublicId: conversationPublicId }).lean();
+    const conversation = await ConversationModel.findOne({ conversationPublicId: conversationPublicId }, { _id: 0 }).lean();
     return conversation;
   };
 

@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package users;
+
+service UsersService {
+  rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
+}
+
+message GetStoreByStorePublicIdRequest {
+  string storePublicId = 1;
+}
+
+message GetUserByStorePublicIdResponse {
+  string storePublicId = 1;
+  string name = 2;
+  string ownerAuthId = 3;
+  string username = 4;
+  string email = 5;
+  string description = 6;
+  string socialLinks = 7;
+  string completedOrders = 8;
+  string cancelledOrders = 9;
+  string totalEarnings = 10;
+  string totalProducts = 11;
+  string createdAt = 12;
+}

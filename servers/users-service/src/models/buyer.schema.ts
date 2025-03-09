@@ -23,7 +23,13 @@ const buyerSchema: Schema = new Schema(
     createdAt: { type: Date, default: Date.now }
   },
   {
-    versionKey: false
+    versionKey: false,
+    toJSON: {
+      transform(_doc, rec) {
+        delete rec._id;
+        return rec;
+      }
+    }
   }
 );
 

@@ -40,7 +40,14 @@ const orderSchema: Schema = new Schema(
     notes: { type: String }
   },
   {
-    timestamps: true
+    timestamps: true,
+    versionKey: false,
+    toJSON: {
+      transform(_doc, rec) {
+        delete rec._id;
+        return rec;
+      }
+    }
   }
 );
 

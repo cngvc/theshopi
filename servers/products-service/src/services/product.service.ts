@@ -2,6 +2,7 @@ import { ExchangeNames, IPaginateProps, RoutingKeys } from '@cngvc/shopi-shared'
 import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 import { elasticSearch } from '@products/elasticsearch';
+import { grpcUserClient } from '@products/grpc/grpc.client';
 import { ProductModel } from '@products/models/product.schema';
 import { productProducer } from '@products/queues/product.producer';
 import { productChannel } from '@products/server';
@@ -38,7 +39,10 @@ class ProductService {
 
   getProductByIdentifier = async (identifier: string): Promise<{ product: IProductDocument; store: IStoreDocument | null }> => {
     const product: IProductDocument = await elasticSearch.getIndexedData<IProductDocument>(ElasticsearchIndexes.products, identifier);
-    const store = await searchService.storeSearchByStorePublicId(product.storePublicId);
+    let store = await searchService.storeSearchByStorePublicId(product.storePublicId);
+    if (!store) {
+      store = await grpcUserClient.getStoreByStorePublicId(product.storePublicId);
+    }
     return { product, store };
   };
 

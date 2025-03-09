@@ -28,20 +28,8 @@ class StoreService {
   };
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
-    const createdStore: IStoreDocument = (await StoreModel.create(payload)) as IStoreDocument;
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.ownerAuthId}`, {
-      storePublicId: createdStore.storePublicId,
-      username: createdStore.username,
-      email: createdStore.email,
-      ownerAuthId: createdStore.ownerAuthId,
-      ownerPublicId: createdStore.ownerPublicId,
-      description: createdStore.description,
-      socialLinks: createdStore.socialLinks,
-      completedOrders: createdStore.completedOrders,
-      cancelledOrders: createdStore.cancelledOrders,
-      totalEarnings: createdStore.totalEarnings,
-      totalProducts: createdStore.totalProducts
-    } as IStoreDocument);
+    const createdStore: IStoreDocument = (await StoreModel.create(payload)).toJSON() as IStoreDocument;
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.ownerAuthId}`, createdStore);
     await buyerService.updateBuyerBecomeStore(`${createdStore.ownerPublicId}`, `${createdStore.storePublicId}`);
     return createdStore;
   };

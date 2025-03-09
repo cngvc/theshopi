@@ -2,20 +2,31 @@ import { IConversationDocument } from '@cngvc/shopi-shared-types';
 import { Model, Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-const conversationSchema: Schema = new Schema({
-  conversationPublicId: { type: String, unique: true, index: true, default: uuidv4 },
-  participants: { type: [String], required: true },
-  lastMessage: {
-    type: {
-      messagePublicId: { type: String, default: null },
-      senderAuthId: { type: String, default: null },
-      body: { type: String, default: null },
-      createdAt: { type: Date, default: Date.now }
+const conversationSchema: Schema = new Schema(
+  {
+    conversationPublicId: { type: String, unique: true, index: true, default: uuidv4 },
+    participants: { type: [String], required: true },
+    lastMessage: {
+      type: {
+        messagePublicId: { type: String, default: null },
+        senderAuthId: { type: String, default: null },
+        body: { type: String, default: null },
+        createdAt: { type: Date, default: Date.now }
+      },
+      default: null
     },
-    default: null
+    updatedAt: { type: Date, default: Date.now }
   },
-  updatedAt: { type: Date, default: Date.now }
-});
+  {
+    versionKey: false,
+    toJSON: {
+      transform(_doc, rec) {
+        delete rec._id;
+        return rec;
+      }
+    }
+  }
+);
 
 conversationSchema.pre('validate', async function (next) {
   if (!this.conversationPublicId) {

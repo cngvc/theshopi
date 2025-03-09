@@ -4,17 +4,17 @@ import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {
   getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }).lean();
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }, { _id: 0 }).lean();
     return buyer;
   };
 
   getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ email }).lean();
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ email }, { _id: 0 }).lean();
     return buyer;
   };
 
   getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }).lean();
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }, { _id: 0 }).lean();
     return buyer;
   };
 
@@ -24,15 +24,10 @@ class BuyerService {
   };
 
   createBuyer = async (payload: IBuyerDocument): Promise<void> => {
-    const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
-
-    if (checkIfBuyerExist) return;
-    await BuyerModel.create(payload);
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
-      username: payload.username,
-      email: payload.email,
-      storePublicId: payload.storePublicId
-    });
+    const existingBuyer: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
+    if (existingBuyer) return;
+    const buyer = (await BuyerModel.create(payload)).toJSON();
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${buyer.authId}`, buyer);
   };
 
   updateBuyerBecomeStore = async (buyerPublicId: string, storePublicId: string): Promise<void> => {

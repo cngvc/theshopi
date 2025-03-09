@@ -17,6 +17,8 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { elasticSearch } from './elasticsearch';
+import { grpcUserServer } from './grpc/grpc.server';
+import { findStoreByStorePublicId } from './grpc/user-service-client.grpc';
 
 export class UsersServer {
   private app: Application;
@@ -30,6 +32,7 @@ export class UsersServer {
     this.routesMiddleware();
     this.startQueues();
     this.startElasticSearch();
+    this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -80,6 +83,11 @@ export class UsersServer {
     await usersConsumes.consumeUpdateUsersStore(channel);
     await usersConsumes.consumeGetUsersStore(channel);
     await usersConsumes.consumeGetUsers(channel);
+  }
+
+  private startRPCServer() {
+    grpcUserServer.addService({ GetStoreByStorePublicId: findStoreByStorePublicId });
+    grpcUserServer.start(40030);
   }
 
   private errorHandler(): void {

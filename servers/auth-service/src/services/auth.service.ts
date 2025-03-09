@@ -57,11 +57,11 @@ export class AuthService {
   }
 
   async getAuthUserByEmail(email: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { email: lowerCase(email) } });
+    return this.authRepository.findOne({ where: { email: lowerCase(email) }, select: ['id', 'username', 'email', 'password'] });
   }
 
   async getAuthUserByUsername(username: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { username: lowerCase(username) } });
+    return this.authRepository.findOne({ where: { username: lowerCase(username) }, select: ['id', 'username', 'email', 'password'] });
   }
 
   async getAuthUserByVerificationToken(token: string): Promise<IAuthDocument | null> {
