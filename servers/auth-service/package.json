@@ -17,7 +17,7 @@
   "description": "",
   "dependencies": {
     "@cngvc/shopi-shared": "^0.0.47",
-    "@cngvc/shopi-shared-types": "^0.0.21",
+    "@cngvc/shopi-shared-types": "^0.0.22",
     "@faker-js/faker": "^9.5.1",
     "amqplib": "^0.10.5",
     "bcryptjs": "^3.0.2",

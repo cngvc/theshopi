@@ -22,7 +22,7 @@ const config: Config.InitialOptions = {
   },
   coverageReporters: ['text-summary', 'lcov'],
   moduleNameMapper: {
-    '@notification/(.*)': ['<rootDir>/src/$1']
+    '@orders/(.*)': ['<rootDir>/src/$1']
   }
 };
 

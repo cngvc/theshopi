@@ -10,6 +10,16 @@ const buyerSchema: Schema = new Schema(
     username: { type: String, required: true, index: true },
     email: { type: String, required: true, index: true },
     purchasedProducts: { type: [String], default: [] },
+    shippingAddress: {
+      type: {
+        shippingAddressId: { type: String, default: uuidv4 },
+        address: { type: String, required: true },
+        city: { type: String, required: true },
+        country: { type: String, required: true },
+        postalCode: { type: String, default: '' }
+      },
+      default: null
+    },
     createdAt: { type: Date, default: Date.now }
   },
   {

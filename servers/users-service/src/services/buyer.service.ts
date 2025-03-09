@@ -1,20 +1,20 @@
-import { ElasticsearchIndexes, IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument, IShippingAddress } from '@cngvc/shopi-shared-types';
 import { elasticSearch } from '@users/elasticsearch';
 import { BuyerModel } from '@users/models/buyer.schema';
 
 class BuyerService {
   getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).lean()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }).lean();
     return buyer;
   };
 
   getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ email }).lean()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ email }).lean();
     return buyer;
   };
 
   getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = (await BuyerModel.findOne({ authId }).lean()) as IBuyerDocument;
+    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }).lean();
     return buyer;
   };
 
@@ -25,14 +25,14 @@ class BuyerService {
 
   createBuyer = async (payload: IBuyerDocument): Promise<void> => {
     const checkIfBuyerExist: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
-    if (!checkIfBuyerExist) {
-      await BuyerModel.create(payload);
-      await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
-        username: payload.username,
-        email: payload.email,
-        storePublicId: payload.storePublicId
-      });
-    }
+
+    if (checkIfBuyerExist) return;
+    await BuyerModel.create(payload);
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${payload.authId}`, {
+      username: payload.username,
+      email: payload.email,
+      storePublicId: payload.storePublicId
+    });
   };
 
   updateBuyerBecomeStore = async (buyerPublicId: string, storePublicId: string): Promise<void> => {
@@ -60,6 +60,17 @@ class BuyerService {
               purchasedProducts: purchasedProductPublicId
             }
           }
+    ).exec();
+  };
+
+  updateBuyerShippingAddress = async (buyerPublicId: string, shippingAddress: IShippingAddress): Promise<void> => {
+    await BuyerModel.updateOne(
+      { buyerPublicId: buyerPublicId },
+      {
+        $set: {
+          shippingAddress: shippingAddress
+        }
+      }
     ).exec();
   };
 }
