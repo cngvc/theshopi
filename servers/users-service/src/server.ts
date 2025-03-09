@@ -18,7 +18,6 @@ import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { elasticSearch } from './elasticsearch';
 import { grpcUserServer } from './grpc/grpc.server';
-import { findStoreByStorePublicId } from './grpc/user-service-client.grpc';
 
 export class UsersServer {
   private app: Application;
@@ -86,7 +85,6 @@ export class UsersServer {
   }
 
   private startRPCServer() {
-    grpcUserServer.addService({ GetStoreByStorePublicId: findStoreByStorePublicId });
     grpcUserServer.start(40030);
   }
 

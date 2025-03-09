@@ -1,4 +1,4 @@
-import { ExchangeNames, IPaginateProps, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, IPaginateProps, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
 import { elasticSearch } from '@products/elasticsearch';
@@ -37,11 +37,21 @@ class ProductService {
     await elasticSearch.deleteIndexedItem(ElasticsearchIndexes.products, productPublicId);
   };
 
-  getProductByIdentifier = async (identifier: string): Promise<{ product: IProductDocument; store: IStoreDocument | null }> => {
-    const product: IProductDocument = await elasticSearch.getIndexedData<IProductDocument>(ElasticsearchIndexes.products, identifier);
-    let store = await searchService.storeSearchByStorePublicId(product.storePublicId);
+  getProductByProductPublicId = async (
+    productPublicId: string
+  ): Promise<{ product: IProductDocument | null; store: IStoreDocument | null }> => {
+    let product: IProductDocument | null = await elasticSearch.getIndexedData<IProductDocument>(
+      ElasticsearchIndexes.products,
+      productPublicId
+    );
+    if (!product) {
+      product = await ProductModel.findOne({ productPublicId: productPublicId }).lean();
+      if (!product) throw new NotFoundError('Product not found', 'getProductByProductPublicId');
+      await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${product.productPublicId}`, product);
+    }
+    let store: IStoreDocument | null = await elasticSearch.getIndexedData(ElasticsearchIndexes.stores, product!.storePublicId);
     if (!store) {
-      store = await grpcUserClient.getStoreByStorePublicId(product.storePublicId);
+      store = await grpcUserClient.getStoreByStorePublicId(product!.storePublicId);
     }
     return { product, store };
   };

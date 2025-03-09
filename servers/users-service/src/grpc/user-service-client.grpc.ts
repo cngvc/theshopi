@@ -9,18 +9,20 @@ interface GetStoreByStorePublicIdRequest {
 
 interface GetUserByStorePublicIdResponse extends IStoreDocument {}
 
-export const findStoreByStorePublicId = async (
-  call: grpc.ServerUnaryCall<GetStoreByStorePublicIdRequest, GetUserByStorePublicIdResponse>,
-  callback: grpc.sendUnaryData<GetUserByStorePublicIdResponse>
-) => {
-  try {
-    const store = await StoreModel.findOne({ storePublicId: call.request.storePublicId }, { _id: 0 }).lean();
-    if (!store) {
-      return callback({ code: grpc.status.NOT_FOUND, message: 'Store not found' });
+export class UserServiceClientRPC {
+  static findStoreByStorePublicId = async (
+    call: grpc.ServerUnaryCall<GetStoreByStorePublicIdRequest, GetUserByStorePublicIdResponse>,
+    callback: grpc.sendUnaryData<GetUserByStorePublicIdResponse>
+  ) => {
+    try {
+      const store = await StoreModel.findOne({ storePublicId: call.request.storePublicId }, { _id: 0 }).lean();
+      if (!store) {
+        return callback({ code: grpc.status.NOT_FOUND, message: 'Store not found' });
+      }
+      await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${store.storePublicId}`, store);
+      callback(null, store as IStoreDocument);
+    } catch (error) {
+      callback({ code: grpc.status.INTERNAL, message: 'Internal Server Error' });
     }
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${store.ownerAuthId}`, store);
-    callback(null, store as IStoreDocument);
-  } catch (error) {
-    callback({ code: grpc.status.INTERNAL, message: 'Internal Server Error' });
-  }
-};
+  };
+}

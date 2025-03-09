@@ -12,7 +12,7 @@ const buyerSchema: Schema = new Schema(
     purchasedProducts: { type: [String], default: [] },
     shippingAddress: {
       type: {
-        shippingAddressId: { type: String, default: uuidv4 },
+        shippingAddressPublicId: { type: String, default: uuidv4 },
         address: { type: String, required: true },
         city: { type: String, required: true },
         country: { type: String, required: true },

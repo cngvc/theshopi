@@ -15,11 +15,11 @@ class ProductService extends AxiosService {
     const response: AxiosResponse = await this.put(`/${productPublicId}`, payload);
     return response;
   }
-  async getProductByIdentifier(identifier: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get(`/${identifier}`);
+  async getProductByProductPublicId(productPublicId: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await this.get(`/${productPublicId}`);
     return response;
   }
-  async getProductsByStore(storePublicId: string): Promise<AxiosResponse> {
+  async getProductsByStorePublicId(storePublicId: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.get(`/stores/${storePublicId}`);
     return response;
   }

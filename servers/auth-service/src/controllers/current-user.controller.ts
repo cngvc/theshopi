@@ -18,7 +18,7 @@ class CurrentUserController {
   async getCurrentUser(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {
-      throw new NotFoundError('User not found', 'getCurrentUser method');
+      throw new NotFoundError('User not found', 'getCurrentUser');
     }
     new OkRequestSuccess('Authenticated user', { user: existingUser }).send(res);
   }
@@ -26,7 +26,7 @@ class CurrentUserController {
   async checkUserExists(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.checkUserExists(req.currentUser!.id);
     if (!existingUser) {
-      throw new NotFoundError('User not found', 'checkUserExists method');
+      throw new NotFoundError('User not found', 'checkUserExists');
     }
     new OkRequestSuccess('Authenticated user', {}).send(res);
   }

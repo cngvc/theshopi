@@ -7,7 +7,7 @@ class OrderController {
   createOrder = async (req: Request, res: Response): Promise<void> => {
     const { error } = await Promise.resolve(createOrderScheme.validate(req.body));
     if (error?.details) {
-      throw new BadRequestError(error.details[0].message, 'createOrder method');
+      throw new BadRequestError(error.details[0].message, 'createOrder');
     }
     const newOrder = await orderService.createOrder(req.body);
     new CreatedRequestSuccess('Order has been created successfully.', { order: newOrder }).send(res);

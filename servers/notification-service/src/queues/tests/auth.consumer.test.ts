@@ -22,7 +22,7 @@ describe('Auth Consumer', () => {
     jest.clearAllMocks();
   });
 
-  describe('authConsumes.consumeSendAuthEmailMessages method', () => {
+  describe('authConsumes.consumeSendAuthEmailMessages', () => {
     it('should be called', async () => {
       const channel = {
         assertExchange: jest.fn(),

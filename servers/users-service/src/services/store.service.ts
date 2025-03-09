@@ -29,7 +29,7 @@ class StoreService {
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
     const createdStore: IStoreDocument = (await StoreModel.create(payload)).toJSON() as IStoreDocument;
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.ownerAuthId}`, createdStore);
+    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.storePublicId}`, createdStore);
     await buyerService.updateBuyerBecomeStore(`${createdStore.ownerPublicId}`, `${createdStore.storePublicId}`);
     return createdStore;
   };

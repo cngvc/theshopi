@@ -10,8 +10,8 @@ class ProductPublicRoutes {
 
   public routes(): Router {
     this.router.get('/products/', productController.getProducts);
-    this.router.get('/products/:identifier', productController.getProductByIdentifier);
-    this.router.get('/products/stores/:storePublicId', productController.getProductsByStore);
+    this.router.get('/products/:productPublicId', productController.getProductByProductPublicId);
+    this.router.get('/products/stores/:storePublicId', productController.getProductsByStorePublicId);
 
     return this.router;
   }

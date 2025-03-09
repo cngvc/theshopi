@@ -16,12 +16,12 @@ class ProductController {
     const response: AxiosResponse = await productService.getProducts();
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
-  async getProductByIdentifier(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await productService.getProductByIdentifier(req.params.identifier);
+  async getProductByProductPublicId(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await productService.getProductByProductPublicId(req.params.productPublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
-  async getProductsByStore(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await productService.getProductsByStore(req.params.storePublicId);
+  async getProductsByStorePublicId(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await productService.getProductsByStorePublicId(req.params.storePublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
 }

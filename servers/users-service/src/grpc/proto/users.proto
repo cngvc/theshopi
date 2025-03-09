@@ -4,6 +4,28 @@ package users;
 
 service UsersService {
   rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
+  rpc GetBuyerByBuyerPublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
+}
+
+message GetBuyerByAuthIDRequest {
+  string authId = 1;
+}
+
+message GetBuyerByAuthIdResponse {
+  string buyerPublicId = 1;
+  string authId = 2;
+  string storePublicId = 3;
+  string username = 4;
+  string email = 5;
+  ShippingAddress shippingAddress = 6;
+}
+
+message ShippingAddress {
+  string shippingAddressPublicId = 1;
+  string address = 2;
+  string city = 3;
+  string country = 4;
+  string postalCode = 5;
 }
 
 message GetStoreByStorePublicIdRequest {

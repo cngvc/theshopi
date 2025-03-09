@@ -2,7 +2,9 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { log } from '@users/utils/logger.util';
 import path from 'path';
-const PROTO_PATH = path.join(__dirname, './proto/store.proto');
+import { UserServiceClientRPC } from './user-service-client.grpc';
+const PROTO_PATH = path.join(__dirname, './proto/users.proto');
+
 class GrpcServer {
   private server: grpc.Server;
   private proto: Record<string, any>;
@@ -19,9 +21,10 @@ class GrpcServer {
     });
     this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
     this.serviceDefinition = this.proto[service].service;
+    this.addService({ GetStoreByStorePublicId: UserServiceClientRPC.findStoreByStorePublicId });
   }
 
-  public addService(handlers: grpc.UntypedServiceImplementation) {
+  private addService(handlers: grpc.UntypedServiceImplementation) {
     this.server.addService(this.serviceDefinition, handlers);
   }
 

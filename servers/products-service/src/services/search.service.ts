@@ -4,15 +4,8 @@ import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/
 import { elasticSearch } from '@products/elasticsearch';
 
 class SearchService {
-  async productsSearchByStoreId(searchQuery: string) {
-    const queryList = [
-      {
-        query_string: {
-          fields: ['storePublicId'],
-          query: `${searchQuery}`
-        }
-      }
-    ];
+  async productsSearchByStoreId(storePublicId: string) {
+    const queryList = [{ term: { 'storePublicId.keyword': storePublicId } }];
     const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
     const total = hits.total as SearchTotalHits;
     return {
@@ -57,8 +50,8 @@ class SearchService {
     };
   }
 
-  async storeSearchByStorePublicId(storePublicId: string) {
-    const queryList = [{ term: { 'storePublicId.keyword': storePublicId } }];
+  async storeSearchByAuthId(authId: string) {
+    const queryList = [{ term: { 'ownerAuthId.keyword': authId } }];
     const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.stores, queryList, { size: 1 });
     if (hits.hits.length === 0) {
       return null;
@@ -66,4 +59,5 @@ class SearchService {
     return hits.hits[0]._source as IStoreDocument;
   }
 }
+
 export const searchService = new SearchService();
