@@ -4,19 +4,19 @@ import { NextFunction, Request, Response } from 'express';
 
 export class VerifyUserMiddleware {
   private constructor() {}
-  static verifyUserExists = async (req: Request, res: Response, next: NextFunction) => {
+  static checkUserExists = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId = req.currentUser!.id;
       if (!userId) {
-        throw new NotAuthorizedError('User ID is missing in request.', 'verifyUserExists');
+        throw new NotAuthorizedError('User ID is missing in request.', 'checkUserExists');
       }
-      const { data } = await authService.getCurrentUser();
+      const { data } = await authService.checkUserExists();
       if (!data) {
-        throw new NotAuthorizedError('User is not found or banned.', 'verifyUserExists');
+        throw new NotAuthorizedError('User is not found or banned.', 'checkUserExists');
       }
       next();
     } catch (error) {
-      throw new NotAuthorizedError('Failed to verify user existence.', 'verifyUserExists');
+      throw new NotAuthorizedError('Failed to verify user existence.', 'checkUserExists');
     }
   };
 }

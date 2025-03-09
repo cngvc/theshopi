@@ -10,11 +10,15 @@ class RedisCache {
     this.client = new Redis(`${config.REDIS_HOST}`);
 
     this.client.on('connect', () => {
-      log.info(`${SERVICE_NAME}: Redis Connected`);
+      log.info(`${SERVICE_NAME}: ✅ Redis Connected`);
+    });
+
+    this.client.on('reconnecting', () => {
+      log.info(`🏋️‍♂️ ${SERVICE_NAME}: Redis Reconnecting`);
     });
 
     this.client.on('error', (error: unknown) => {
-      logCatch(error, 'Redis connect listener error');
+      logCatch(error, '❌ Redis connect listener error');
     });
   }
 
@@ -23,7 +27,6 @@ class RedisCache {
       await this.client.ping();
     } catch (error) {
       logCatch(error, 'checkConnection');
-      this.client = new Redis(`${config.REDIS_HOST}`);
     }
   }
 }

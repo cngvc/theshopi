@@ -2,7 +2,9 @@ import { config } from '@auth/config';
 import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
 import { authProducer } from '@auth/queues/auth.producer';
+import { authCache } from '@auth/redis/auth-cache';
 import { authChannel } from '@auth/server';
+import { logCatch } from '@auth/utils/logger.util';
 import { ExchangeNames, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
 import { sign } from 'jsonwebtoken';
 import { MoreThan, Repository } from 'typeorm';
@@ -30,8 +32,22 @@ export class AuthService {
     return createdUser;
   }
 
-  async getAuthUserById(authId: string): Promise<IAuthDocument | null> {
+  getAuthUserById(authId: string): Promise<IAuthDocument | null> {
     return this.authRepository.findOne({ where: { id: authId } });
+  }
+
+  async checkUserExists(authId: string): Promise<boolean> {
+    try {
+      if (await authCache.getUserId(`user:${authId}`)) return true;
+      const user = await this.authRepository.exists({ where: { id: authId } });
+      if (!user) return false;
+      await authCache.saveUserId(authId);
+
+      return true;
+    } catch (error) {
+      logCatch(error, 'checkUserExists');
+      return false;
+    }
   }
 
   async getAuthUserByUsernameOrEmail(username: string, email: string): Promise<IAuthDocument | null> {
@@ -93,7 +109,8 @@ export class AuthService {
         email,
         username
       },
-      config.AUTH_JWT_TOKEN_SECRET!
+      config.AUTH_JWT_TOKEN_SECRET!,
+      { expiresIn: '7d' }
     );
   }
 }

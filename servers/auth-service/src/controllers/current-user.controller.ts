@@ -23,6 +23,14 @@ class CurrentUserController {
     new OkRequestSuccess('Authenticated user', { user: existingUser }).send(res);
   }
 
+  async checkUserExists(req: Request, res: Response): Promise<void> {
+    const existingUser = await authService.checkUserExists(req.currentUser!.id);
+    if (!existingUser) {
+      throw new NotFoundError('User not found', 'checkUserExists method');
+    }
+    new OkRequestSuccess('Authenticated user', {}).send(res);
+  }
+
   async resendEmail(req: Request, res: Response): Promise<void> {
     const existingUser = await authService.getAuthUserById(req.currentUser!.id);
     if (!existingUser) {

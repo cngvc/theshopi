@@ -23,7 +23,7 @@ export const appRoutes = (app: Application) => {
 
   const privateRouter = Router();
   privateRouter.use(AuthMiddleware.verifySessionJWT);
-  privateRouter.use(VerifyUserMiddleware.verifyUserExists);
+  privateRouter.use(VerifyUserMiddleware.checkUserExists);
   privateRouter.use(productRoutes.routes());
   privateRouter.use(tokenRoutes.routes());
   privateRouter.use(storeRoutes.routes());

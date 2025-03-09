@@ -9,6 +9,11 @@ export class CurrentUserController {
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
 
+  public async checkUserExists(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await authService.checkUserExists();
+    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+  }
+
   public async resendEmail(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.resendEmail();
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
