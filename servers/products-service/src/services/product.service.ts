@@ -1,13 +1,13 @@
 import { ExchangeNames, IPaginateProps, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
-import { elasticSearch } from '@products/elasticsearch';
-import { grpcUserClient } from '@products/grpc/grpc.client';
-import { ProductModel } from '@products/models/product.schema';
-import { productProducer } from '@products/queues/product.producer';
-import { productChannel } from '@products/server';
-import { searchService } from '@products/services/search.service';
-import { log } from '@products/utils/logger.util';
+import { elasticSearch } from '@product/elasticsearch';
+import { grpcUserClient } from '@product/grpc/clients/user-client.grpc';
+import { ProductModel } from '@product/models/product.schema';
+import { productProducer } from '@product/queues/product.producer';
+import { productChannel } from '@product/server';
+import { searchService } from '@product/services/search.service';
+import { log } from '@product/utils/logger.util';
 import { sample } from 'lodash';
 import slugify from 'slugify';
 
@@ -26,6 +26,7 @@ class ProductService {
     }
     return newProduct;
   };
+
   deleteProduct = async (productPublicId: string, storePublicId: string): Promise<void> => {
     await ProductModel.deleteOne({ productPublicId: productPublicId }).exec();
     await productProducer.publishDirectMessage(
@@ -43,6 +44,11 @@ class ProductService {
     const product = await this.findCachedProductByProductPublicId(productPublicId);
     const store = await this.findCachedStoreByStorePublicId(product.storePublicId);
     return { product, store };
+  };
+
+  getProductsByProductPublicIds = async (productPublicIds: string[]): Promise<IProductDocument[]> => {
+    const products: IProductDocument[] = await ProductModel.find({ productPublicId: { $in: productPublicIds } }).lean();
+    return products;
   };
 
   getStoreProducts = async (storePublicId: string): Promise<IProductDocument[]> => {
@@ -134,7 +140,8 @@ class ProductService {
   };
 
   private findCachedStoreByStorePublicId = async (storePublicId: string) => {
-    let store: IStoreDocument | null = await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
+    let store: IStoreDocument | null = null;
+    // await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
     if (!store) {
       store = await grpcUserClient.getStoreByStorePublicId(storePublicId);
       if (!store) throw new NotFoundError('Store not found', 'findCachedStoreByStorePublicId');

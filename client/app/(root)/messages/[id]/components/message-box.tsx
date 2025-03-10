@@ -8,7 +8,6 @@ import { useSendMessage } from '@/lib/hooks/use-send-message.hook';
 import dynamic from 'next/dynamic';
 import Quill from 'quill';
 import { useEffect, useRef } from 'react';
-import { toast } from 'sonner';
 import MessageItem from './message-item';
 import MessageSkeleton from './message-skeleton';
 
@@ -28,20 +27,16 @@ const MessageBox = ({ id }: { id: string }) => {
   }, [messages]);
 
   const handleSubmit = async ({ content }: { content: string }) => {
-    try {
-      editorRef?.current?.enable(false);
-      editorRef?.current?.setText('');
-      if (!conversation || !conversation.conversationPublicId) throw new Error();
-      if (!content?.length) return null;
-      sendMessageMutation({
-        conversationPublicId: conversation.conversationPublicId!,
-        receiverAuthId: `${conversation.counterpartId}`,
-        body: content
-      });
-      editorRef?.current?.enable(true);
-    } catch (error) {
-      toast.error('Failed to send message, try again later.');
-    }
+    editorRef?.current?.enable(false);
+    editorRef?.current?.setText('');
+    if (!conversation || !conversation.conversationPublicId) throw new Error();
+    if (!content?.length) return null;
+    sendMessageMutation({
+      conversationPublicId: conversation.conversationPublicId!,
+      receiverAuthId: `${conversation.counterpartId}`,
+      body: content
+    });
+    editorRef?.current?.enable(true);
   };
 
   if (fetchConversationLoading) {

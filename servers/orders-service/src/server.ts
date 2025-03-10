@@ -1,11 +1,11 @@
 import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
-import { config } from '@orders/config';
-import { SERVER_PORT, SERVICE_NAME } from '@orders/constants';
-import { queueConnection } from '@orders/queues/connection';
-import { appRoutes } from '@orders/routes';
-import { captureError, log } from '@orders/utils/logger.util';
+import { config } from '@order/config';
+import { SERVER_PORT, SERVICE_NAME } from '@order/constants';
+import { queueConnection } from '@order/queues/connection';
+import { appRoutes } from '@order/routes';
+import { captureError, log } from '@order/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -15,17 +15,19 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 
-export class UsersServer {
+export let cartChannel: Channel;
+
+export class UserServer {
   private app: Application;
   constructor(app: Application) {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startQueues();
+    await this.startQueues();
     this.errorHandler();
     this.startServer();
   };
@@ -65,7 +67,7 @@ export class UsersServer {
   }
 
   private async startQueues() {
-    const channel = (await queueConnection.createConnection()) as Channel;
+    cartChannel = (await queueConnection.createConnection()) as Channel;
   }
 
   private errorHandler(): void {

@@ -1,7 +1,7 @@
-import { BASE_PATH, BUYER_BASE_PATH, STORE_BASE_PATH } from '@users/constants/path';
-import { buyerRoutes } from '@users/routes/buyer.route';
-import { healthRoutes } from '@users/routes/health.route';
-import { storeRoutes } from '@users/routes/store.route';
+import { BASE_PATH, BUYER_BASE_PATH, STORE_BASE_PATH } from '@user/constants/path';
+import { buyerRoutes } from '@user/routes/buyer.route';
+import { healthRoutes } from '@user/routes/health.route';
+import { storeRoutes } from '@user/routes/store.route';
 import { Application } from 'express';
 
 const appRoutes = (app: Application): void => {

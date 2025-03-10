@@ -22,8 +22,8 @@ export class OnlineStatusServer {
     appRoutes(this.app);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
   }
 
   private startServer() {

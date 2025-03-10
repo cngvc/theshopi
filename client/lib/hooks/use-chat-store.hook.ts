@@ -12,7 +12,7 @@ export const useChatWithStore = () => {
   return useMutation({
     mutationFn: (receiverAuthId: string) => chatWithStore({ receiverAuthId: receiverAuthId }),
     onError: (_error) => {
-      toast.error('Failed to send message');
+      toast.error('Something was wrong.');
     },
     onSuccess: (data) => {
       if (data?.conversationPublicId) {

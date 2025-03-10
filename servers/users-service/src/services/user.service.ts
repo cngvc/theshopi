@@ -2,7 +2,7 @@ import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { buyerService } from './buyer.service';
 import { storeService } from './store.service';
 
-class UsersService {
+class UserService {
   getRandomUsers = async (size: number): Promise<{ stores: IStoreDocument[]; buyers: IBuyerDocument[] }> => {
     const stores = await storeService.getRandomStores(size);
     const buyers = await buyerService.getRandomBuyers(size);
@@ -10,4 +10,4 @@ class UsersService {
   };
 }
 
-export const usersService = new UsersService();
+export const userService = new UserService();

@@ -1,6 +1,6 @@
 import { ElasticsearchIndexes, IBuyerDocument } from '@cngvc/shopi-shared-types';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
-import { elasticSearch } from '@orders/elasticsearch';
+import { elasticSearch } from '@order/elasticsearch';
 
 class SearchService {
   async searchBuyerByAuthId(authId: string) {

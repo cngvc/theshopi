@@ -21,17 +21,17 @@ import { SocketHandler } from './sockets/socket.handler';
 export let chatChannel: Channel;
 export let socketServer: Server;
 
-export class UsersServer {
+export class UserServer {
   private app: Application;
   constructor(app: Application) {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startQueues();
+    await this.startQueues();
     this.errorHandler();
     this.startServer();
   };

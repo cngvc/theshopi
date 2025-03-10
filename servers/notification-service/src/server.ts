@@ -16,11 +16,11 @@ export class NotificationServer {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.startServer();
     this.routesMiddleware();
-    this.startQueues();
-    this.startElasticSearch();
+    await this.startQueues();
+    await this.startElasticSearch();
   };
 
   private async startQueues() {
@@ -32,8 +32,8 @@ export class NotificationServer {
     appRoutes(this.app);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
   }
 
   private startServer() {

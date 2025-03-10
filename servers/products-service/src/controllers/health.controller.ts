@@ -1,5 +1,5 @@
 import { OkRequestSuccess } from '@cngvc/shopi-shared';
-import { SERVICE_NAME } from '@products/constants';
+import { SERVICE_NAME } from '@product/constants';
 import { Request, Response } from 'express';
 
 export class HealthController {

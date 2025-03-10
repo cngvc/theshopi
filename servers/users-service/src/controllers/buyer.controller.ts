@@ -1,6 +1,6 @@
 import { OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IBuyerDocument } from '@cngvc/shopi-shared-types';
-import { buyerService } from '@users/services/buyer.service';
+import { buyerService } from '@user/services/buyer.service';
 import { Request, Response } from 'express';
 
 class BuyerController {

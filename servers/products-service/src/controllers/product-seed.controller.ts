@@ -1,6 +1,6 @@
 import { ExchangeNames, OkRequestSuccess, RoutingKeys } from '@cngvc/shopi-shared';
-import { productProducer } from '@products/queues/product.producer';
-import { productChannel } from '@products/server';
+import { productProducer } from '@product/queues/product.producer';
+import { productChannel } from '@product/server';
 import { Request, Response } from 'express';
 
 class ProductSeedController {

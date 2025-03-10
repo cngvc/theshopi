@@ -1,7 +1,7 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
-import { queueConnection } from '@products/queues/connection';
-import { productService } from '@products/services/product.service';
-import { captureError } from '@products/utils/logger.util';
+import { queueConnection } from '@product/queues/connection';
+import { productService } from '@product/services/product.service';
+import { captureError } from '@product/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
 class ProductConsumes {

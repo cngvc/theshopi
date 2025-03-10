@@ -1,8 +1,8 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IProductDocument, IStoreDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-shared-types';
-import { DefaultSearchQuery } from '@products/constants';
-import { productService } from '@products/services/product.service';
-import { searchService } from '@products/services/search.service';
+import { DefaultSearchQuery } from '@product/constants';
+import { productService } from '@product/services/product.service';
+import { searchService } from '@product/services/search.service';
 import { Request, Response } from 'express';
 
 class ProductController {
@@ -60,7 +60,6 @@ class ProductController {
   };
 
   getProductByProductPublicId = async (req: Request, res: Response): Promise<void> => {
-    await this.checkIfUserIsStore(req.currentUser!.id);
     const { product, store } = await productService.getProductByProductPublicId(req.params.productPublicId);
     new OkRequestSuccess('Get product by id.', { product, store }).send(res);
   };

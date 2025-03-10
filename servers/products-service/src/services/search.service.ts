@@ -1,7 +1,7 @@
 import { IHitsTotal, IPaginateProps, IQueryList } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
-import { elasticSearch } from '@products/elasticsearch';
+import { elasticSearch } from '@product/elasticsearch';
 
 class SearchService {
   async searchProductsByStorePublicId(storePublicId: string) {

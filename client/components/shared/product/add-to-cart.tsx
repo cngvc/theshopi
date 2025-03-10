@@ -1,17 +1,13 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import pages from '@/lib/constants/pages';
 import { useAddToCart } from '@/lib/hooks/use-add-cart.hook';
 import { useCart } from '@/lib/hooks/use-cart.hook';
 import { IProductDocument } from '@cngvc/shopi-shared-types';
 import { Loader, Plus } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { toast } from 'sonner';
 
 const AddToCart = ({ item }: { item: IProductDocument }) => {
-  const router = useRouter();
   const { data } = useCart();
   const { mutate: addToCart, isPending } = useAddToCart();
 
@@ -20,19 +16,7 @@ const AddToCart = ({ item }: { item: IProductDocument }) => {
   }, [data, item]);
 
   const handleAddToCart = async () => {
-    try {
-      await addToCart(`${item.productPublicId}`);
-      toast.success('Update your cart', {
-        description: 'The product has been added to the cart',
-        action: {
-          label: 'Go to cart',
-          onClick: () => router.push(pages.cart)
-        }
-      });
-    } catch (error: unknown) {
-      console.log(error);
-      toast.error('Something was wrong');
-    }
+    addToCart(`${item.productPublicId}`);
   };
 
   return (

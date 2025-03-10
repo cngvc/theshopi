@@ -1,5 +1,5 @@
-import { productSeedController } from '@products/controllers/product-seed.controller';
-import { productController } from '@products/controllers/product.controller';
+import { productSeedController } from '@product/controllers/product-seed.controller';
+import { productController } from '@product/controllers/product.controller';
 import express, { Router } from 'express';
 
 class ProductRoutes {

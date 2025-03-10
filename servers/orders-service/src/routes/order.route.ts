@@ -1,4 +1,4 @@
-import { orderController } from '@orders/controllers/order.controller';
+import { orderController } from '@order/controllers/order.controller';
 import express, { Router } from 'express';
 
 class OrderRoutes {

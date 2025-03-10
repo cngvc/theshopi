@@ -1,4 +1,4 @@
-import { buyerController } from '@users/controllers/buyer.controller';
+import { buyerController } from '@user/controllers/buyer.controller';
 import express, { Router } from 'express';
 
 class BuyerRoutes {

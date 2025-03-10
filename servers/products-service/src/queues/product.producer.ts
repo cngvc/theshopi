@@ -1,5 +1,5 @@
-import { queueConnection } from '@products/queues/connection';
-import { captureError } from '@products/utils/logger.util';
+import { queueConnection } from '@product/queues/connection';
+import { captureError } from '@product/utils/logger.util';
 import { Channel } from 'amqplib';
 
 class ProductProducer {

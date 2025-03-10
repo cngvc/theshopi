@@ -2,12 +2,12 @@ import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
-import { config } from '@users/config';
-import { SERVER_PORT, SERVICE_NAME } from '@users/constants';
-import { queueConnection } from '@users/queues/connection';
-import { usersConsumes } from '@users/queues/users.consumer';
-import { appRoutes } from '@users/routes';
-import { captureError, log } from '@users/utils/logger.util';
+import { config } from '@user/config';
+import { SERVER_PORT, SERVICE_NAME } from '@user/constants';
+import { queueConnection } from '@user/queues/connection';
+import { userConsumes } from '@user/queues/user.consumer';
+import { appRoutes } from '@user/routes';
+import { captureError, log } from '@user/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -17,21 +17,21 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { elasticSearch } from './elasticsearch';
-import { grpcUserServer } from './grpc/grpc.server';
+import { grpcUserServer } from './grpc/server/grpc.server';
 
-export class UsersServer {
+export class UserServer {
   private app: Application;
   constructor(app: Application) {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startQueues();
-    this.startElasticSearch();
-    this.startRPCServer();
+    await this.startQueues();
+    await this.startElasticSearch();
+    await this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -70,22 +70,22 @@ export class UsersServer {
     appRoutes(this.app);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
-    elasticSearch.createIndex(ElasticsearchIndexes.auth);
-    elasticSearch.createIndex(ElasticsearchIndexes.stores);
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
+    await elasticSearch.createIndex(ElasticsearchIndexes.auth);
+    await elasticSearch.createIndex(ElasticsearchIndexes.stores);
   }
 
   private async startQueues() {
     const channel = (await queueConnection.createConnection()) as Channel;
-    await usersConsumes.consumeUpdateUsersBuy(channel);
-    await usersConsumes.consumeUpdateUsersStore(channel);
-    await usersConsumes.consumeGetUsersStore(channel);
-    await usersConsumes.consumeGetUsers(channel);
+    await userConsumes.consumeUpdateUsersBuy(channel);
+    await userConsumes.consumeUpdateUsersStore(channel);
+    await userConsumes.consumeGetUsersStore(channel);
+    await userConsumes.consumeGetUsers(channel);
   }
 
-  private startRPCServer() {
-    grpcUserServer.start(40030);
+  private async startRPCServer() {
+    await grpcUserServer.start(40030);
   }
 
   private errorHandler(): void {

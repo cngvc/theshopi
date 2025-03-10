@@ -1,14 +1,15 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { IBuyerDocument } from '@cngvc/shopi-shared-types';
-import { queueConnection } from '@users/queues/connection';
-import { usersProducer } from '@users/queues/users.producer';
-import { buyerService } from '@users/services/buyer.service';
-import { storeService } from '@users/services/store.service';
-import { usersService } from '@users/services/users.service';
-import { captureError } from '@users/utils/logger.util';
+import { faker } from '@faker-js/faker';
+import { queueConnection } from '@user/queues/connection';
+import { userProducer } from '@user/queues/user.producer';
+import { buyerService } from '@user/services/buyer.service';
+import { storeService } from '@user/services/store.service';
+import { userService } from '@user/services/user.service';
+import { captureError } from '@user/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
-class UsersConsumes {
+class UserConsumes {
   consumeUpdateUsersBuy = async (channel: Channel): Promise<void> => {
     try {
       if (!channel) {
@@ -26,7 +27,13 @@ class UsersConsumes {
             username,
             email,
             purchasedProducts: [],
-            createdAt
+            createdAt,
+            shippingAddress: {
+              address: faker.location.streetAddress(), // remove in production
+              city: faker.location.city(), // remove in production
+              country: faker.location.country(), // remove in production
+              postalCode: faker.location.zipCode() // remove in production
+            }
           };
           await buyerService.createBuyer(buyer);
           console.log(`***Created buyer user: ${email}`);
@@ -74,7 +81,7 @@ class UsersConsumes {
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
         const { count } = JSON.parse(msg!.content.toString());
         const stores = await storeService.getRandomStores(parseInt(count, 10));
-        usersProducer.publishDirectMessage(
+        userProducer.publishDirectMessage(
           channel,
           ExchangeNames.CREATE_SEED_PRODUCT,
           RoutingKeys.CREATE_SEED_PRODUCT,
@@ -97,8 +104,8 @@ class UsersConsumes {
       await channel.bindQueue(assertQueue.queue, ExchangeNames.GET_USERS, RoutingKeys.GET_USERS);
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
         const { count } = JSON.parse(msg!.content.toString());
-        const { stores, buyers } = await usersService.getRandomUsers(parseInt(count, 10));
-        usersProducer.publishDirectMessage(
+        const { stores, buyers } = await userService.getRandomUsers(parseInt(count, 10));
+        userProducer.publishDirectMessage(
           channel,
           ExchangeNames.CREATE_SEED_CHAT,
           RoutingKeys.CREATE_SEED_CHAT,
@@ -112,4 +119,4 @@ class UsersConsumes {
   };
 }
 
-export const usersConsumes = new UsersConsumes();
+export const userConsumes = new UserConsumes();

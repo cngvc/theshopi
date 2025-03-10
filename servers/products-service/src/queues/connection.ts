@@ -1,6 +1,6 @@
-import { config } from '@products/config';
-import { SERVICE_NAME } from '@products/constants';
-import { captureError, log } from '@products/utils/logger.util';
+import { config } from '@product/config';
+import { SERVICE_NAME } from '@product/constants';
+import { captureError, log } from '@product/utils/logger.util';
 import client, { Channel, ChannelModel } from 'amqplib';
 
 class QueueConnection {

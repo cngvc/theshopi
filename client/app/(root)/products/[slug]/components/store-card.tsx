@@ -6,17 +6,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { useChatWithStore } from '@/lib/hooks/use-chat-store.hook';
 import { IStoreDocument } from '@cngvc/shopi-shared-types';
 import { Loader, MessageCircle } from 'lucide-react';
-import { toast } from 'sonner';
 
 const StoreCard = ({ store }: { store: IStoreDocument }) => {
   const { mutate: chatWithStore, isPending } = useChatWithStore();
 
   const handleChatWithStore = async () => {
-    try {
-      await chatWithStore(`${store.ownerAuthId}`);
-    } catch (error: unknown) {
-      toast.error('Something was wrong.');
-    }
+    chatWithStore(`${store.ownerAuthId}`);
   };
   return (
     <Card>

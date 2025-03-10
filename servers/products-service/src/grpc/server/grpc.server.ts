@@ -1,9 +1,10 @@
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import { log } from '@users/utils/logger.util';
+import { SERVICE_NAME } from '@product/constants';
+import { log } from '@product/utils/logger.util';
 import path from 'path';
-import { UserServiceClientRPC } from './user-service-client.grpc';
-const PROTO_PATH = path.join(__dirname, './proto/users.proto');
+import { ProductServiceGrpcHandler } from './product.grpc-server.handler';
+const PROTO_PATH = path.join(__dirname, '../proto/product.proto');
 
 class GrpcServer {
   private server: grpc.Server;
@@ -22,8 +23,7 @@ class GrpcServer {
     this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
     this.serviceDefinition = this.proto[service].service;
     this.addService({
-      GetStoreByStorePublicId: UserServiceClientRPC.findStoreByStorePublicId,
-      GetBuyerByAuthId: UserServiceClientRPC.findBuyerByAuthId
+      GetProductsByProductPublicIds: ProductServiceGrpcHandler.findProductsByProductPublicIds
     });
   }
 
@@ -31,14 +31,31 @@ class GrpcServer {
     this.server.addService(this.serviceDefinition, handlers);
   }
 
+  public tryShutdown() {
+    this.server.tryShutdown((err) => {
+      if (err) {
+        log.error(`Error while shutting down ${SERVICE_NAME} grpc:`, err);
+      } else {
+        log.info(`✅ ${SERVICE_NAME} grpc stopped cleanly`);
+      }
+    });
+  }
+
   public start(port: number) {
     this.server.bindAsync(`0.0.0.0:${port}`, grpc.ServerCredentials.createInsecure(), (err, bindPort) => {
       if (err) {
-        log.error(`❌ Failed to start grpc server: ${err.message}`);
-        return;
+        log.error(`❌ Failed to start ${SERVICE_NAME} grpc: ${err.message}`);
+        process.exit(1);
       }
-      log.info(`🚀 grpc server running on port ${bindPort}`);
+      log.info(`🚀 ${SERVICE_NAME} grpc running on port ${bindPort}`);
     });
   }
 }
-export const grpcUserServer = new GrpcServer(PROTO_PATH, 'users', 'UsersService');
+
+process.on('SIGINT', () => {
+  log.info(`🛑 Shutting down ${SERVICE_NAME}...`);
+  grpcProductsServer.tryShutdown();
+  process.exit(1);
+});
+
+export const grpcProductsServer = new GrpcServer(PROTO_PATH, 'product', 'ProductService');

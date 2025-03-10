@@ -1,5 +1,5 @@
-import { IOrderDocument, IOrderItem, OrderStatus } from '@cngvc/shopi-shared-types';
-import { Model, Schema, model } from 'mongoose';
+import { IOrderDocument, IOrderItem, OrderStatus, PaymentMethod } from '@cngvc/shopi-shared-types';
+import { Model, ObjectId, Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const orderSchema: Schema = new Schema(
@@ -11,7 +11,6 @@ const orderSchema: Schema = new Schema(
       type: [
         {
           productPublicId: { type: String, required: true },
-          name: { type: String, required: true },
           quantity: { type: Number, required: true, min: 1 },
           price: { type: Number, required: true, min: 0 }
         }
@@ -27,7 +26,7 @@ const orderSchema: Schema = new Schema(
       postalCode: { type: String, required: false, default: '' }
     },
     payment: {
-      method: { type: String, required: true },
+      method: { type: String, enum: Object.values(PaymentMethod), required: true },
       transactionId: { type: String, default: null }
     },
     status: {
@@ -45,6 +44,7 @@ const orderSchema: Schema = new Schema(
     toJSON: {
       transform(_doc, rec) {
         delete rec._id;
+        rec.items = rec.items.map(({ _id, ...item }: { _id: ObjectId; productPublicId: string; quantity: number; price: number }) => item);
         return rec;
       }
     }

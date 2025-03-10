@@ -1,8 +1,8 @@
-import { queueConnection } from '@users/queues/connection';
-import { captureError } from '@users/utils/logger.util';
+import { queueConnection } from '@user/queues/connection';
+import { captureError } from '@user/utils/logger.util';
 import { Channel } from 'amqplib';
 
-class UsersProducer {
+class UserProducer {
   public publishDirectMessage = async (channel: Channel, exchangeName: string, routingKey: string, message: string): Promise<void> => {
     try {
       if (!channel) {
@@ -16,4 +16,4 @@ class UsersProducer {
   };
 }
 
-export const usersProducer = new UsersProducer();
+export const userProducer = new UserProducer();

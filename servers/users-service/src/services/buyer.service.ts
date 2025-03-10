@@ -1,6 +1,6 @@
 import { ElasticsearchIndexes, IBuyerDocument, IShippingAddress } from '@cngvc/shopi-shared-types';
-import { elasticSearch } from '@users/elasticsearch';
-import { BuyerModel } from '@users/models/buyer.schema';
+import { elasticSearch } from '@user/elasticsearch';
+import { BuyerModel } from '@user/models/buyer.schema';
 
 class BuyerService {
   getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {

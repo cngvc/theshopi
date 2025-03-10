@@ -41,7 +41,7 @@ const CredentialsSigninForm = () => {
             type="text"
             autoComplete="username"
             placeholder="Enter your email or username"
-            defaultValue={'joevu'}
+            defaultValue={'kneelingpony'}
           />
         </div>
         <div className="space-y-2">
@@ -53,7 +53,7 @@ const CredentialsSigninForm = () => {
             type="password"
             autoComplete="password"
             placeholder="Enter your password"
-            defaultValue={'123qweasd'}
+            defaultValue={'Asdfgh123'}
           />
         </div>
 

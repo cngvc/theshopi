@@ -78,6 +78,10 @@ class CartCache {
       return items.filter((item) => item.productPublicId !== productPublicId);
     });
   }
+
+  async deleteCart(key: string): Promise<void> {
+    await redisCache.client.del(key);
+  }
 }
 
 export const cartCache = new CartCache();

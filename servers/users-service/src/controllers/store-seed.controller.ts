@@ -1,9 +1,9 @@
 import { OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
 import { faker } from '@faker-js/faker';
-import { buyerService } from '@users/services/buyer.service';
-import { storeService } from '@users/services/store.service';
-import { log } from '@users/utils/logger.util';
+import { buyerService } from '@user/services/buyer.service';
+import { storeService } from '@user/services/store.service';
+import { log } from '@user/utils/logger.util';
 import { Request, Response } from 'express';
 
 class StoreSeedController {

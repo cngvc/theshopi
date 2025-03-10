@@ -1,11 +1,12 @@
-import { UsersServer } from '@orders/server';
+import { UserServer } from '@order/server';
 import express, { Express } from 'express';
+import { database } from './database';
 
 class Application {
   public initialize() {
     const app: Express = express();
-    const server = new UsersServer(app);
-    // database.connection();
+    const server = new UserServer(app);
+    database.connection();
     server.start();
   }
 }

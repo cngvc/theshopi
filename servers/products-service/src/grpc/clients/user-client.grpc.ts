@@ -1,9 +1,10 @@
 import { IStoreDocument } from '@cngvc/shopi-shared-types';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import { config } from '@products/config';
+import { config } from '@product/config';
+import { captureError } from '@product/utils/logger.util';
 import path from 'path';
-const PROTO_PATH = path.join(__dirname, './proto/users.proto');
+const PROTO_PATH = path.join(__dirname, '../proto/user.proto');
 
 interface IClient extends grpc.Client {
   GetStoreByStorePublicId: (
@@ -29,14 +30,17 @@ class GrpcClient {
   }
 
   getStoreByStorePublicId = async (storePublicId: string): Promise<IStoreDocument | null> => {
-    const store = (await new Promise((resolve, reject) => {
-      this.client.GetStoreByStorePublicId({ storePublicId }, (err: any, response: IStoreDocument) => {
-        if (err) return reject(err);
-        return resolve(response);
+    try {
+      return await new Promise((resolve, reject) => {
+        this.client.GetStoreByStorePublicId({ storePublicId }, (err: any, response: IStoreDocument) => {
+          if (err) return reject(err);
+          return resolve(response);
+        });
       });
-    })) as IStoreDocument;
-    if (store) return store;
+    } catch (error) {
+      captureError(error, 'getStoreByStorePublicId');
+    }
     return null;
   };
 }
-export const grpcUserClient = new GrpcClient(path.join(PROTO_PATH), 'users', 'UsersService');
+export const grpcUserClient = new GrpcClient(path.join(PROTO_PATH), 'user', 'UserService');

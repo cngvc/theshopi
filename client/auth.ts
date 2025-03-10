@@ -19,13 +19,13 @@ const config: NextAuthConfig = {
             password: credentials?.password
           });
           if (data?.metadata?.user) {
-            const { user } = data.metadata;
+            const { user, accessToken } = data.metadata;
             return {
               id: user.id,
               name: user.username,
               email: user.email,
               username: user.username,
-              accessToken: user.accessToken
+              accessToken: accessToken
             } as User;
           }
           return null;

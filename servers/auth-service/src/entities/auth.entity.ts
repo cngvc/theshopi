@@ -3,6 +3,8 @@ import { IAuthDocument } from '@cngvc/shopi-shared';
 import { compare, hash } from 'bcryptjs';
 import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+export type UserRole = 'admin' | 'basic';
+
 @Entity('auths')
 export class AuthModel extends BaseEntity implements IAuthDocument {
   @PrimaryGeneratedColumn('uuid')
@@ -31,6 +33,9 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
+
+  @Column({ type: 'enum', enum: ['admin', 'basic'], default: 'basic', select: false })
+  role!: UserRole;
 
   @BeforeInsert()
   async hashPassword() {

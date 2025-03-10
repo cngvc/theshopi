@@ -24,12 +24,12 @@ export class AuthServer {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startElasticSearch();
-    this.startQueues();
+    await this.startQueues();
+    await this.startElasticSearch();
     this.errorHandler();
     this.startServer();
   };
@@ -68,8 +68,8 @@ export class AuthServer {
     appRoutes(this.app);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
   }
 
   private async startQueues() {

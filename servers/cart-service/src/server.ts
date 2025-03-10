@@ -14,18 +14,21 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
+import { grpcCartServer } from './grpc/server/grpc.server';
+import { cartConsumes } from './queues/cart.consumer';
 
-export class UsersServer {
+export class UserServer {
   private app: Application;
   constructor(app: Application) {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startQueues();
+    await this.startQueues();
+    await this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -66,6 +69,11 @@ export class UsersServer {
 
   private async startQueues() {
     const channel = (await queueConnection.createConnection()) as Channel;
+    await cartConsumes.consumeDeleteCart(channel);
+  }
+
+  private startRPCServer() {
+    grpcCartServer.start(40110);
   }
 
   private errorHandler(): void {

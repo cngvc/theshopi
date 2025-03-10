@@ -1,7 +1,7 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IStoreDocument, createStoreSchema } from '@cngvc/shopi-shared-types';
-import { buyerService } from '@users/services/buyer.service';
-import { storeService } from '@users/services/store.service';
+import { buyerService } from '@user/services/buyer.service';
+import { storeService } from '@user/services/store.service';
 import { Request, Response } from 'express';
 
 class StoreController {

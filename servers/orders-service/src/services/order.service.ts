@@ -1,28 +1,77 @@
-import { NotFoundError } from '@cngvc/shopi-shared';
-import { IOrderDocument } from '@cngvc/shopi-shared-types';
-import { grpcUserClient } from '@orders/grpc/grpc.client';
+import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
+import { ElasticsearchIndexes, IBuyerDocument, IOrderDocument } from '@cngvc/shopi-shared-types';
+import { elasticSearch } from '@order/elasticsearch';
+import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
+import { grpcProductClient } from '@order/grpc/clients/product-client.grpc';
+import { grpcUserClient } from '@order/grpc/clients/user-client.grpc';
+import { OrderModel } from '@order/models/order.schema';
+import { cartProducer } from '@order/queues/cart.producer';
+import { cartChannel } from '@order/server';
 
 class OrderService {
-  createOrder = async (authId: string, order: IOrderDocument): Promise<IOrderDocument> => {
-    // get buyer information
+  createOrder = async (authId: string, payload: IOrderDocument): Promise<IOrderDocument> => {
     const buyer = await this.findCachedBuyerByAuthId(authId);
-    console.log(buyer);
+    if (!buyer?.shippingAddress) {
+      throw new NotFoundError('Buyer shipping address not found', 'createOrder');
+    }
+    const itemsInCart = await this.findCachedCartByAuthId(authId);
+    const productPublicIds = itemsInCart.map((e) => e.productPublicId);
+    const products = await this.findProductsByProductPublicIds(productPublicIds);
 
-    // get cart information
+    const productMap = new Map(products.map((p) => [p.productPublicId, p]));
+    const orderItems = itemsInCart.map((item) => {
+      const product = productMap.get(item.productPublicId);
+      if (!product) {
+        throw new NotFoundError(`Product ${item.productPublicId} not found`, 'createOrder');
+      }
+      return {
+        productPublicId: item.productPublicId,
+        quantity: item.quantity,
+        price: product.price
+      };
+    });
+    const order = await OrderModel.create({
+      buyerPublicId: buyer.buyerPublicId,
+      buyerAuthId: authId,
+      items: orderItems,
+      shippingFee: 0,
+      shipping: buyer.shippingAddress,
+      payment: {
+        method: payload.payment.method,
+        transactionId: payload.payment.transactionId
+      },
+      notes: payload.notes || ''
+    });
 
-    // create card
-    // const newOrder = await OrderModel.create(order);
-
-    return {} as any;
+    await cartProducer.publishDirectMessage(
+      cartChannel,
+      ExchangeNames.DELETE_COMPLETED_CART,
+      RoutingKeys.DELETE_COMPLETED_CART,
+      JSON.stringify({ authId })
+    );
+    return order;
   };
 
-  private findCachedBuyerByAuthId = async (authId: string) => {
-    let buyer = null;
+  private findCachedBuyerByAuthId = async (authId: string): Promise<IBuyerDocument> => {
+    let buyer = await elasticSearch.getDocument<IBuyerDocument>(ElasticsearchIndexes.auth, authId);
     if (!buyer) {
       buyer = await grpcUserClient.getBuyerByAuthId(authId);
       if (!buyer) throw new NotFoundError('Buyer not found', 'findCachedBuyerByAuthId');
     }
     return buyer;
+  };
+  private findCachedCartByAuthId = async (authId: string) => {
+    const { items } = await grpcCartClient.getCartByAuthId(authId);
+    if (!items?.length) throw new NotFoundError('Cart not found', 'findCachedCartByAuthId');
+    return items;
+  };
+
+  private findProductsByProductPublicIds = async (productPublicIds: string[]) => {
+    const { products } = await grpcProductClient.getProductsByProductPublicIds(productPublicIds);
+    if (!products?.length) {
+      throw new NotFoundError('Products not found', 'findProductsByProductPublicIds');
+    }
+    return products;
   };
 }
 

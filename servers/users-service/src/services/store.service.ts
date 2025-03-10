@@ -1,7 +1,7 @@
 import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
-import { elasticSearch } from '@users/elasticsearch';
-import { StoreModel } from '@users/models/store.schema';
-import { buyerService } from '@users/services/buyer.service';
+import { elasticSearch } from '@user/elasticsearch';
+import { StoreModel } from '@user/models/store.schema';
+import { buyerService } from '@user/services/buyer.service';
 import mongoose from 'mongoose';
 
 class StoreService {

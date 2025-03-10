@@ -1,5 +1,5 @@
-import { BASE_PATH } from '@orders/constants/path';
-import { healthRoutes } from '@orders/routes/health.route';
+import { BASE_PATH } from '@order/constants/path';
+import { healthRoutes } from '@order/routes/health.route';
 import { Application } from 'express';
 import { orderRoutes } from './routes/order.route';
 

@@ -12,18 +12,18 @@ export class SocketServer {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.startServer();
     this.routesMiddleware();
-    this.startElasticSearch();
+    await this.startElasticSearch();
   };
 
   private routesMiddleware() {
     appRoutes(this.app);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
   }
 
   private startServer() {

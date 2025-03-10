@@ -2,12 +2,12 @@ import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
-import { config } from '@products/config';
-import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
-import { queueConnection } from '@products/queues/connection';
-import { productConsumes } from '@products/queues/product.consumer';
-import { appRoutes } from '@products/routes';
-import { captureError, log } from '@products/utils/logger.util';
+import { config } from '@product/config';
+import { SERVER_PORT, SERVICE_NAME } from '@product/constants';
+import { queueConnection } from '@product/queues/connection';
+import { productConsumes } from '@product/queues/product.consumer';
+import { appRoutes } from '@product/routes';
+import { captureError, log } from '@product/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -17,6 +17,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { verify } from 'jsonwebtoken';
 import { elasticSearch } from './elasticsearch';
+import { grpcProductsServer } from './grpc/server/grpc.server';
 
 export let productChannel: Channel;
 
@@ -26,12 +27,13 @@ export class ProductServer {
     this.app = app;
   }
 
-  start = (): void => {
+  start = async (): Promise<void> => {
     this.standardMiddleware();
     this.securityMiddleware();
     this.routesMiddleware();
-    this.startQueues();
-    this.startElasticSearch();
+    await this.startQueues();
+    await this.startElasticSearch();
+    await this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -75,9 +77,13 @@ export class ProductServer {
     await productConsumes.consumeCreateProductSeeds(productChannel);
   }
 
-  private startElasticSearch() {
-    elasticSearch.checkConnection();
-    elasticSearch.createIndex(ElasticsearchIndexes.products);
+  private async startElasticSearch() {
+    await elasticSearch.checkConnection();
+    await elasticSearch.createIndex(ElasticsearchIndexes.products);
+  }
+
+  private startRPCServer() {
+    grpcProductsServer.start(40040);
   }
 
   private errorHandler(): void {
