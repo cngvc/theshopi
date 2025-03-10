@@ -8,9 +8,12 @@ import { endpointMiddleware } from '@gateway/middlewares/endpoint.middleware';
 import { appRoutes } from '@gateway/routes';
 import { authService } from '@gateway/services/api/auth.service';
 import { buyerService } from '@gateway/services/api/buyer.service';
+import { cartService } from '@gateway/services/api/cart.service';
 import { chatService } from '@gateway/services/api/chat.service';
+import { orderService } from '@gateway/services/api/order.service';
+import { productService } from '@gateway/services/api/product.service';
 import { storeService } from '@gateway/services/api/store.service';
-import { log, logCatch } from '@gateway/utils/logger.util';
+import { captureError, log } from '@gateway/utils/logger.util';
 import { isAxiosError } from 'axios';
 import compression from 'compression';
 import cors from 'cors';
@@ -20,8 +23,6 @@ import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
-import { cartService } from './services/api/cart.service';
-import { productService } from './services/api/product.service';
 
 export class GatewayServer {
   private app: Application;
@@ -61,6 +62,8 @@ export class GatewayServer {
         productService.setHeaderAuthorization(headerAuthorization);
         chatService.setHeaderAuthorization(headerAuthorization);
         cartService.setHeaderAuthorization(headerAuthorization);
+        orderService.setHeaderAuthorization(headerAuthorization);
+        // must set header when creating a new service
       }
       next();
     });
@@ -136,7 +139,7 @@ export class GatewayServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -146,7 +149,7 @@ export class GatewayServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

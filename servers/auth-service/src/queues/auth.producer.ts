@@ -1,5 +1,5 @@
 import { queueConnection } from '@auth/queues/connection';
-import { logCatch } from '@auth/utils/logger.util';
+import { captureError } from '@auth/utils/logger.util';
 import { Channel } from 'amqplib';
 
 class AuthProducer {
@@ -11,7 +11,7 @@ class AuthProducer {
       await channel.assertExchange(exchangeName, 'direct');
       channel.publish(exchangeName, routingKey, Buffer.from(message));
     } catch (error) {
-      logCatch(error, 'publishDirectMessage');
+      captureError(error, 'publishDirectMessage');
     }
   };
 }

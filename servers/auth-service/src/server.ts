@@ -5,7 +5,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@auth/constants';
 import { elasticSearch } from '@auth/elasticsearch';
 import { queueConnection } from '@auth/queues/connection';
 import { appRoutes } from '@auth/routes';
-import { log, logCatch } from '@auth/utils/logger.util';
+import { captureError, log } from '@auth/utils/logger.util';
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
@@ -98,7 +98,7 @@ export class AuthServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -108,7 +108,7 @@ export class AuthServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

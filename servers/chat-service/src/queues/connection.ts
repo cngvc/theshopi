@@ -1,6 +1,6 @@
 import { config } from '@chat/config';
 import { SERVICE_NAME } from '@chat/constants';
-import { log, logCatch } from '@chat/utils/logger.util';
+import { captureError, log } from '@chat/utils/logger.util';
 import client, { Channel, ChannelModel } from 'amqplib';
 
 class QueueConnection {
@@ -12,7 +12,7 @@ class QueueConnection {
       this.closeConnection(channel, connection);
       return channel;
     } catch (error) {
-      logCatch(error, 'createConnection');
+      captureError(error, 'createConnection');
       return undefined;
     }
   };

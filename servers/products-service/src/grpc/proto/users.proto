@@ -3,14 +3,14 @@ syntax = "proto3";
 package users;
 
 service UsersService {
-  rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
+  rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetStoreByStorePublicIdResponse);
 }
 
 message GetStoreByStorePublicIdRequest {
   string storePublicId = 1;
 }
 
-message GetUserByStorePublicIdResponse {
+message GetStoreByStorePublicIdResponse {
   string storePublicId = 1;
   string name = 2;
   string ownerAuthId = 3;

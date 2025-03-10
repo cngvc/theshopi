@@ -4,7 +4,7 @@ import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/
 import { elasticSearch } from '@products/elasticsearch';
 
 class SearchService {
-  async productsSearchByStoreId(storePublicId: string) {
+  async searchProductsByStorePublicId(storePublicId: string) {
     const queryList = [{ term: { 'storePublicId.keyword': storePublicId } }];
     const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
     const total = hits.total as SearchTotalHits;
@@ -14,7 +14,7 @@ class SearchService {
     };
   }
 
-  async productsSearch(searchQuery: string, paginate: IPaginateProps, min?: number, max?: number) {
+  async searchProducts(searchQuery: string, paginate: IPaginateProps, min?: number, max?: number) {
     const { from = 0, size = 10 } = paginate;
     const queryList: IQueryList[] = [
       {
@@ -50,7 +50,7 @@ class SearchService {
     };
   }
 
-  async storeSearchByAuthId(authId: string) {
+  async searchStoreByAuthId(authId: string) {
     const queryList = [{ term: { 'ownerAuthId.keyword': authId } }];
     const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.stores, queryList, { size: 1 });
     if (hits.hits.length === 0) {

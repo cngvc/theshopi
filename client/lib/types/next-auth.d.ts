@@ -8,10 +8,3 @@ declare module 'next-auth' {
 
   interface Session extends DefaultSession {}
 }
-
-// declare module 'next-auth/jwt' {
-//   interface JWT {
-//     accessToken: string;
-//     username: string;
-//   }
-// }

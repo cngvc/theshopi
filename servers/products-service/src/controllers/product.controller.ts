@@ -71,7 +71,7 @@ class ProductController {
   };
 
   private checkIfUserIsStore = async (authId: string): Promise<string> => {
-    const storePublicId = ((await searchService.storeSearchByAuthId(authId)) as IStoreDocument | null)?.ownerAuthId;
+    const storePublicId = ((await searchService.searchStoreByAuthId(authId)) as IStoreDocument | null)?.ownerAuthId;
     if (!storePublicId) {
       throw new BadRequestError('Store not found or you are not store user', 'createProduct');
     }

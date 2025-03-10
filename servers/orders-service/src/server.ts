@@ -5,7 +5,7 @@ import { config } from '@orders/config';
 import { SERVER_PORT, SERVICE_NAME } from '@orders/constants';
 import { queueConnection } from '@orders/queues/connection';
 import { appRoutes } from '@orders/routes';
-import { log, logCatch } from '@orders/utils/logger.util';
+import { captureError, log } from '@orders/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -90,7 +90,7 @@ export class UsersServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -100,7 +100,7 @@ export class UsersServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

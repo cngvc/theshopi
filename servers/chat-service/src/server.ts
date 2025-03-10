@@ -4,7 +4,7 @@ import { config } from '@chat/config';
 import { SERVER_PORT, SERVICE_NAME } from '@chat/constants';
 import { queueConnection } from '@chat/queues/connection';
 import { appRoutes } from '@chat/routes';
-import { log, logCatch } from '@chat/utils/logger.util';
+import { captureError, log } from '@chat/utils/logger.util';
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
@@ -100,7 +100,7 @@ export class UsersServer {
       socketHandler.listen();
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -110,7 +110,7 @@ export class UsersServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

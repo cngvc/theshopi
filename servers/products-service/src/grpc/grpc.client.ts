@@ -3,7 +3,7 @@ import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '@products/config';
 import path from 'path';
-const PROTO_PATH = path.join(__dirname, './proto/store.proto');
+const PROTO_PATH = path.join(__dirname, './proto/users.proto');
 
 interface IClient extends grpc.Client {
   GetStoreByStorePublicId: (

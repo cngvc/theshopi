@@ -1,6 +1,6 @@
 import { config } from '@auth/config';
 import { SERVICE_NAME } from '@auth/constants';
-import { log, logCatch } from '@auth/utils/logger.util';
+import { captureError, log } from '@auth/utils/logger.util';
 import { DataSource } from 'typeorm';
 
 export const AppDataSource = new DataSource({
@@ -21,7 +21,7 @@ export class Database {
       await AppDataSource.initialize();
       log.info(SERVICE_NAME + ' Mysql database connection has been established successfully');
     } catch (error) {
-      logCatch(error, 'connection');
+      captureError(error, 'connection');
     }
   }
 }

@@ -4,7 +4,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@notification/constants';
 import { elasticSearch } from '@notification/elasticsearch';
 import { queueConnection } from '@notification/queues/connection';
 import { appRoutes } from '@notification/routes';
-import { log, logCatch } from '@notification/utils/logger.util';
+import { captureError, log } from '@notification/utils/logger.util';
 import { Channel } from 'amqplib';
 import { Application } from 'express';
 import http from 'http';
@@ -44,7 +44,7 @@ export class NotificationServer {
         log.info(SERVICE_NAME + ` running on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 }

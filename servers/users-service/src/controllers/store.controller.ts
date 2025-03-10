@@ -1,16 +1,16 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { IStoreDocument, storeSchema } from '@cngvc/shopi-shared-types';
+import { IStoreDocument, createStoreSchema } from '@cngvc/shopi-shared-types';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { Request, Response } from 'express';
 
 class StoreController {
   createStore = async (req: Request, res: Response): Promise<void> => {
-    const { error } = await Promise.resolve(storeSchema.validate(req.body));
+    const { error } = await Promise.resolve(createStoreSchema.validate(req.body));
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createStore method error');
     }
-    const existingStore = await storeService.getStoreByEmail(req.body.email);
+    const existingStore = await storeService.getStoreByOwnerAuthId(req.currentUser!.id);
     if (existingStore) {
       throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStore method error');
     }
@@ -21,9 +21,9 @@ class StoreController {
     const store: IStoreDocument = {
       ownerAuthId: buyer.authId,
       ownerPublicId: buyer.buyerPublicId,
-      username: req.body.username || buyer.username,
+      email: buyer.email,
+      username: buyer.username || buyer.username,
       name: req.body.name,
-      email: req.body.email || buyer.email,
       description: req.body.description,
       socialLinks: req.body.socialLinks
     };
@@ -31,8 +31,8 @@ class StoreController {
     new CreatedRequestSuccess('Store has been created successfully.', { store: createdStore }).send(res);
   };
 
-  getStoreById = async (req: Request, res: Response): Promise<void> => {
-    const store: IStoreDocument | null = await storeService.getStoreById(req.params.storePublicId);
+  getStoreByStorePublicId = async (req: Request, res: Response): Promise<void> => {
+    const store: IStoreDocument | null = await storeService.getStoreByStorePublicId(req.params.storePublicId);
     new OkRequestSuccess('Store profile.', { store }).send(res);
   };
 
@@ -47,7 +47,7 @@ class StoreController {
   };
 
   updateStore = async (req: Request, res: Response): Promise<void> => {
-    const { error } = await Promise.resolve(storeSchema.validate(req.body));
+    const { error } = await Promise.resolve(createStoreSchema.validate(req.body));
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'updateStore method error');
     }

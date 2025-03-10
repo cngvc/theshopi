@@ -4,7 +4,7 @@ import { AuthModel } from '@auth/entities/auth.entity';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authCache } from '@auth/redis/auth-cache';
 import { authChannel } from '@auth/server';
-import { logCatch } from '@auth/utils/logger.util';
+import { captureError } from '@auth/utils/logger.util';
 import { ExchangeNames, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
 import { sign } from 'jsonwebtoken';
 import { MoreThan, Repository } from 'typeorm';
@@ -45,7 +45,7 @@ export class AuthService {
 
       return true;
     } catch (error) {
-      logCatch(error, 'checkUserExists');
+      captureError(error, 'checkUserExists');
       return false;
     }
   }

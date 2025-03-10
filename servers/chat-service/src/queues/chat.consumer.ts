@@ -1,6 +1,6 @@
 import { queueConnection } from '@chat/queues/connection';
 import { chatService } from '@chat/services/chat.service';
-import { logCatch } from '@chat/utils/logger.util';
+import { captureError } from '@chat/utils/logger.util';
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { Channel, ConsumeMessage } from 'amqplib';
 
@@ -19,7 +19,7 @@ class ChatConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeCreateChatSeeds');
+      captureError(error, 'consumeCreateChatSeeds');
     }
   };
 }

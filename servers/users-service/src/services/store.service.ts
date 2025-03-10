@@ -5,10 +5,15 @@ import { buyerService } from '@users/services/buyer.service';
 import mongoose from 'mongoose';
 
 class StoreService {
-  getStoreById = async (storePublicId: string): Promise<IStoreDocument | null> => {
+  getStoreByStorePublicId = async (storePublicId: string): Promise<IStoreDocument | null> => {
     const store: IStoreDocument | null = (await StoreModel.findOne({
       _id: new mongoose.Types.ObjectId(storePublicId)
     }).lean()) as IStoreDocument;
+    return store;
+  };
+
+  getStoreByOwnerAuthId = async (ownerAuthId: string): Promise<IStoreDocument | null> => {
+    const store: IStoreDocument | null = (await StoreModel.findOne({ ownerAuthId }).lean()) as IStoreDocument;
     return store;
   };
 
@@ -29,7 +34,7 @@ class StoreService {
 
   createStore = async (payload: IStoreDocument): Promise<IStoreDocument> => {
     const createdStore: IStoreDocument = (await StoreModel.create(payload)).toJSON() as IStoreDocument;
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.stores, `${createdStore.storePublicId}`, createdStore);
+    await elasticSearch.indexDocument(ElasticsearchIndexes.stores, `${createdStore.storePublicId}`, createdStore);
     await buyerService.updateBuyerBecomeStore(`${createdStore.ownerPublicId}`, `${createdStore.storePublicId}`);
     return createdStore;
   };

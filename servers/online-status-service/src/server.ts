@@ -2,7 +2,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@online-status/constants';
 import { elasticSearch } from '@online-status/elasticsearch';
 import { appRoutes } from '@online-status/routes';
 import { SocketHandler } from '@online-status/sockets/socket.handler';
-import { log, logCatch } from '@online-status/utils/logger.util';
+import { captureError, log } from '@online-status/utils/logger.util';
 import { Application } from 'express';
 import http from 'http';
 
@@ -35,7 +35,7 @@ export class OnlineStatusServer {
       socketHandler.listen();
       log.info(`Worker with process id of ${process.pid} on online-status service has started`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -45,7 +45,7 @@ export class OnlineStatusServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

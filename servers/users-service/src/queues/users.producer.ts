@@ -1,5 +1,5 @@
 import { queueConnection } from '@users/queues/connection';
-import { logCatch } from '@users/utils/logger.util';
+import { captureError } from '@users/utils/logger.util';
 import { Channel } from 'amqplib';
 
 class UsersProducer {
@@ -11,7 +11,7 @@ class UsersProducer {
       await channel.assertExchange(exchangeName, 'direct');
       channel.publish(exchangeName, routingKey, Buffer.from(message));
     } catch (error) {
-      logCatch(error, 'publishDirectMessage');
+      captureError(error, 'publishDirectMessage');
     }
   };
 }

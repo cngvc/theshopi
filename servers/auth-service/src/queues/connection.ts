@@ -1,6 +1,6 @@
 import { config } from '@auth/config';
 import { SERVICE_NAME } from '@auth/constants';
-import { log, logCatch } from '@auth/utils/logger.util';
+import { captureError, log } from '@auth/utils/logger.util';
 import client, { Channel, ChannelModel } from 'amqplib';
 
 class QueueConnection {
@@ -12,7 +12,7 @@ class QueueConnection {
       this.closeConnection(channel, connection);
       return channel;
     } catch (error) {
-      logCatch(error, 'createConnection');
+      captureError(error, 'createConnection');
       return undefined;
     }
   };

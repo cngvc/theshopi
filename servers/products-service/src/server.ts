@@ -7,7 +7,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@products/constants';
 import { queueConnection } from '@products/queues/connection';
 import { productConsumes } from '@products/queues/product.consumer';
 import { appRoutes } from '@products/routes';
-import { log, logCatch } from '@products/utils/logger.util';
+import { captureError, log } from '@products/utils/logger.util';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -102,7 +102,7 @@ export class ProductServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -112,7 +112,7 @@ export class ProductServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

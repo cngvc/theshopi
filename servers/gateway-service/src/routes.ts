@@ -13,6 +13,7 @@ import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
 import { VerifyUserMiddleware } from './middlewares/verify-user-exist.middleware';
+import { orderRoutes } from './routes/order.route';
 
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
@@ -31,6 +32,9 @@ export const appRoutes = (app: Application) => {
   privateRouter.use(currentUserRoutes.routes());
   privateRouter.use(chatRoutes.routes());
   privateRouter.use(cartRoutes.routes());
+  privateRouter.use(orderRoutes.routes());
+
+  // seeding data
   privateRouter.use(seedRoutes.routes());
   app.use(BASE_PATH, privateRouter);
 };

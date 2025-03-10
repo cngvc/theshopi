@@ -27,7 +27,7 @@ class BuyerService {
     const existingBuyer: IBuyerDocument | null = await this.getBuyerByAuthId(`${payload.authId}`);
     if (existingBuyer) return;
     const buyer = (await BuyerModel.create(payload)).toJSON();
-    await elasticSearch.addItemToIndex(ElasticsearchIndexes.auth, `${buyer.buyerPublicId}`, buyer);
+    await elasticSearch.indexDocument(ElasticsearchIndexes.auth, `${buyer.buyerPublicId}`, buyer);
   };
 
   updateBuyerBecomeStore = async (buyerPublicId: string, storePublicId: string): Promise<void> => {

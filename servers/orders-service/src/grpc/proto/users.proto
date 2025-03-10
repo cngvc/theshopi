@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package users;
+
+service UsersService {
+  rpc GetBuyerByAuthId (GetBuyerByAuthIdRequest) returns (GetBuyerByAuthIdResponse);
+}
+
+message GetBuyerByAuthIdRequest {
+  string authId = 1;
+}
+
+message GetBuyerByAuthIdResponse {
+  string buyerPublicId = 1;
+  string authId = 2;
+  string storePublicId = 3;
+  string username = 4;
+  string email = 5;
+  optional ShippingAddress shippingAddress = 6;
+}
+
+message ShippingAddress {
+  string shippingAddressPublicId = 1;
+  string address = 2;
+  string city = 3;
+  string country = 4;
+  string postalCode = 5;
+}

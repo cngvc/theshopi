@@ -8,7 +8,7 @@ class StoreService extends AxiosService {
     super(`${config.USERS_BASE_URL}/api/v1/store`, 'store');
   }
 
-  async getStoreById(storePublicId: string): Promise<AxiosResponse> {
+  async getStoreByStorePublicId(storePublicId: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.get(`/${storePublicId}`);
     return response;
   }

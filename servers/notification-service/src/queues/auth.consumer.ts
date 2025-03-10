@@ -3,7 +3,7 @@ import { IEmailLocals } from '@cngvc/shopi-shared-types';
 import { SERVICE_NAME } from '@notification/constants';
 import { emailHelper } from '@notification/email-helper';
 import { queueConnection } from '@notification/queues/connection';
-import { log, logCatch } from '@notification/utils/logger.util';
+import { captureError, log } from '@notification/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
 class AuthConsumes {
@@ -33,7 +33,7 @@ class AuthConsumes {
         }
       });
     } catch (error) {
-      logCatch(error, 'consumeAuthEmailMessages');
+      captureError(error, 'consumeAuthEmailMessages');
     }
   };
 }

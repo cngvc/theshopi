@@ -1,7 +1,7 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
 import { queueConnection } from '@products/queues/connection';
 import { productService } from '@products/services/product.service';
-import { logCatch } from '@products/utils/logger.util';
+import { captureError } from '@products/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
 class ProductConsumes {
@@ -19,7 +19,7 @@ class ProductConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeCreateProductSeeds');
+      captureError(error, 'consumeCreateProductSeeds');
     }
   };
 }

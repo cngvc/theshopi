@@ -10,6 +10,7 @@ class Config {
   public GATEWAY_JWT_TOKEN_SECRET: string | undefined;
   public NODE_ENV: string | undefined;
   public RABBITMQ_ENDPOINT: string | undefined;
+  public USERS_BASE_URL_GRPC: string | undefined;
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
@@ -20,6 +21,7 @@ class Config {
     this.GATEWAY_JWT_TOKEN_SECRET = process.env.GATEWAY_JWT_TOKEN_SECRET || '';
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
+    this.USERS_BASE_URL_GRPC = process.env.USERS_BASE_URL_GRPC || '';
   }
 }
 

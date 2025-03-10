@@ -9,8 +9,7 @@ const productSchema: Schema = new Schema(
     storePublicId: { type: String, required: true, index: true },
     name: {
       type: String,
-      required: true,
-      index: 'text'
+      required: true
     },
     description: { type: String, required: true },
     slug: {

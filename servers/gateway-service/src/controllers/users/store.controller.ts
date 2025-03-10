@@ -4,8 +4,8 @@ import { AxiosResponse } from 'axios';
 import { Request, Response } from 'express';
 
 class StoreController {
-  getStoreById = async (req: Request, res: Response) => {
-    const response: AxiosResponse = await storeService.getStoreById(req.params.storePublicId);
+  getStoreByStorePublicId = async (req: Request, res: Response) => {
+    const response: AxiosResponse = await storeService.getStoreByStorePublicId(req.params.storePublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
   getStoreByUsername = async (req: Request, res: Response) => {

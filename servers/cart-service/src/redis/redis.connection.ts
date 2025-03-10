@@ -1,6 +1,6 @@
 import { config } from '@cart/config';
 import { SERVICE_NAME } from '@cart/constants';
-import { log, logCatch } from '@cart/utils/logger.util';
+import { captureError, log } from '@cart/utils/logger.util';
 import Redis from 'ioredis';
 
 class RedisCache {
@@ -18,7 +18,7 @@ class RedisCache {
     });
 
     this.client.on('error', (error: unknown) => {
-      logCatch(error, '❌ Redis connect listener error');
+      captureError(error, '❌ Redis connect listener error');
     });
   }
 
@@ -26,7 +26,7 @@ class RedisCache {
     try {
       await this.client.ping();
     } catch (error) {
-      logCatch(error, 'checkConnection');
+      captureError(error, 'checkConnection');
     }
   }
 }

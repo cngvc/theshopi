@@ -9,7 +9,7 @@ jest.mock('@cngvc/shopi-shared');
 jest.mock('@notification/utils/logger.util', () => ({
   createLogger: jest.fn(() => ({
     log: jest.fn(),
-    logCatch: jest.fn()
+    captureError: jest.fn()
   }))
 }));
 

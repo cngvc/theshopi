@@ -2,7 +2,7 @@ import path from 'path';
 
 import { IEmailLocals } from '@cngvc/shopi-shared-types';
 import { config } from '@notification/config';
-import { log, logCatch } from '@notification/utils/logger.util';
+import { captureError, log } from '@notification/utils/logger.util';
 import Email from 'email-templates';
 import nodemailer, { Transporter } from 'nodemailer';
 
@@ -12,7 +12,7 @@ class EmailHelper {
       await this.createTemplatedEmail(template, receiver, locals);
       log.info('Email sent successfully.');
     } catch (error) {
-      logCatch(error, 'sendEmail');
+      captureError(error, 'sendEmail');
     }
   };
 
@@ -52,7 +52,7 @@ class EmailHelper {
         locals
       });
     } catch (error) {
-      logCatch(error, 'createTemplatedEmail');
+      captureError(error, 'createTemplatedEmail');
     }
   };
 }

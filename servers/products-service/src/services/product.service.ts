@@ -22,7 +22,7 @@ class ProductService {
         JSON.stringify({ type: 'update-store-product-count', storePublicId: `${newProduct.storePublicId}`, count: 1 })
       );
       const data = newProduct.toJSON();
-      await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${newProduct.productPublicId}`, data);
+      await elasticSearch.indexDocument(ElasticsearchIndexes.products, `${newProduct.productPublicId}`, data);
     }
     return newProduct;
   };
@@ -34,30 +34,19 @@ class ProductService {
       RoutingKeys.USERS_STORE_UPDATE,
       JSON.stringify({ type: 'update-store-product-count', storePublicId: `${storePublicId}`, count: 1 })
     );
-    await elasticSearch.deleteIndexedItem(ElasticsearchIndexes.products, productPublicId);
+    await elasticSearch.deleteDocument(ElasticsearchIndexes.products, productPublicId);
   };
 
   getProductByProductPublicId = async (
     productPublicId: string
   ): Promise<{ product: IProductDocument | null; store: IStoreDocument | null }> => {
-    let product: IProductDocument | null = await elasticSearch.getIndexedData<IProductDocument>(
-      ElasticsearchIndexes.products,
-      productPublicId
-    );
-    if (!product) {
-      product = await ProductModel.findOne({ productPublicId: productPublicId }).lean();
-      if (!product) throw new NotFoundError('Product not found', 'getProductByProductPublicId');
-      await elasticSearch.addItemToIndex(ElasticsearchIndexes.products, `${product.productPublicId}`, product);
-    }
-    let store: IStoreDocument | null = await elasticSearch.getIndexedData(ElasticsearchIndexes.stores, product!.storePublicId);
-    if (!store) {
-      store = await grpcUserClient.getStoreByStorePublicId(product!.storePublicId);
-    }
+    const product = await this.findCachedProductByProductPublicId(productPublicId);
+    const store = await this.findCachedStoreByStorePublicId(product.storePublicId);
     return { product, store };
   };
 
   getStoreProducts = async (storePublicId: string): Promise<IProductDocument[]> => {
-    const queryResults = await searchService.productsSearchByStoreId(storePublicId);
+    const queryResults = await searchService.searchProductsByStorePublicId(storePublicId);
     const products: IProductDocument[] = [];
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);
@@ -84,7 +73,7 @@ class ProductService {
     ).exec();
     if (document) {
       const data = document.toJSON() as IProductDocument;
-      await elasticSearch.updateIndexedItem(ElasticsearchIndexes.products, `${document.productPublicId}`, data);
+      await elasticSearch.updateDocument(ElasticsearchIndexes.products, `${document.productPublicId}`, data);
     }
     return document as IProductDocument;
   };
@@ -123,12 +112,34 @@ class ProductService {
   }
 
   getProducts = async (searchQuery: string, paginate: IPaginateProps, min?: number, max?: number): Promise<IProductDocument[]> => {
-    const queryResults = await searchService.productsSearch(searchQuery, paginate, min, max);
+    const queryResults = await searchService.searchProducts(searchQuery, paginate, min, max);
     const products: IProductDocument[] = [];
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);
     }
     return products;
+  };
+
+  private findCachedProductByProductPublicId = async (productPublicId: string) => {
+    let product: IProductDocument | null = await elasticSearch.getDocument<IProductDocument>(
+      ElasticsearchIndexes.products,
+      productPublicId
+    );
+    if (!product) {
+      product = await ProductModel.findOne({ productPublicId: productPublicId }).lean();
+      if (!product) throw new NotFoundError('Product not found', 'findCachedProductByProductPublicId');
+      await elasticSearch.indexDocument(ElasticsearchIndexes.products, `${product.productPublicId}`, product);
+    }
+    return product;
+  };
+
+  private findCachedStoreByStorePublicId = async (storePublicId: string) => {
+    let store: IStoreDocument | null = await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
+    if (!store) {
+      store = await grpcUserClient.getStoreByStorePublicId(storePublicId);
+      if (!store) throw new NotFoundError('Store not found', 'findCachedStoreByStorePublicId');
+    }
+    return store;
   };
 }
 

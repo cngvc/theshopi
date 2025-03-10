@@ -1,6 +1,6 @@
 import axiosInstance from '@/lib/axios';
 import pages from '@/lib/constants/pages';
-import NextAuth, { NextAuthConfig } from 'next-auth';
+import NextAuth, { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { NEXTAUTH_SECRET } from './lib/configs';
 
@@ -19,13 +19,14 @@ const config: NextAuthConfig = {
             password: credentials?.password
           });
           if (data?.metadata?.user) {
+            const { user } = data.metadata;
             return {
-              id: data.metadata.user.id,
-              name: data.metadata.user.username,
-              email: data.metadata.user.email,
-              username: data.metadata.user.username,
-              accessToken: data.metadata.accessToken
-            };
+              id: user.id,
+              name: user.username,
+              email: user.email,
+              username: user.username,
+              accessToken: user.accessToken
+            } as User;
           }
           return null;
         } catch (error: unknown) {

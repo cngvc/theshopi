@@ -5,7 +5,7 @@ import { usersProducer } from '@users/queues/users.producer';
 import { buyerService } from '@users/services/buyer.service';
 import { storeService } from '@users/services/store.service';
 import { usersService } from '@users/services/users.service';
-import { logCatch } from '@users/utils/logger.util';
+import { captureError } from '@users/utils/logger.util';
 import { Channel, ConsumeMessage } from 'amqplib';
 
 class UsersConsumes {
@@ -36,7 +36,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeUpdateUsersBuy');
+      captureError(error, 'consumeUpdateUsersBuy');
     }
   };
 
@@ -59,7 +59,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeUpdateUsersStore');
+      captureError(error, 'consumeUpdateUsersStore');
     }
   };
 
@@ -83,7 +83,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeGetUsersStore');
+      captureError(error, 'consumeGetUsersStore');
     }
   };
 
@@ -107,7 +107,7 @@ class UsersConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      logCatch(error, 'consumeGetUsers');
+      captureError(error, 'consumeGetUsers');
     }
   };
 }

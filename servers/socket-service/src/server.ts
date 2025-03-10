@@ -2,7 +2,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@socket/constants';
 import { elasticSearch } from '@socket/elasticsearch';
 import { appRoutes } from '@socket/routes';
 import { SocketHandler } from '@socket/sockets/socket.handler';
-import { log, logCatch } from '@socket/utils/logger.util';
+import { captureError, log } from '@socket/utils/logger.util';
 import { Application } from 'express';
 import http from 'http';
 
@@ -34,7 +34,7 @@ export class SocketServer {
       socketHandler.listen();
       log.info(`Worker with process id of ${process.pid} on socket service has started`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -44,7 +44,7 @@ export class SocketServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

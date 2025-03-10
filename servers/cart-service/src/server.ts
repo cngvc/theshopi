@@ -4,7 +4,7 @@ import { config } from '@cart/config';
 import { SERVER_PORT, SERVICE_NAME } from '@cart/constants';
 import { queueConnection } from '@cart/queues/connection';
 import { appRoutes } from '@cart/routes';
-import { log, logCatch } from '@cart/utils/logger.util';
+import { captureError, log } from '@cart/utils/logger.util';
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
@@ -91,7 +91,7 @@ export class UsersServer {
       this.startHttpServer(httpServer);
       log.info(SERVICE_NAME + ` has started with process id ${process.pid}`);
     } catch (error) {
-      logCatch(error, 'startServer');
+      captureError(error, 'startServer');
     }
   }
 
@@ -101,7 +101,7 @@ export class UsersServer {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {
-      logCatch(error, 'startHttpServer');
+      captureError(error, 'startHttpServer');
     }
   }
 }

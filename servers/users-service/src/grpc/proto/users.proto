@@ -3,11 +3,11 @@ syntax = "proto3";
 package users;
 
 service UsersService {
-  rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
-  rpc GetBuyerByBuyerPublicId (GetStoreByStorePublicIdRequest) returns (GetUserByStorePublicIdResponse);
+  rpc GetStoreByStorePublicId (GetStoreByStorePublicIdRequest) returns (GetStoreByStorePublicIdResponse);
+  rpc GetBuyerByAuthId (GetBuyerByAuthIdRequest) returns (GetBuyerByAuthIdResponse);
 }
 
-message GetBuyerByAuthIDRequest {
+message GetBuyerByAuthIdRequest {
   string authId = 1;
 }
 
@@ -17,7 +17,7 @@ message GetBuyerByAuthIdResponse {
   string storePublicId = 3;
   string username = 4;
   string email = 5;
-  ShippingAddress shippingAddress = 6;
+  optional ShippingAddress shippingAddress = 6;
 }
 
 message ShippingAddress {
@@ -32,7 +32,7 @@ message GetStoreByStorePublicIdRequest {
   string storePublicId = 1;
 }
 
-message GetUserByStorePublicIdResponse {
+message GetStoreByStorePublicIdResponse {
   string storePublicId = 1;
   string name = 2;
   string ownerAuthId = 3;

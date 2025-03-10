@@ -21,7 +21,10 @@ class GrpcServer {
     });
     this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
     this.serviceDefinition = this.proto[service].service;
-    this.addService({ GetStoreByStorePublicId: UserServiceClientRPC.findStoreByStorePublicId });
+    this.addService({
+      GetStoreByStorePublicId: UserServiceClientRPC.findStoreByStorePublicId,
+      GetBuyerByAuthId: UserServiceClientRPC.findBuyerByAuthId
+    });
   }
 
   private addService(handlers: grpc.UntypedServiceImplementation) {
