@@ -7,12 +7,15 @@ server.port: 5601
 
 # Elasticsearch Connection
 elasticsearch.hosts: ["http://elasticsearch_container:9200"]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "6seEOUOKwli6=HVBWNSf"
+# run "elasticsearch-reset-password -u kibana_system -b" in the es container to get new password
 
 monitoring.ui.container.elasticsearch.enabled: true
 xpack.fleet.enabled: true
 xpack.fleet.agents.enabled: true
 xpack.fleet.agents.elasticsearch.hosts: ["http://elasticsearch_container:9200"]
-xpack.reporting.roles.enabled: true
+xpack.reporting.roles.enabled: false
 xpack.fleet.agentIdVerificationEnabled: false
 
 xpack.security.encryptionKey: f2c7d7a8b4e74c8e96f44d3c8a21a5b2e938adf8b13e2f10e7e3e9c4c6f7a6d8
