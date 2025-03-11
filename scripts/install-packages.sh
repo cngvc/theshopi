@@ -18,7 +18,7 @@ echo "🔄 Install packages in all services..."
 
 for SERVICE in "${SERVICES[@]}"; do
   echo "📦 Install packages in $SERVICE..."
-  cd "../servers/$SERVICE" || continue
+  cd "./servers/$SERVICE" || continue
   npm install
   cd - > /dev/null
 done

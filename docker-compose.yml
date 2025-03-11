@@ -83,6 +83,26 @@ services:
       - elastic
     depends_on:
       - elasticsearch
+  apm-server:
+    image: elastic/apm-server:8.17.3
+    container_name: apm_server_container
+    platform: "linux/arm64/v8"
+    ports:
+      - 8200:8200
+    volumes:
+      - ./apm-server.yml:/usr/share/apm-server/apm-server.yml:ro
+    networks:
+      - elastic
+    command: >
+      apm-server -e
+        -E apm-server.rum.enabled=true
+        -E setup.kibana.host=kibana_container:5601
+        -E setup.template.settings.index.number_of_replicas=0
+        -E apm-server.kibana.enabled=true
+        -E apm-server.kibana.host=kibana_container:5601
+        -E apm-server.kibana.protocol=http
+        -E strict.perms=false
+        -E apm-server.auth.anonymous.enabled=true
   metricbeat:
     container_name: metricbeat_container
     image: elastic/metricbeat:8.17.3
