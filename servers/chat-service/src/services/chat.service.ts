@@ -89,7 +89,6 @@ class ChatService {
         conversation['counterpartId'] = participant;
       }
     });
-    console.log(conversation);
     return conversation;
   };
 
@@ -113,7 +112,6 @@ class ChatService {
       } catch (error) {}
       return messages.reverse();
     }
-    console.log(messages);
     return [];
   };
 
