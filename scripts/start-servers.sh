@@ -11,9 +11,9 @@ npx concurrently --names "ga,au,us,pr,ca,or,no,so,on,ch,re" --prefix-colors "blu
   "cd ../servers/products-service && npm run dev" \
   "cd ../servers/cart-service && npm run dev" \
   "cd ../servers/orders-service && npm run dev" \
+  "cd ../servers/socket-service && npm run dev" \
+  "cd ../servers/online-status-service && npm run dev" \
+  "cd ../servers/chat-service && npm run dev" \
   # "cd ../servers/notification-service && npm run dev" \
-  # "cd ../servers/socket-service && npm run dev" \
-  # "cd ../servers/online-status-service && npm run dev" \
-  # "cd ../servers/chat-service && npm run dev" \
   # "cd ../servers/review-service && npm run dev" \
 

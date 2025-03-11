@@ -1,5 +1,6 @@
 import { ExchangeNames, IPaginateProps, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { faker } from '@faker-js/faker';
 import { elasticSearch } from '@product/elasticsearch';
 import { grpcUserClient } from '@product/grpc/clients/user-client.grpc';
@@ -46,8 +47,23 @@ class ProductService {
     return { product, store };
   };
 
-  getProductsByProductPublicIds = async (productPublicIds: string[]): Promise<IProductDocument[]> => {
-    const products: IProductDocument[] = await ProductModel.find({ productPublicId: { $in: productPublicIds } }).lean();
+  getProductsByProductPublicIds = async (productPublicIds: string[], useCaching = false): Promise<IProductDocument[]> => {
+    let products: IProductDocument[] = [];
+    if (useCaching) {
+      const queryList = [{ terms: { 'productPublicId.keyword': productPublicIds } }];
+      const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
+      for (const item of hits.hits) {
+        products.push(item._source as IProductDocument);
+      }
+    }
+    if (!products.length) {
+      products = await ProductModel.find({ productPublicId: { $in: productPublicIds } }).lean();
+      if (useCaching && products.length) {
+        await Promise.all(
+          products.map((product) => elasticSearch.indexDocument(ElasticsearchIndexes.products, product.productPublicId!, product))
+        );
+      }
+    }
     return products;
   };
 

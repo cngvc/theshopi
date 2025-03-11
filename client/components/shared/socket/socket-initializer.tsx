@@ -2,9 +2,9 @@
 
 import { socketClient } from '@/sockets/socket-client';
 import { SocketEvents } from '@cngvc/shopi-shared-types';
+import { useThrottle } from '@uidotdev/usehooks';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';
-import { useThrottle } from 'react-use';
 
 export default function SocketInitializer() {
   const session = useSession();

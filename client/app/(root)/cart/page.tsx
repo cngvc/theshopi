@@ -1,5 +1,11 @@
+import CartTable from './components/cart-table';
+
+export const metadata = {
+  title: 'My Cart'
+};
+
 const Page = async () => {
-  return <div></div>;
+  return <CartTable />;
 };
 
 export default Page;

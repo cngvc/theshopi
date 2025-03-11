@@ -1,5 +1,5 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import pages from '@/lib/constants/pages';
+import { productUrl } from '@/lib/utils';
 import { IProductDocument } from '@cngvc/shopi-shared-types';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -7,7 +7,7 @@ import ProductPrice from './product-price';
 
 const ProductCard = ({ product }: { product: IProductDocument }) => {
   return (
-    <Link href={`${pages.products}/${product.slug}-i.${product.productPublicId}`} className="col-span-1 flex flex-col">
+    <Link href={productUrl(product.slug!, product.productPublicId!)} className="col-span-1 flex flex-col">
       <Card className="flex-1 pt-0 overflow-hidden">
         <CardHeader className="!p-0">
           <Image

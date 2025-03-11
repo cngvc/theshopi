@@ -10,6 +10,7 @@ class Config {
   public NODE_ENV: string | undefined;
   public RABBITMQ_ENDPOINT: string | undefined;
   public REDIS_HOST: string | undefined;
+  public PRODUCT_BASE_URL_GRPC: string | undefined;
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
@@ -20,6 +21,7 @@ class Config {
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
+    this.PRODUCT_BASE_URL_GRPC = process.env.PRODUCT_BASE_URL_GRPC || '';
   }
 }
 

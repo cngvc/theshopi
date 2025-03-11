@@ -11,8 +11,8 @@ import {
   IStoreDocument,
   SocketEvents
 } from '@cngvc/shopi-shared-types';
+import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { faker } from '@faker-js/faker';
-import { get } from 'lodash';
 
 class ChatService {
   createConversation = async (senderAuthId: string, receiverAuthId: string): Promise<IConversationDocument> => {
@@ -43,8 +43,8 @@ class ChatService {
   createMessage = async (data: IMessageDocument) => {
     const message = await MessageModel.create(data);
     const _message = message.toJSON();
-    const obj = await this.findElasticsearchAuthByMessage(_message);
-    _message['counterpartName'] = obj[message.senderAuthId]?.username || null;
+    const map = await this.findElasticsearchAuthByMessage(_message);
+    _message['counterpartName'] = map.get(message.senderAuthId)?.username;
     _message['counterpartId'] = message.senderAuthId;
     socketServer.emit(SocketEvents.MESSAGE_RECEIVED, _message);
     await ConversationModel.updateOne(
@@ -82,13 +82,14 @@ class ChatService {
   getConversationByConversationPublicId = async (conversationPublicId: string, currentId: string) => {
     const conversation = await this.findConversationByConversationPublicId(conversationPublicId);
     if (!conversation) return null;
-    const obj = await this.findElasticsearchAuthByConversations(conversation);
+    const map = await this.findElasticsearchAuthByConversations(conversation);
     conversation.participants.forEach((participant) => {
       if (participant !== currentId) {
-        conversation['counterpartName'] = obj[participant]?.username || null;
+        conversation['counterpartName'] = map.get(participant)?.username;
         conversation['counterpartId'] = participant;
       }
     });
+    console.log(conversation);
     return conversation;
   };
 
@@ -104,14 +105,15 @@ class ChatService {
     ]);
     if (messages.length) {
       try {
-        const obj = await this.findElasticsearchAuthByMessage(messages[0]);
+        const map = await this.findElasticsearchAuthByMessage(messages[0]);
         messages.forEach((message) => {
-          message['counterpartName'] = obj[message.senderAuthId]?.username || null;
+          message['counterpartName'] = map.get(message.senderAuthId)?.username;
           message['counterpartId'] = message.senderAuthId;
         });
       } catch (error) {}
       return messages.reverse();
     }
+    console.log(messages);
     return [];
   };
 
@@ -132,11 +134,11 @@ class ChatService {
       }
     ]);
     try {
-      const obj = await this.findElasticsearchAuthByConversations(conversations);
+      const map = await this.findElasticsearchAuthByConversations(conversations);
       conversations.forEach((conversation) => {
         conversation.participants.forEach((participant) => {
           if (participant !== authId) {
-            conversation['counterpartName'] = obj[participant]?.username || null;
+            conversation['counterpartName'] = map.get(participant)?.username;
             conversation['counterpartId'] = participant;
           }
         });
@@ -223,33 +225,25 @@ class ChatService {
         uniqueUserIds.add(participant);
       });
     }
-    const { docs } = await elasticSearch.client.mget({
-      index: ElasticsearchIndexes.auth,
-      body: { ids: [...new Set(uniqueUserIds)] }
-    });
-    const obj = docs.reduce(
-      (acc, doc) => {
-        if (doc._id) acc[doc._id] = get(doc, ['_source']);
-        return acc;
-      },
-      {} as Record<string, any>
-    );
-    return obj;
+    let users: IBuyerDocument[] = [];
+    const queryList = [{ terms: { 'authId.keyword': [...new Set(uniqueUserIds)] } }];
+    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.auth, queryList);
+    for (const item of hits.hits) {
+      users.push(item._source as IBuyerDocument);
+    }
+    const map = new Map(users.map((u) => [u.authId, u]));
+    return map;
   };
 
   private findElasticsearchAuthByMessage = async (message: IMessageDocument) => {
-    const { docs } = await elasticSearch.client.mget({
-      index: ElasticsearchIndexes.auth,
-      body: { ids: [message.senderAuthId!, message.receiverAuthId!] }
-    });
-    const obj = docs.reduce(
-      (acc, doc) => {
-        if (doc._id) acc[doc._id] = get(doc, ['_source']);
-        return acc;
-      },
-      {} as Record<string, any>
-    );
-    return obj;
+    let users: IBuyerDocument[] = [];
+    const queryList = [{ terms: { 'authId.keyword': [message.senderAuthId!, message.receiverAuthId!] } }];
+    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.auth, queryList);
+    for (const item of hits.hits) {
+      users.push(item._source as IBuyerDocument);
+    }
+    const map = new Map(users.map((u) => [u.authId, u]));
+    return map;
   };
 }
 
