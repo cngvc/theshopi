@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopi-mongo
+spec:
+  type: ClusterIP
+  selector:
+    app: shopi-mongo
+  ports:
+  - name: shopi-mongo
+    port: 3306
+    targetPort: 3306

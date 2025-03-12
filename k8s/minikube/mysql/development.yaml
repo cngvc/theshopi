@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopi-mysql
+  namespace: production
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shopi-mysql
+  template:
+    metadata:
+      labels:
+        app: shopi-mysql
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: shopi-mysql
+        image: mysql:oracle
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: Asdfgh123
+        - name: MYSQL_PASSWORD
+          value: Asdfgh123
+        - name: MYSQL_DATABASE
+          value: theshopi_auth
+        - name: MYSQL_USER
+          value: 'admin'
+        resources:
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+        ports:
+        - name: shopi-mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: mysql-local-storage
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        readinessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - |
+                mysqladmin ping -h127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD
+          initialDelaySeconds: 60
+          periodSeconds: 300
+          timeoutSeconds: 60
+        livenessProbe:
+          exec:
+            command:
+              - bash
+              - "-c"
+              - |
+                mysqladmin ping -h127.0.0.1 -u$MYSQL_USER -p$MYSQL_PASSWORD
+          initialDelaySeconds: 120
+          periodSeconds: 300
+          timeoutSeconds: 60
+      volumes:
+      - name: mysql-local-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc

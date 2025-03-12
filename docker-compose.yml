@@ -3,7 +3,7 @@ services:
   # requirement technical
   redis:
     container_name: redis_container
-    image: arm64v8/redis:alpine
+    image: redis:alpine
     restart: always
     ports:
       - "6379:6379"
@@ -12,7 +12,7 @@ services:
       - redis-data:/data
   mongodb:
     container_name: mongodb_container
-    image: arm64v8/mongo:7-jammy
+    image: mongo:7-jammy
     restart: always
     ports:
       - "27017:27017"
@@ -22,7 +22,7 @@ services:
       - mongodb-data:/data/db
   mysql:
     container_name: mysql_container
-    image: arm64v8/mysql:oracle
+    image: mysql:oracle
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=Asdfgh123
@@ -35,7 +35,7 @@ services:
       - mysql-data:/var/lib/mysql
   rabbitmq:
     container_name: rabbitmq_container
-    image: arm64v8/rabbitmq:3-management-alpine
+    image: rabbitmq:3-management-alpine
     restart: always
     environment:
       - RABBITMQ_DEFAULT_USER=admin
@@ -47,7 +47,7 @@ services:
       - rabbitmq-data:/var/lib/rabbitmq
   elasticsearch:
     container_name: elasticsearch_container
-    image: arm64v8/elasticsearch:8.17.3
+    image: elasticsearch:8.17.3
     restart: always
     ports:
       - "9200:9200"
@@ -71,7 +71,7 @@ services:
       - elastic
   kibana:
     container_name: kibana_container
-    image: arm64v8/kibana:8.17.3
+    image: kibana:8.17.3
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
@@ -86,7 +86,6 @@ services:
   apm-server:
     image: elastic/apm-server:8.17.3
     container_name: apm_server_container
-    platform: "linux/arm64/v8"
     ports:
       - 8200:8200
     volumes:

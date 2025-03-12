@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopi-queue
+  namespace: production
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: shopi-queue
+  template:
+    metadata:
+      labels:
+        app: shopi-queue
+    spec:
+      containers:
+      - name: shopi-queue
+        image: rabbitmq:3-management-alpine
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: admin
+        - name: RABBITMQ_DEFAULT_PASS
+          value: Asdfgh123
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+        ports:
+          - name: queue
+            containerPort: 5672
+            protocol: TCP
+          - name: mgmt
+            containerPort: 15672
+            protocol: TCP
+        volumeMounts:
+          - name: rabbitmq-local-storage
+            mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: rabbitmq-local-storage
+          persistentVolumeClaim:
+            claimName: rabbitmq-pvc
+      
