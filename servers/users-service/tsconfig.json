@@ -32,7 +32,7 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ],
     "paths": {
-      "@user/*": ["src/*"]
+      "@user/*": ["src/*", ""]
     }
   },
   "include": ["src"],
