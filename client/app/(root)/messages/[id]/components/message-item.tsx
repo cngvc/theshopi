@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatDate } from '@/lib/utils';
-import { IMessageDocument } from '@cngvc/shopi-shared-types';
+import { IMessageDocument } from '@cngvc/shopi-types';
 
 const MessageItem = ({ message }: { message: IMessageDocument }) => {
   const name = (message.counterpartName || message.messagePublicId || '-') as string;

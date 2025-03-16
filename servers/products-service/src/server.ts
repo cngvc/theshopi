@@ -1,7 +1,7 @@
 import 'express-async-errors';
 
 import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes } from '@cngvc/shopi-types';
 import { config } from '@product/config';
 import { SERVER_PORT, SERVICE_NAME } from '@product/constants';
 import { queueConnection } from '@product/queues/connection';

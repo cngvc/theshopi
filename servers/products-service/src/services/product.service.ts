@@ -1,5 +1,5 @@
 import { ExchangeNames, IPaginateProps, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/shopi-types';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { faker } from '@faker-js/faker';
 import { elasticSearch } from '@product/elasticsearch';

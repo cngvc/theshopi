@@ -1,7 +1,7 @@
 'use client';
 
 import { socketClient } from '@/sockets/socket-client';
-import { SocketEvents } from '@cngvc/shopi-shared-types';
+import { SocketEvents } from '@cngvc/shopi-types';
 import { useThrottle } from '@uidotdev/usehooks';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';

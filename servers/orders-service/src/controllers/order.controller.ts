@@ -1,5 +1,5 @@
 import { BadRequestError, CreatedRequestSuccess } from '@cngvc/shopi-shared';
-import { createOrderScheme } from '@cngvc/shopi-shared-types';
+import { createOrderScheme } from '@cngvc/shopi-types';
 import { orderService } from '@order/services/order.service';
 import { Request, Response } from 'express';
 

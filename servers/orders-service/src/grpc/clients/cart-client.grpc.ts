@@ -1,4 +1,4 @@
-import { ICartItem } from '@cngvc/shopi-shared-types';
+import { ICartItem } from '@cngvc/shopi-types';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '@order/config';

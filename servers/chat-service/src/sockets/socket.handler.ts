@@ -1,7 +1,7 @@
 import { config } from '@chat/config';
 import { SERVICE_NAME } from '@chat/constants';
 import { log } from '@chat/utils/logger.util';
-import { SocketEvents } from '@cngvc/shopi-shared-types';
+import { SocketEvents } from '@cngvc/shopi-types';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 

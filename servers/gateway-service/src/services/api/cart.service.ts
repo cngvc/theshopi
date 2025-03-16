@@ -1,4 +1,4 @@
-import { ICartItem } from '@cngvc/shopi-shared-types';
+import { ICartItem } from '@cngvc/shopi-types';
 import { config } from '@gateway/config';
 import { AxiosService } from '@gateway/services/axios/axios.service';
 import { AxiosResponse } from 'axios';

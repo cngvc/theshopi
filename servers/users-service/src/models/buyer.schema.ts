@@ -1,4 +1,4 @@
-import { IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { IBuyerDocument } from '@cngvc/shopi-types';
 import { Model, model, Schema } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 

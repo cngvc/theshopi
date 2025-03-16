@@ -1,7 +1,7 @@
 'use client';
 
 import { socketClient } from '@/sockets/socket-client';
-import { SocketEvents } from '@cngvc/shopi-shared-types';
+import { SocketEvents } from '@cngvc/shopi-types';
 import { useEffect, useState } from 'react';
 
 export const useOnline = () => {

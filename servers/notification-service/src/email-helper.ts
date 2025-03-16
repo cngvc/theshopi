@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { IEmailLocals } from '@cngvc/shopi-shared-types';
+import { IEmailLocals } from '@cngvc/shopi-types';
 import { config } from '@notification/config';
 import { captureError, log } from '@notification/utils/logger.util';
 import Email from 'email-templates';

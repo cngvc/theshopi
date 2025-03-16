@@ -1,5 +1,5 @@
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { IProductDocument, IStoreDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-shared-types';
+import { IProductDocument, IStoreDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-types';
 import { DefaultSearchQuery } from '@product/constants';
 import { productService } from '@product/services/product.service';
 import { searchService } from '@product/services/search.service';

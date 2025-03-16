@@ -2,7 +2,7 @@ import AddToCart from '@/components/shared/product/add-to-cart';
 import ProductPrice from '@/components/shared/product/product-price';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 
 const StockCard = ({ product }: { product: IProductDocument }) => {
   return (

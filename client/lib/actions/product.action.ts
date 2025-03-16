@@ -1,6 +1,6 @@
 'use server';
 
-import { IProductDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument, IStoreDocument } from '@cngvc/shopi-types';
 import axiosInstance from '../axios';
 
 export async function getProductList() {

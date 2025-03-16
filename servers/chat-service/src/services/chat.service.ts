@@ -10,7 +10,7 @@ import {
   IMessageDocument,
   IStoreDocument,
   SocketEvents
-} from '@cngvc/shopi-shared-types';
+} from '@cngvc/shopi-types';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { faker } from '@faker-js/faker';
 

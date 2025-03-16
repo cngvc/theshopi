@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useChatWithStore } from '@/lib/hooks/use-chat-store.hook';
-import { IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IStoreDocument } from '@cngvc/shopi-types';
 import { Loader, MessageCircle } from 'lucide-react';
 
 const StoreCard = ({ store }: { store: IStoreDocument }) => {

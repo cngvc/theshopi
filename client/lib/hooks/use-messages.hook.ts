@@ -1,7 +1,7 @@
 'use client';
 
 import { socketClient } from '@/sockets/socket-client';
-import { IMessageDocument, SocketEvents } from '@cngvc/shopi-shared-types';
+import { IMessageDocument, SocketEvents } from '@cngvc/shopi-types';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { getConversationMessages } from '../actions/chat.action';

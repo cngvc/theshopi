@@ -1,6 +1,6 @@
 import { grpcProductClient } from '@cart/grpc/clients/product-client.grpc';
 import { cartCache } from '@cart/redis/cart-cache';
-import { ICartItem, IProductDocument } from '@cngvc/shopi-shared-types';
+import { ICartItem, IProductDocument } from '@cngvc/shopi-types';
 
 class CartService {
   private generateCartKey(authId: string): string {

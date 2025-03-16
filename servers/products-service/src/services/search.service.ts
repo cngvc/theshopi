@@ -1,5 +1,5 @@
 import { IHitsTotal, IPaginateProps, IQueryList } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-types';
 import { SearchResponse, SearchTotalHits } from '@elastic/elasticsearch/lib/api/types';
 import { elasticSearch } from '@product/elasticsearch';
 

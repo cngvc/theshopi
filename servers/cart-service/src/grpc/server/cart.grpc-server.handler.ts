@@ -1,5 +1,5 @@
 import { cartService } from '@cart/services/cart.service';
-import { ICartItem } from '@cngvc/shopi-shared-types';
+import { ICartItem } from '@cngvc/shopi-types';
 import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 
 interface GetCartByAuthIdRequest {

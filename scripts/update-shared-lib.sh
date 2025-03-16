@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LIB_TYPE="@cngvc/shopi-shared-types"
+LIB_TYPE="@cngvc/shopi-types"
 LIB_NAME="@cngvc/shopi-shared"
 
 SERVICES=(
@@ -16,6 +16,12 @@ SERVICES=(
   "reviews-service"
   "cart-service"
 )
+
+for SERVICE in "${SERVICES[@]}"; do
+  cd "./servers/$SERVICE" || continue
+  npm uni @cngvc/shopi-shared-types
+  cd - > /dev/null
+done
 
 
 echo "🔄 Updating $LIB_TYPE in all services..."

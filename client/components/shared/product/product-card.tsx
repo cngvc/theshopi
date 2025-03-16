@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { productUrl } from '@/lib/utils';
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 import Image from 'next/image';
 import Link from 'next/link';
 import ProductPrice from './product-price';

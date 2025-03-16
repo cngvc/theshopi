@@ -1,6 +1,6 @@
 import { config } from '@cart/config';
 import { captureError } from '@cart/utils/logger.util';
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import path from 'path';

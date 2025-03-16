@@ -1,4 +1,4 @@
-import { IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IStoreDocument } from '@cngvc/shopi-types';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { config } from '@product/config';

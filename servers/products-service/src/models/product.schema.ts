@@ -1,4 +1,4 @@
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 import { Model, Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 const { default: slugify } = require('slugify');

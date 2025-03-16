@@ -1,6 +1,6 @@
 import { cartService } from '@cart/services/cart.service';
 import { OkRequestSuccess } from '@cngvc/shopi-shared';
-import { ICartItem } from '@cngvc/shopi-shared-types';
+import { ICartItem } from '@cngvc/shopi-types';
 import { Request, Response } from 'express';
 
 class CartController {

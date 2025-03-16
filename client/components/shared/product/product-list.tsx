@@ -1,4 +1,4 @@
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 import ProductCard from './product-card';
 
 const ProductList = ({ data }: { data: IProductDocument[] }) => {

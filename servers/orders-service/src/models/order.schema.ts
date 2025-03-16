@@ -1,4 +1,4 @@
-import { IOrderDocument, IOrderItem, OrderStatus, PaymentMethod } from '@cngvc/shopi-shared-types';
+import { IOrderDocument, IOrderItem, OrderStatus, PaymentMethod } from '@cngvc/shopi-types';
 import { Model, ObjectId, Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 

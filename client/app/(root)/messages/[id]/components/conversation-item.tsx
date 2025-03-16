@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import pages from '@/lib/constants/pages';
 import { formatDate } from '@/lib/utils';
-import { IConversationDocument } from '@cngvc/shopi-shared-types';
+import { IConversationDocument } from '@cngvc/shopi-types';
 import Link from 'next/link';
 
 const ConversationItem = ({ conversation, isOnline }: { conversation: IConversationDocument; isOnline: boolean }) => {

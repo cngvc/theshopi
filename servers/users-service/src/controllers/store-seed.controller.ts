@@ -1,5 +1,5 @@
 import { OkRequestSuccess } from '@cngvc/shopi-shared';
-import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { IBuyerDocument, IStoreDocument } from '@cngvc/shopi-types';
 import { faker } from '@faker-js/faker';
 import { buyerService } from '@user/services/buyer.service';
 import { storeService } from '@user/services/store.service';

@@ -1,4 +1,4 @@
-import { IMessageDocument, SocketEvents } from '@cngvc/shopi-shared-types';
+import { IMessageDocument, SocketEvents } from '@cngvc/shopi-types';
 import { instrument } from '@socket.io/admin-ui';
 import { config } from '@socket/config';
 import { SERVICE_NAME } from '@socket/constants';

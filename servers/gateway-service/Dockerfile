@@ -1,20 +1,18 @@
-FROM arm64v8/node:20-alpine as builder
+FROM node:22-alpine as builder
 
 WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY .npmrc ./
 COPY src ./src
 RUN npm install -g npm@latest
 RUN npm ci && npm run build
 
-FROM arm64v8/node:20-alpine
+FROM node:22-alpine
 
 WORKDIR /app
 RUN apk add --no-cache curl
 COPY package*.json ./
 COPY tsconfig.json ./
-COPY .npmrc ./
 RUN npm install -g pm2 npm@latest
 RUN npm ci --production
 COPY --from=builder /app/build ./build

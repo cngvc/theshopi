@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IBuyerDocument, IShippingAddress } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument, IShippingAddress } from '@cngvc/shopi-types';
 import { elasticSearch } from '@user/elasticsearch';
 import { BuyerModel } from '@user/models/buyer.schema';
 

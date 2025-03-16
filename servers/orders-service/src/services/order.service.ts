@@ -1,5 +1,5 @@
 import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IBuyerDocument, IOrderDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument, IOrderDocument } from '@cngvc/shopi-types';
 import { elasticSearch } from '@order/elasticsearch';
 import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
 import { grpcProductClient } from '@order/grpc/clients/product-client.grpc';

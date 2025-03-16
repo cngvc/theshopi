@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-types';
 import { elasticSearch } from '@user/elasticsearch';
 import { StoreModel } from '@user/models/store.schema';
 import { buyerService } from '@user/services/buyer.service';

@@ -1,6 +1,6 @@
 import { REDIS_USERS_STATE_EXPIRE } from '@cart/constants';
 import { redisCache } from '@cart/redis/redis.connection';
-import { ICartItem } from '@cngvc/shopi-shared-types';
+import { ICartItem } from '@cngvc/shopi-types';
 
 class CartCache {
   private async modifyCart(

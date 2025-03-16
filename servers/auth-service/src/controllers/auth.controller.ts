@@ -13,7 +13,7 @@ import {
   OkRequestSuccess,
   RoutingKeys
 } from '@cngvc/shopi-shared';
-import { signinSchema, signupSchema } from '@cngvc/shopi-shared-types';
+import { signinSchema, signupSchema } from '@cngvc/shopi-types';
 import { compare } from 'bcryptjs';
 import crypto from 'crypto';
 import { Request, Response } from 'express';

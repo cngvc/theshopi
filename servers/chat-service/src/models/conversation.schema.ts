@@ -1,4 +1,4 @@
-import { IConversationDocument } from '@cngvc/shopi-shared-types';
+import { IConversationDocument } from '@cngvc/shopi-types';
 import { Model, Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 

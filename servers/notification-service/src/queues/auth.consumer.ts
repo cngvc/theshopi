@@ -1,5 +1,5 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
-import { IEmailLocals } from '@cngvc/shopi-shared-types';
+import { IEmailLocals } from '@cngvc/shopi-types';
 import { SERVICE_NAME } from '@notification/constants';
 import { emailHelper } from '@notification/email-helper';
 import { queueConnection } from '@notification/queues/connection';

@@ -3,7 +3,7 @@
 import { auth } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import pages from '@/lib/constants/pages';
-import { ICartItem, IProductDocument } from '@cngvc/shopi-shared-types';
+import { ICartItem, IProductDocument } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
 
 type ICartProduct = IProductDocument & ICartItem;

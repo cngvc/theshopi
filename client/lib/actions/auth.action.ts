@@ -3,7 +3,7 @@
 import { signIn, signOut } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import { formatError } from '@/lib/utils';
-import { signinSchema, signupClientSchema } from '@cngvc/shopi-shared-types';
+import { signinSchema, signupClientSchema } from '@cngvc/shopi-types';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {

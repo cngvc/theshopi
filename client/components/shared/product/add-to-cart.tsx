@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useAddToCart } from '@/lib/hooks/use-add-cart.hook';
 import { useCart } from '@/lib/hooks/use-cart.hook';
-import { IProductDocument } from '@cngvc/shopi-shared-types';
+import { IProductDocument } from '@cngvc/shopi-types';
 import { Loader, Plus } from 'lucide-react';
 import { useMemo } from 'react';
 

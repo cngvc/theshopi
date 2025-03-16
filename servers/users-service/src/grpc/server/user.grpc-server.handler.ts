@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IBuyerDocument, IStoreDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument, IStoreDocument } from '@cngvc/shopi-types';
 import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 import { elasticSearch } from '@user/elasticsearch';
 import { BuyerModel } from '@user/models/buyer.schema';

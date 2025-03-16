@@ -1,7 +1,7 @@
 import { ConversationModel } from '@chat/models/conversation.schema';
 import { chatService } from '@chat/services/chat.service';
 import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { createConversionSchema, IConversationDocument, IMessageDocument, sendMessageSchema } from '@cngvc/shopi-shared-types';
+import { createConversionSchema, IConversationDocument, IMessageDocument, sendMessageSchema } from '@cngvc/shopi-types';
 import { Request, Response } from 'express';
 
 class ChatController {

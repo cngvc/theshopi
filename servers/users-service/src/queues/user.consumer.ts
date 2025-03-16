@@ -1,5 +1,5 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
-import { IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { IBuyerDocument } from '@cngvc/shopi-types';
 import { faker } from '@faker-js/faker';
 import { queueConnection } from '@user/queues/connection';
 import { userProducer } from '@user/queues/user.producer';

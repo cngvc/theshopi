@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IProductDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IProductDocument } from '@cngvc/shopi-types';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 import { elasticSearch } from '@product/elasticsearch';

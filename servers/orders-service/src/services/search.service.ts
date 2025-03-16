@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IBuyerDocument } from '@cngvc/shopi-shared-types';
+import { ElasticsearchIndexes, IBuyerDocument } from '@cngvc/shopi-types';
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { elasticSearch } from '@order/elasticsearch';
 
