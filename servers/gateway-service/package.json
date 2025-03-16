@@ -21,7 +21,7 @@
     "@cngvc/shopi-shared-types": "^0.0.30",
     "@jest/types": "^29.6.3",
     "@types/jest": "^29.5.14",
-    "axios": "^1.8.1",
+    "axios": "^1.8.3",
     "bcrypt": "^5.1.1",
     "compression": "^1.8.0",
     "cors": "^2.8.5",

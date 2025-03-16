@@ -166,7 +166,7 @@ services:
     build:
       context: ./servers/notification-service
       dockerfile: Dockerfile.dev
-    restart: unless-stopped
+    restart: always
     ports:
       - 4001:4001
     env_file: ./servers/notification-service/.env
