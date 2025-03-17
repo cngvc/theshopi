@@ -76,8 +76,8 @@ const CartTable = () => {
           <Card>
             <CardContent className="gap-4">
               <div className="pb-3 text-xl flex-1">
-                Subtotal({items.reduce((a, c) => a + c.quantity, 0)}):
-                <span className="font-bold">{formatCurrency(items.reduce((a, c) => a + c.price, 0))}</span>
+                Subtotal({items.reduce((a, c) => a + c.quantity, 0)}):{' '}
+                <span className="font-bold">{formatCurrency(items.reduce((a, c) => a + c.price * c.quantity, 0))}</span>
               </div>
               <Button className="w-full" disabled={isPending} onClick={() => startTransition(() => router.push('/shipping-address'))}>
                 {isPending ? <Loader className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />} Proceed to Checkout

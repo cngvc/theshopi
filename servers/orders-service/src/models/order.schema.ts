@@ -27,7 +27,7 @@ const orderSchema: Schema = new Schema(
     },
     payment: {
       method: { type: String, enum: Object.values(PaymentMethod), required: true },
-      transactionId: { type: String, default: null }
+      transactionId: { type: String, default: null, sparse: true }
     },
     status: {
       type: String,
@@ -52,8 +52,10 @@ const orderSchema: Schema = new Schema(
 );
 
 orderSchema.pre('validate', async function (next) {
-  this.totalAmount =
-    (this.items as IOrderItem[]).reduce((sum, item) => sum + item.price * item.quantity, 0) + Number(this.shippingFee || 0);
+  if (this.isModified('items') || this.isModified('shippingFee')) {
+    this.totalAmount =
+      (this.items as IOrderItem[]).reduce((sum, item) => sum + item.price * item.quantity, 0) + Number(this.shippingFee || 0);
+  }
   if (!this.orderPublicId) {
     this.orderPublicId = uuidv4();
   }

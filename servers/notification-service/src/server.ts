@@ -9,6 +9,7 @@ import { Channel } from 'amqplib';
 import { Application } from 'express';
 import http from 'http';
 import { authConsumes } from './queues/auth.consumer';
+import { orderConsumes } from './queues/order.consumer';
 
 export class NotificationServer {
   private app: Application;
@@ -26,6 +27,7 @@ export class NotificationServer {
   private async startQueues() {
     const channel = (await queueConnection.createConnection()) as Channel;
     await authConsumes.consumeSendAuthEmailMessages(channel);
+    await orderConsumes.consumeSendOrderEmailMessages(channel);
   }
 
   private routesMiddleware() {

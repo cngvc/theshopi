@@ -58,7 +58,6 @@ export class GatewayServer {
     this.app.use(AuthMiddleware.attachUser);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       const headerXUser = req.headers['x-user'] as string | undefined;
-      console.log(headerXUser);
       if (headerXUser) {
         authService.setXUserHeader(headerXUser);
         buyerService.setXUserHeader(headerXUser);

@@ -14,7 +14,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 
-export let cartChannel: Channel;
+export let orderChannel: Channel;
 
 export class UserServer {
   private app: Application;
@@ -58,7 +58,7 @@ export class UserServer {
   }
 
   private async startQueues() {
-    cartChannel = (await queueConnection.createConnection()) as Channel;
+    orderChannel = (await queueConnection.createConnection()) as Channel;
   }
 
   private errorHandler(): void {

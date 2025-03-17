@@ -9,6 +9,7 @@ import nodemailer, { Transporter } from 'nodemailer';
 class EmailHelper {
   public sendEmail = async (template: string, receiver: string, locals: IEmailLocals): Promise<void> => {
     try {
+      console.log(template, receiver, locals);
       await this.createTemplatedEmail(template, receiver, locals);
       log.info('Email sent successfully.');
     } catch (error) {

@@ -1,12 +1,13 @@
 import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IBuyerDocument, IOrderDocument } from '@cngvc/shopi-types';
+import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument } from '@cngvc/shopi-types';
+import { config } from '@order/config';
 import { elasticSearch } from '@order/elasticsearch';
 import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
 import { grpcProductClient } from '@order/grpc/clients/product-client.grpc';
 import { grpcUserClient } from '@order/grpc/clients/user-client.grpc';
 import { OrderModel } from '@order/models/order.schema';
-import { cartProducer } from '@order/queues/cart.producer';
-import { cartChannel } from '@order/server';
+import { orderProducer } from '@order/queues/order.producer';
+import { orderChannel } from '@order/server';
 
 class OrderService {
   createOrder = async (authId: string, payload: IOrderDocument): Promise<IOrderDocument> => {
@@ -14,8 +15,9 @@ class OrderService {
     if (!buyer?.shippingAddress) {
       throw new NotFoundError('Buyer shipping address not found', 'createOrder');
     }
+
     const itemsInCart = await this.findCachedCartByAuthId(authId);
-    const productPublicIds = itemsInCart.map((e) => e.productPublicId);
+    const productPublicIds = itemsInCart.map(({ productPublicId }) => productPublicId);
     const products = await this.findProductsByProductPublicIds(productPublicIds);
 
     const productMap = new Map(products.map((p) => [p.productPublicId, p]));
@@ -43,8 +45,25 @@ class OrderService {
       notes: payload.notes || ''
     });
 
-    await cartProducer.publishDirectMessage(
-      cartChannel,
+    const createOrderMailObject: IEmailLocals = {
+      username: buyer.username,
+      receiverEmail: buyer.email,
+      orderPublicId: order.orderPublicId,
+      totalAmount: `${order.totalAmount}`,
+      shippingAddress: buyer.shippingAddress.address,
+      shippingCity: buyer.shippingAddress.city,
+      shippingCountry: buyer.shippingAddress.country,
+      orderLink: `${config.CLIENT_URL}/orders/${order.orderPublicId}/activities`,
+      template: 'create-order'
+    };
+    await orderProducer.publishDirectMessage(
+      orderChannel,
+      ExchangeNames.CREATE_ORDER_EMAIL,
+      RoutingKeys.CREATE_ORDER_EMAIL,
+      JSON.stringify(createOrderMailObject)
+    );
+    await orderProducer.publishDirectMessage(
+      orderChannel,
       ExchangeNames.DELETE_COMPLETED_CART,
       RoutingKeys.DELETE_COMPLETED_CART,
       JSON.stringify({ authId })

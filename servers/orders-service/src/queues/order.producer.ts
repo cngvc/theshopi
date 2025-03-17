@@ -2,7 +2,7 @@ import { captureError } from '@order/utils/logger.util';
 import { Channel } from 'amqplib';
 import { queueConnection } from './connection';
 
-class CartProducer {
+class OrderProducer {
   public publishDirectMessage = async (channel: Channel, exchangeName: string, routingKey: string, message: string): Promise<void> => {
     try {
       if (!channel) {
@@ -16,4 +16,4 @@ class CartProducer {
   };
 }
 
-export const cartProducer = new CartProducer();
+export const orderProducer = new OrderProducer();
