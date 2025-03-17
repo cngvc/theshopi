@@ -57,7 +57,7 @@ const config: NextAuthConfig = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     async authorized({ request, auth }: any) {
-      const protectedPaths = [/\/message\/(.*)/];
+      const protectedPaths = [/\/messages\/(.*)/, /\/account\/(.*)/, /\/checkout\/(.*)/];
       const { pathname } = request.nextUrl;
       if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
       return true;

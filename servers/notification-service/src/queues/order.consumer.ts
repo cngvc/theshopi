@@ -37,7 +37,6 @@ class OrderConsumes {
             shippingCountry,
             orderLink
           };
-          console.log('locals, ', locals);
           await emailHelper.sendEmail(template, receiverEmail, locals);
           channel.ack(msg!);
         } else {

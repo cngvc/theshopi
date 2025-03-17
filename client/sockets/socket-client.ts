@@ -23,7 +23,7 @@ class BaseSocketClient {
     });
 
     this.socket.on('connect_error', (error: Error) => {
-      console.log(`👇 Gateway socket connect error: ${error.message}`);
+      // console.log(`👇 Gateway socket connect error: ${error.message}`);
     });
   }
 }

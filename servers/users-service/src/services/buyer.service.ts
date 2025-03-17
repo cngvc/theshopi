@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IBuyerDocument, IShippingAddress } from '@cngvc/shopi-types';
+import { ElasticsearchIndexes, IBuyerDocument, IPayment, IShippingAddress } from '@cngvc/shopi-types';
 import { elasticSearch } from '@user/elasticsearch';
 import { BuyerModel } from '@user/models/buyer.schema';
 
@@ -58,12 +58,23 @@ class BuyerService {
     ).exec();
   };
 
-  updateBuyerShippingAddress = async (buyerPublicId: string, shippingAddress: IShippingAddress): Promise<void> => {
+  updateBuyerShippingAddress = async (authId: string, shippingAddress: IShippingAddress): Promise<void> => {
     await BuyerModel.updateOne(
-      { buyerPublicId: buyerPublicId },
+      { authId: authId },
       {
         $set: {
           shippingAddress: shippingAddress
+        }
+      }
+    ).exec();
+  };
+
+  updateBuyerPaymentMethod = async (authId: string, payment: IPayment): Promise<void> => {
+    await BuyerModel.updateOne(
+      { authId: authId },
+      {
+        $set: {
+          payment: payment
         }
       }
     ).exec();

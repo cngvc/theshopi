@@ -46,11 +46,21 @@ const UserButton = async () => {
               {session?.user?.email}
             </DropdownMenuLabel>
           </div>
-
+          <DropdownMenuSeparator />
+          <DropdownMenuItem className="p-0">
+            <Button className="w-full px-2 justify-start" variant={'ghost'} asChild>
+              <Link href={pages.account_shipping_address}>Shipping</Link>
+            </Button>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="p-0">
+            <Button className="w-full px-2 justify-start" variant={'ghost'} asChild>
+              <Link href={pages.account_payment}>Payment</Link>
+            </Button>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0">
             <form action={signoutUser} className="flex-1">
-              <input type="hidden" name="callbackUrl" value={'/sign-in'} />
+              <input type="hidden" name="callbackUrl" value={pages.signin} />
               <Button className="w-full px-2 justify-start" variant={'ghost'}>
                 Signout
               </Button>

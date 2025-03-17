@@ -18,6 +18,16 @@ class BuyerController {
     const response: AxiosResponse = await buyerService.getBuyerByUsername(req.params.username);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
+
+  public async updateBuyerAddress(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await buyerService.updateBuyerAddress(req.body);
+    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+  }
+
+  public async updateBuyerPayment(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await buyerService.updateBuyerPayment(req.body);
+    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+  }
 }
 
 export const buyerController = new BuyerController();

@@ -11,6 +11,8 @@ class BuyerRoutes {
     this.router.get('/email', buyerController.getBuyerByEmail);
     this.router.get('/me', buyerController.getCurrentBuyer);
     this.router.get('/:username', buyerController.getBuyerByUsername);
+    this.router.put('/shipping-address', buyerController.updateBuyerAddress);
+    this.router.put('/payment', buyerController.updateBuyerPayment);
     return this.router;
   }
 }

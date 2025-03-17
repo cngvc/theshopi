@@ -1,4 +1,4 @@
-import { IBuyerDocument } from '@cngvc/shopi-types';
+import { IBuyerDocument, PaymentMethod } from '@cngvc/shopi-types';
 import { Model, model, Schema } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,11 +12,20 @@ const buyerSchema: Schema = new Schema(
     purchasedProducts: { type: [String], default: [] },
     shippingAddress: {
       type: {
-        shippingAddressPublicId: { type: String, default: uuidv4 },
         address: { type: String, required: true },
         city: { type: String, required: true },
         country: { type: String, required: true },
         postalCode: { type: String, default: '' }
+      },
+      default: null
+    },
+    payment: {
+      type: {
+        method: { type: String, enum: Object.values(PaymentMethod), default: PaymentMethod.cod },
+        transactionId: { type: String },
+        metadata: {
+          type: Schema.Types.Mixed
+        }
       },
       default: null
     },

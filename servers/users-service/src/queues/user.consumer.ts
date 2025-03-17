@@ -1,5 +1,5 @@
 import { ExchangeNames, QueueNames, RoutingKeys } from '@cngvc/shopi-shared';
-import { IBuyerDocument } from '@cngvc/shopi-types';
+import { IBuyerDocument, PaymentMethod } from '@cngvc/shopi-types';
 import { faker } from '@faker-js/faker';
 import { queueConnection } from '@user/queues/connection';
 import { userProducer } from '@user/queues/user.producer';
@@ -28,6 +28,9 @@ class UserConsumes {
             email,
             purchasedProducts: [],
             createdAt,
+            payment: {
+              method: PaymentMethod.cod
+            },
             shippingAddress: {
               address: faker.location.streetAddress(), // remove in production
               city: faker.location.city(), // remove in production
