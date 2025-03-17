@@ -3,12 +3,6 @@ import { passwordController } from '@gateway/controllers/auth/password.controlle
 import { verifyEmailController } from '@gateway/controllers/auth/verify-email.controller';
 import express, { Router } from 'express';
 
-const asyncHandler = (fn: any) => {
-  return (req: any, res: any, next: any) => {
-    fn(req, res, next).catch(next);
-  };
-};
-
 class AuthRoutes {
   router: Router;
   constructor() {

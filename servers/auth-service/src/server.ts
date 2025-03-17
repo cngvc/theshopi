@@ -6,7 +6,7 @@ import { elasticSearch } from '@auth/elasticsearch';
 import { queueConnection } from '@auth/queues/connection';
 import { appRoutes } from '@auth/routes';
 import { captureError, log } from '@auth/utils/logger.util';
-import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -14,7 +14,7 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { verify } from 'jsonwebtoken';
+import { grpcAuthServer } from './grpc/server/grpc.server';
 
 export let authChannel: Channel;
 
@@ -30,6 +30,7 @@ export class AuthServer {
     this.routesMiddleware();
     await this.startQueues();
     await this.startElasticSearch();
+    this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -48,14 +49,6 @@ export class AuthServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.headers.authorization) {
-        const token = (req.headers.authorization as string).split(' ')[1];
-        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-        req.currentUser = payload;
-      }
-      next();
-    });
   }
 
   private standardMiddleware(): void {
@@ -74,6 +67,10 @@ export class AuthServer {
 
   private async startQueues() {
     authChannel = (await queueConnection.createConnection()) as Channel;
+  }
+
+  private startRPCServer() {
+    grpcAuthServer.start(Number(`${SERVER_PORT}0`));
   }
 
   private errorHandler(): void {

@@ -13,11 +13,6 @@ class AuthService extends AxiosService {
     return response;
   }
 
-  async checkUserExists(): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get('/verify');
-    return response;
-  }
-
   async getRefreshToken(): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.get('/refresh-token');
     return response;

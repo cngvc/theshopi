@@ -1,5 +1,5 @@
-import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
-import { IStoreDocument, createStoreSchema } from '@cngvc/shopi-types';
+import { BadRequestError, CreatedRequestSuccess, getCurrentUser, IAuthPayload, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { createStoreSchema, IStoreDocument } from '@cngvc/shopi-types';
 import { buyerService } from '@user/services/buyer.service';
 import { storeService } from '@user/services/store.service';
 import { Request, Response } from 'express';
@@ -10,11 +10,12 @@ class StoreController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createStore method error');
     }
-    const existingStore = await storeService.getStoreByOwnerAuthId(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const existingStore = await storeService.getStoreByOwnerAuthId(currentUser.id);
     if (existingStore) {
       throw new BadRequestError('Store already exist. Go to your account page to update.', 'createStore method error');
     }
-    const buyer = await buyerService.getBuyerByAuthId(`${req.currentUser!.id}`);
+    const buyer = await buyerService.getBuyerByAuthId(`${currentUser.id}`);
     if (!buyer) {
       throw new BadRequestError('Buyer with auth id not found', 'createStore method error');
     }

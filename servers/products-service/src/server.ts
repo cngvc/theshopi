@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes } from '@cngvc/shopi-types';
 import { config } from '@product/config';
 import { SERVER_PORT, SERVICE_NAME } from '@product/constants';
@@ -15,7 +15,6 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { verify } from 'jsonwebtoken';
 import { elasticSearch } from './elasticsearch';
 import { grpcProductsServer } from './grpc/server/grpc.server';
 
@@ -33,7 +32,7 @@ export class ProductServer {
     this.routesMiddleware();
     await this.startQueues();
     await this.startElasticSearch();
-    await this.startRPCServer();
+    this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -52,14 +51,6 @@ export class ProductServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.headers.authorization) {
-        const token = (req.headers.authorization as string).split(' ')[1];
-        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-        req.currentUser = payload;
-      }
-      next();
-    });
   }
 
   private standardMiddleware(): void {
@@ -83,7 +74,7 @@ export class ProductServer {
   }
 
   private startRPCServer() {
-    grpcProductsServer.start(40040);
+    grpcProductsServer.start(Number(`${SERVER_PORT}0`));
   }
 
   private errorHandler(): void {

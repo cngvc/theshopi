@@ -20,6 +20,8 @@ class ChatService {
     if (existingConversation) {
       return existingConversation;
     }
+    if (senderAuthId === receiverAuthId) {
+    }
     const conversation = await ConversationModel.create({
       participants: [senderAuthId, receiverAuthId]
     });

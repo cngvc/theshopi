@@ -14,7 +14,7 @@ import {
   RoutingKeys
 } from '@cngvc/shopi-shared';
 import { signinSchema, signupSchema } from '@cngvc/shopi-types';
-import { compare } from 'bcryptjs';
+import * as argon2 from 'argon2';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
 
@@ -96,7 +96,7 @@ class AuthController {
     if (!existingUser) {
       throw new BadRequestError('Invalid credentials', 'signin method error existing');
     }
-    const passwordsMatch: boolean = await compare(password, `${existingUser.password}`);
+    const passwordsMatch: boolean = await argon2.verify(`${existingUser.password}`, password);
     if (!passwordsMatch) {
       throw new BadRequestError('Invalid credentials', 'signin method error password');
     }

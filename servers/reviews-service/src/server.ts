@@ -1,6 +1,6 @@
 import 'express-async-errors';
 
-import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@reviews/config';
 import { SERVER_PORT, SERVICE_NAME } from '@reviews/constants';
 import { queueConnection } from '@reviews/queues/connection';
@@ -13,7 +13,6 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { verify } from 'jsonwebtoken';
 
 export class UserServer {
   private app: Application;
@@ -44,14 +43,6 @@ export class UserServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.headers.authorization) {
-        const token = (req.headers.authorization as string).split(' ')[1];
-        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-        req.currentUser = payload;
-      }
-      next();
-    });
   }
 
   private standardMiddleware(): void {

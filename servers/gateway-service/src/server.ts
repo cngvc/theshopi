@@ -23,6 +23,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 
 export class GatewayServer {
   private app: Application;
@@ -53,17 +54,19 @@ export class GatewayServer {
       })
     );
     this.app.use(endpointMiddleware.gatewayRequestLogger);
+
+    this.app.use(AuthMiddleware.attachUser);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      const headerAuthorization = req.headers.authorization;
-      if (headerAuthorization && headerAuthorization.startsWith('Bearer ')) {
-        authService.setHeaderAuthorization(headerAuthorization);
-        buyerService.setHeaderAuthorization(headerAuthorization);
-        storeService.setHeaderAuthorization(headerAuthorization);
-        productService.setHeaderAuthorization(headerAuthorization);
-        chatService.setHeaderAuthorization(headerAuthorization);
-        cartService.setHeaderAuthorization(headerAuthorization);
-        orderService.setHeaderAuthorization(headerAuthorization);
-        // must set header when creating a new service
+      const headerXUser = req.headers['x-user'] as string | undefined;
+      console.log(headerXUser);
+      if (headerXUser) {
+        authService.setXUserHeader(headerXUser);
+        buyerService.setXUserHeader(headerXUser);
+        storeService.setXUserHeader(headerXUser);
+        productService.setXUserHeader(headerXUser);
+        chatService.setXUserHeader(headerXUser);
+        cartService.setXUserHeader(headerXUser);
+        orderService.setXUserHeader(headerXUser);
       }
       next();
     });

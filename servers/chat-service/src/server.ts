@@ -5,7 +5,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@chat/constants';
 import { queueConnection } from '@chat/queues/connection';
 import { appRoutes } from '@chat/routes';
 import { captureError, log } from '@chat/utils/logger.util';
-import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -13,7 +13,6 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { verify } from 'jsonwebtoken';
 import { Server } from 'socket.io';
 import { chatConsumes } from './queues/chat.consumer';
 import { SocketHandler } from './sockets/socket.handler';
@@ -50,14 +49,6 @@ export class UserServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.headers.authorization) {
-        const token = (req.headers.authorization as string).split(' ')[1];
-        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-        req.currentUser = payload;
-      }
-      next();
-    });
   }
 
   private standardMiddleware(): void {

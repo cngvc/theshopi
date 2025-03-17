@@ -1,27 +1,30 @@
 import { ConversationModel } from '@chat/models/conversation.schema';
 import { chatService } from '@chat/services/chat.service';
-import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, getCurrentUser, IAuthPayload, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { createConversionSchema, IConversationDocument, IMessageDocument, sendMessageSchema } from '@cngvc/shopi-types';
 import { Request, Response } from 'express';
 
 class ChatController {
   getCurrentUserConversations = async (req: Request, res: Response): Promise<void> => {
-    const conversations: IConversationDocument[] = await chatService.getCurrentUserConversations(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const conversations: IConversationDocument[] = await chatService.getCurrentUserConversations(currentUser.id);
     new OkRequestSuccess('Conversation list', {
       conversations: conversations
     }).send(res);
   };
 
   getCurrentUserLastConversation = async (req: Request, res: Response): Promise<void> => {
-    const conversation: IConversationDocument | null = await chatService.getCurrentUserLastConversation(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const conversation: IConversationDocument | null = await chatService.getCurrentUserLastConversation(currentUser.id);
     new OkRequestSuccess('Last conversation', {
       conversation: conversation
     }).send(res);
   };
 
   getConversationByConversationPublicId = async (req: Request, res: Response): Promise<void> => {
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
     const { conversationPublicId } = req.params;
-    const conversation = await chatService.getConversationByConversationPublicId(conversationPublicId, req.currentUser!.id);
+    const conversation = await chatService.getConversationByConversationPublicId(conversationPublicId, currentUser.id);
     new OkRequestSuccess('Chat conversation.', {
       conversation
     }).send(res);
@@ -40,8 +43,13 @@ class ChatController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createConversation method error');
     }
-    const senderAuthId = req.currentUser!.id;
-    const conversation = await chatService.createConversation(senderAuthId, req.body.receiverAuthId);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const senderAuthId = currentUser.id;
+    const receiverAuthId = req.body.receiverAuthId;
+    if (receiverAuthId === senderAuthId) {
+      throw new BadRequestError("Can't create conversation to yourself", 'createConversation method error');
+    }
+    const conversation = await chatService.createConversation(senderAuthId, receiverAuthId);
     new CreatedRequestSuccess('Conversation has been created.', {
       conversation
     }).send(res);
@@ -53,7 +61,11 @@ class ChatController {
       throw new BadRequestError(error.details[0].message, 'sendMessage method error');
     }
     const { conversationPublicId, receiverAuthId, body } = req.body;
-    const senderAuthId = req.currentUser!.id;
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const senderAuthId = currentUser.id;
+    if (receiverAuthId === senderAuthId) {
+      throw new BadRequestError("Can't create conversation to yourself", 'createConversation method error');
+    }
     let conversation: IConversationDocument | null = null;
     if (conversationPublicId) {
       conversation = await chatService.findConversationByConversationPublicId(conversationPublicId);

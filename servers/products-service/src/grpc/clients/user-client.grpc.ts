@@ -32,7 +32,7 @@ class GrpcClient {
   getStoreByStorePublicId = async (storePublicId: string): Promise<IStoreDocument | null> => {
     try {
       return await new Promise((resolve, reject) => {
-        this.client.GetStoreByStorePublicId({ storePublicId }, (err: any, response: IStoreDocument) => {
+        this.client.GetStoreByStorePublicId({ storePublicId }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);
         });

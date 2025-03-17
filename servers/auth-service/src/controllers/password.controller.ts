@@ -1,11 +1,19 @@
 import { config } from '@auth/config';
-import { SALT_ROUND } from '@auth/constants/hashing';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError, ExchangeNames, IEmailMessageDetails, OkRequestSuccess, RoutingKeys } from '@cngvc/shopi-shared';
+import {
+  BadRequestError,
+  ExchangeNames,
+  getCurrentUser,
+  IAuthPayload,
+  IEmailMessageDetails,
+  OkRequestSuccess,
+  RoutingKeys
+} from '@cngvc/shopi-shared';
 import { changePasswordSchema, emailSchema, passwordSchema } from '@cngvc/shopi-types';
-import { hash } from 'bcryptjs';
+import * as argon2 from 'argon2';
+
 import crypto from 'crypto';
 import { Request, Response } from 'express';
 
@@ -56,7 +64,7 @@ class PasswordController {
     if (!existingUser) {
       throw new BadRequestError('Reset token has expired', 'resetPassword method error');
     }
-    const hashedPassword: string = await hash(password, SALT_ROUND);
+    const hashedPassword: string = await argon2.hash(password);
     await authService.updatePassword(existingUser.id!, hashedPassword);
     const messageDetails: IEmailMessageDetails = {
       username: existingUser.username,
@@ -78,12 +86,12 @@ class PasswordController {
       throw new BadRequestError(error.details[0].message, 'changePassword method error');
     }
     const { newPassword } = req.body;
-
-    const existingUser = await authService.getAuthUserById(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const existingUser = await authService.getAuthUserById(currentUser.id);
     if (!existingUser) {
       throw new BadRequestError('Invalid password', 'changePassword method error');
     }
-    const hashedPassword: string = await hash(newPassword, SALT_ROUND);
+    const hashedPassword: string = await argon2.hash(newPassword);
     await authService.updatePassword(existingUser.id!, hashedPassword);
 
     const messageDetails: IEmailMessageDetails = {

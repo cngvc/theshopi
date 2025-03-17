@@ -5,7 +5,7 @@ import { SERVER_PORT, SERVICE_NAME } from '@cart/constants';
 import { queueConnection } from '@cart/queues/connection';
 import { appRoutes } from '@cart/routes';
 import { captureError, log } from '@cart/utils/logger.util';
-import { AuthMiddleware, CustomError, IAuthPayload, IErrorResponse } from '@cngvc/shopi-shared';
+import { AuthMiddleware, CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { Channel } from 'amqplib';
 import compression from 'compression';
 import cors from 'cors';
@@ -13,7 +13,6 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { verify } from 'jsonwebtoken';
 import { grpcCartServer } from './grpc/server/grpc.server';
 import { cartConsumes } from './queues/cart.consumer';
 
@@ -28,7 +27,7 @@ export class UserServer {
     this.securityMiddleware();
     this.routesMiddleware();
     await this.startQueues();
-    await this.startRPCServer();
+    this.startRPCServer();
     this.errorHandler();
     this.startServer();
   };
@@ -47,14 +46,6 @@ export class UserServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use((req: Request, res: Response, next: NextFunction) => {
-      if (req.headers.authorization) {
-        const token = (req.headers.authorization as string).split(' ')[1];
-        const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-        req.currentUser = payload;
-      }
-      next();
-    });
   }
 
   private standardMiddleware(): void {
@@ -73,7 +64,7 @@ export class UserServer {
   }
 
   private startRPCServer() {
-    grpcCartServer.start(40110);
+    grpcCartServer.start(Number(`${SERVER_PORT}0`));
   }
 
   private errorHandler(): void {

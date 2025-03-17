@@ -1,16 +1,18 @@
-import { OkRequestSuccess } from '@cngvc/shopi-shared';
+import { getCurrentUser, IAuthPayload, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IBuyerDocument } from '@cngvc/shopi-types';
 import { buyerService } from '@user/services/buyer.service';
 import { Request, Response } from 'express';
 
 class BuyerController {
   getBuyerByEmail = async (req: Request, res: Response): Promise<void> => {
-    const buyer: IBuyerDocument | null = await buyerService.getBuyerByEmail(req.currentUser!.email);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const buyer: IBuyerDocument | null = await buyerService.getBuyerByEmail(currentUser.email);
     new OkRequestSuccess('Buyer profile.', { buyer }).send(res);
   };
 
   getCurrentBuyer = async (req: Request, res: Response): Promise<void> => {
-    const buyer: IBuyerDocument | null = await buyerService.getBuyerByUsername(req.currentUser!.username);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const buyer: IBuyerDocument | null = await buyerService.getBuyerByUsername(currentUser.username);
     new OkRequestSuccess('Current buyer profile.', { buyer }).send(res);
   };
 

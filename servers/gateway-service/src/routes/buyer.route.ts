@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { buyerController } from '@gateway/controllers/users/buyer.controller';
 import express, { Router } from 'express';
 
@@ -10,7 +9,6 @@ class BuyerRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
     this.router.get('/buyer/email', buyerController.getBuyerByEmail);
     this.router.get('/buyer/me', buyerController.getCurrentBuyer);
     this.router.get('/buyer/:username', buyerController.getBuyerByUsername);

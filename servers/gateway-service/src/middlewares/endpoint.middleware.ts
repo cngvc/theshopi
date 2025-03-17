@@ -6,6 +6,7 @@ class EndpointMiddleware {
     const endpoint = req.originalUrl;
     const method = req.method;
     log.info(`📌 [${method}] ${endpoint}`);
+
     next();
   };
 }

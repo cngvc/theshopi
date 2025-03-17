@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { BASE_PATH } from '@gateway/constants/path';
 import { authRoute } from '@gateway/routes/auth.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
@@ -12,7 +11,7 @@ import { seedRoutes } from '@gateway/routes/seed.routes';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
-import { VerifyUserMiddleware } from './middlewares/verify-user-exist.middleware';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 import { orderRoutes } from './routes/order.route';
 
 export const appRoutes = (app: Application) => {
@@ -23,8 +22,8 @@ export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, publicRouter);
 
   const privateRouter = Router();
-  privateRouter.use(AuthMiddleware.verifySessionJWT);
-  privateRouter.use(VerifyUserMiddleware.checkUserExists);
+  privateRouter.use(AuthMiddleware.verifyUserJwt);
+
   privateRouter.use(productRoutes.routes());
   privateRouter.use(tokenRoutes.routes());
   privateRouter.use(storeRoutes.routes());

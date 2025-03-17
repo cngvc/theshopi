@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { cartController } from '@gateway/controllers/cart/cart.controller';
 import express, { Router } from 'express';
 
@@ -10,7 +9,6 @@ class CartRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
     this.router.get('/cart/', cartController.getCart);
     this.router.post('/cart/', cartController.addToCart);
     this.router.put('/cart/', cartController.updateCart);

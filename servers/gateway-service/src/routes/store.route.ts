@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { storeController } from '@gateway/controllers/users/store.controller';
 import express, { Router } from 'express';
 
@@ -10,7 +9,6 @@ class StoreRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
     this.router.get('/store/:storePublicId', storeController.getStoreByStorePublicId);
     this.router.get('/store/username/:username', storeController.getStoreByUsername);
     this.router.get('/store/random/:size', storeController.getRandomStores);

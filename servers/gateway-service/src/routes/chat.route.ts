@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { chatController } from '@gateway/controllers/chat/chat.controller';
 import express, { Router } from 'express';
 
@@ -10,8 +9,6 @@ class ChatRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
-
     this.router.get('/chat/conversations/', chatController.getCurrentUserConversations);
     this.router.get('/chat/conversations/latest', chatController.getCurrentUserLastConversation);
     this.router.get('/chat/conversations/:conversationPublicId', chatController.getConversationByConversationPublicId);

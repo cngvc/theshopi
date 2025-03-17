@@ -1,4 +1,3 @@
-import { AuthMiddleware } from '@cngvc/shopi-shared';
 import { authSeedController } from '@gateway/controllers/auth/auth-seed.controller';
 import { chatSeedController } from '@gateway/controllers/chat/chat-seed.controller';
 import { productSeedController } from '@gateway/controllers/product/product-seed.controller';
@@ -13,7 +12,6 @@ class SeedRoutes {
   }
 
   public routes(): Router {
-    this.router.use(AuthMiddleware.checkAuthentication);
     this.router.put('/auth/seed/:count', authSeedController.createSeeds);
     this.router.put('/store/seed/:count', storeSeedController.createSeeds);
     this.router.put('/products/seed/:count', productSeedController.createSeeds);

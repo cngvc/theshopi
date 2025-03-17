@@ -1,4 +1,4 @@
-import { BadRequestError, CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, getCurrentUser, IAuthPayload, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { IProductDocument, IStoreDocument, productCreateSchema, productUpdateSchema } from '@cngvc/shopi-types';
 import { DefaultSearchQuery } from '@product/constants';
 import { productService } from '@product/services/product.service';
@@ -11,7 +11,8 @@ class ProductController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createProduct');
     }
-    const storePublicId = await this.checkIfUserIsStore(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const storePublicId = await this.checkIfUserIsStore(currentUser.id);
     const product: IProductDocument = {
       storePublicId: storePublicId,
       thumb: req.body.thumb,
@@ -32,7 +33,8 @@ class ProductController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'updateProduct');
     }
-    const storePublicId = await this.checkIfUserIsStore(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const storePublicId = await this.checkIfUserIsStore(currentUser.id);
     const product: IProductDocument = {
       storePublicId: storePublicId,
       thumb: req.body.thumb,

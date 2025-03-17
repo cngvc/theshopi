@@ -27,12 +27,12 @@ class Config {
   public GATEWAY_JWT_TOKEN_SECRET: string | undefined;
   public NODE_ENV: string | undefined;
   public USERS_BASE_URL: string | undefined;
-  public REDIS_HOST: string | undefined;
   public PRODUCTS_BASE_URL: string | undefined;
   public ONLINE_STATUS_BASE_URL: string | undefined;
   public SOCKET_BASE_URL: string | undefined;
   public CART_BASE_URL: string | undefined;
   public ORDER_BASE_URL: string | undefined;
+  public AUTH_BASE_URL_GRPC: string | undefined;
 
   constructor() {
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
@@ -45,12 +45,12 @@ class Config {
     this.GATEWAY_JWT_TOKEN_SECRET = process.env.GATEWAY_JWT_TOKEN_SECRET || '';
     this.NODE_ENV = process.env.NODE_ENV || '';
     this.USERS_BASE_URL = process.env.USERS_BASE_URL || '';
-    this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.PRODUCTS_BASE_URL = process.env.PRODUCTS_BASE_URL || '';
     this.ONLINE_STATUS_BASE_URL = process.env.ONLINE_STATUS_BASE_URL || '';
     this.SOCKET_BASE_URL = process.env.SOCKET_BASE_URL || '';
     this.CART_BASE_URL = process.env.CART_BASE_URL || '';
     this.ORDER_BASE_URL = process.env.ORDER_BASE_URL || '';
+    this.AUTH_BASE_URL_GRPC = process.env.AUTH_BASE_URL_GRPC || '';
   }
 }
 

@@ -1,4 +1,4 @@
-import { BadRequestError, CreatedRequestSuccess } from '@cngvc/shopi-shared';
+import { BadRequestError, CreatedRequestSuccess, getCurrentUser, IAuthPayload } from '@cngvc/shopi-shared';
 import { createOrderScheme } from '@cngvc/shopi-types';
 import { orderService } from '@order/services/order.service';
 import { Request, Response } from 'express';
@@ -9,7 +9,8 @@ class OrderController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'createOrder');
     }
-    const order = await orderService.createOrder(req.currentUser!.id, req.body);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const order = await orderService.createOrder(currentUser.id, req.body);
     new CreatedRequestSuccess('Order has been created successfully.', { order }).send(res);
   };
 }

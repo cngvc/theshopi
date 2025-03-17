@@ -20,6 +20,7 @@ const MessageBox = ({ id }: { id: string }) => {
 
   const { mutate: sendMessageMutation } = useSendMessage();
   const { data: conversation, isLoading: fetchConversationLoading } = useConversation(id);
+
   useEffect(() => {
     if (messages && lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView(false);
@@ -53,11 +54,13 @@ const MessageBox = ({ id }: { id: string }) => {
   }
 
   if (!fetchConversationLoading && !conversation) {
-    <Card className="flex-1 md:col-span-3 lg:col-span-4 max-md:hidden pb-0">
-      <div className="p-6 text-center mt-4">
-        <h2 className="text-xl mb-2">No chats selected</h2>
-      </div>
-    </Card>;
+    return (
+      <Card className="flex-1 max-md:hidden">
+        <div className="p-6 text-center mt-4">
+          <h2 className="text-xl mb-2">No chats selected</h2>
+        </div>
+      </Card>
+    );
   }
 
   return (

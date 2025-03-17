@@ -6,6 +6,8 @@ import { generateRandomCharacters } from '@auth/utils/generate.util';
 import {
   BadRequestError,
   ExchangeNames,
+  getCurrentUser,
+  IAuthPayload,
   IEmailMessageDetails,
   lowerCase,
   NotFoundError,
@@ -16,23 +18,17 @@ import { Request, Response } from 'express';
 
 class CurrentUserController {
   async getCurrentUser(req: Request, res: Response): Promise<void> {
-    const existingUser = await authService.getAuthUserById(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const existingUser = await authService.getAuthUserById(currentUser.id);
     if (!existingUser) {
       throw new NotFoundError('User not found', 'getCurrentUser');
     }
     new OkRequestSuccess('Authenticated user', { user: existingUser }).send(res);
   }
 
-  async checkUserExists(req: Request, res: Response): Promise<void> {
-    const existingUser = await authService.checkUserExists(req.currentUser!.id);
-    if (!existingUser) {
-      throw new NotFoundError('User not found', 'checkUserExists');
-    }
-    new OkRequestSuccess('Authenticated user', {}).send(res);
-  }
-
   async resendEmail(req: Request, res: Response): Promise<void> {
-    const existingUser = await authService.getAuthUserById(req.currentUser!.id);
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    const existingUser = await authService.getAuthUserById(currentUser.id);
     if (!existingUser) {
       throw new BadRequestError('Email is invalid', 'resentEmail method error');
     }

@@ -29,7 +29,7 @@ class GrpcClient {
   getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
     try {
       return await new Promise((resolve, reject) => {
-        this.client.GetBuyerByAuthId({ authId }, (err: any, response: IBuyerDocument) => {
+        this.client.GetBuyerByAuthId({ authId }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);
         });

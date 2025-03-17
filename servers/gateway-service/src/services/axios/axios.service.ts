@@ -10,8 +10,8 @@ export class AxiosService {
     this.axios = this.axiosCreateInstance(baseUrl, serviceName);
   }
 
-  public setHeaderAuthorization(headerAuthorization: string): void {
-    this.axios.defaults.headers['Authorization'] = headerAuthorization;
+  public setXUserHeader(xUser: string): void {
+    this.axios.defaults.headers['x-user'] = xUser;
   }
 
   protected async get<T>(url: string): Promise<AxiosResponse<T>> {

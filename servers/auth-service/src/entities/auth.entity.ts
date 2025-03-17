@@ -1,6 +1,6 @@
-import { SALT_ROUND } from '@auth/constants/hashing';
 import { IAuthDocument } from '@cngvc/shopi-shared';
-import { compare, hash } from 'bcryptjs';
+
+import * as argon2 from 'argon2';
 import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export type UserRole = 'admin' | 'basic';
@@ -39,10 +39,10 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
 
   @BeforeInsert()
   async hashPassword() {
-    this.password = await hash(this.password, SALT_ROUND);
+    this.password = await argon2.hash(this.password);
   }
 
   async comparePassword(password: string): Promise<boolean> {
-    return compare(password, this.password);
+    return argon2.verify(this.password, password);
   }
 }
