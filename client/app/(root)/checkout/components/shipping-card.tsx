@@ -13,7 +13,7 @@ const ShippingCard = ({ shippingAddress }: { shippingAddress?: IShippingAddress 
           <MapPinHouse className="w-6 h-6" /> <span>Delivery Address</span>
         </CardTitle>
         <CardContent className="gap-4 px-0 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex flex-1 items-center">
+          <div className="flex flex-1 w-full items-center">
             {shippingAddress
               ? `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.country} - ${shippingAddress.postalCode}`
               : 'N/A'}

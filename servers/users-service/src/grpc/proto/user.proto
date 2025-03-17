@@ -18,6 +18,13 @@ message GetBuyerByAuthIdResponse {
   string username = 4;
   string email = 5;
   optional ShippingAddress shippingAddress = 6;
+  optional Payment payment = 7;
+
+}
+
+message Payment {
+  string method = 1;
+  string transactionId = 2;
 }
 
 message ShippingAddress {

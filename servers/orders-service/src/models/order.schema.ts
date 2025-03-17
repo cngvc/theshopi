@@ -27,7 +27,10 @@ const orderSchema: Schema = new Schema(
     },
     payment: {
       method: { type: String, enum: Object.values(PaymentMethod), required: true },
-      transactionId: { type: String, default: null, sparse: true }
+      transactionId: { type: String, default: null, sparse: true },
+      metadata: {
+        type: Schema.Types.Mixed
+      }
     },
     status: {
       type: String,

@@ -22,7 +22,6 @@ const buyerSchema: Schema = new Schema(
     payment: {
       type: {
         method: { type: String, enum: Object.values(PaymentMethod), default: PaymentMethod.cod },
-        transactionId: { type: String },
         metadata: {
           type: Schema.Types.Mixed
         }

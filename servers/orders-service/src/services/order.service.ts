@@ -15,6 +15,9 @@ class OrderService {
     if (!buyer?.shippingAddress) {
       throw new NotFoundError('Buyer shipping address not found', 'createOrder');
     }
+    if (!buyer?.payment) {
+      throw new NotFoundError('Payment method is missing', 'createOrder');
+    }
 
     const itemsInCart = await this.findCachedCartByAuthId(authId);
     const productPublicIds = itemsInCart.map(({ productPublicId }) => productPublicId);
@@ -50,9 +53,9 @@ class OrderService {
       receiverEmail: buyer.email,
       orderPublicId: order.orderPublicId,
       totalAmount: `${order.totalAmount}`,
-      shippingAddress: buyer.shippingAddress.address,
-      shippingCity: buyer.shippingAddress.city,
-      shippingCountry: buyer.shippingAddress.country,
+      shippingAddress: buyer.shippingAddress!.address,
+      shippingCity: buyer.shippingAddress!.city,
+      shippingCountry: buyer.shippingAddress!.country,
       orderLink: `${config.CLIENT_URL}/orders/${order.orderPublicId}/activities`,
       template: 'create-order'
     };

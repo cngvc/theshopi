@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import { IBuyerDocument, PaymentMethod, paymentScheme, shippingAddressSchema } from '@cngvc/shopi-types';
+import { IBuyerDocument, IPayment, paymentScheme, shippingAddressSchema } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
 import axiosInstance from '../axios';
 import pages from '../constants/pages';
@@ -25,7 +25,7 @@ export async function updateBuyerShippingAddress(payload: { address: string; cit
   return true;
 }
 
-export async function updateBuyerPayment(payload: { method: PaymentMethod }) {
+export async function updateBuyerPayment(payload: IPayment) {
   const session = await auth();
   if (!session) redirect(pages.signin);
   const { error, value } = paymentScheme.validate(payload);
