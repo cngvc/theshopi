@@ -11,12 +11,12 @@ const ProductCard = ({ product }: { product: IProductDocument }) => {
       <Card className="flex-1 pt-0 overflow-hidden">
         <CardHeader className="!p-0">
           <Image
-            src={'https://placehold.co/320x320/png'}
+            src={product.thumb || 'https://placehold.co/320x320/png'}
             width={320}
             height={320}
             priority={true}
             alt={product.name}
-            className="object-cover"
+            className="object-cover aspect-square flex-1"
           />
         </CardHeader>
         <CardContent className="flex-1">

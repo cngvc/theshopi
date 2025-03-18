@@ -1,4 +1,5 @@
 import { APP_NAME } from '@/lib/constants';
+import pages from '@/lib/constants/pages';
 import Image from 'next/image';
 import Link from 'next/link';
 import Menu from './menu';
@@ -8,7 +9,7 @@ const Header = () => {
     <header className="w-full border-b sticky top-0 z-50 bg-background">
       <div className="wrapper flex-between">
         <div className="flex-start">
-          <Link href={'/'} className="p-1 rounded-md bg-white">
+          <Link href={pages.home} className="p-1 rounded-md bg-white">
             <Image
               src="/images/logo.png"
               alt={`${APP_NAME} logo`}

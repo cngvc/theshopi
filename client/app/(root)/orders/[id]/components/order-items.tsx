@@ -28,7 +28,7 @@ const OrderItems = ({ items }: { items: ICartProduct[] }) => {
               <TableRow key={item.productPublicId}>
                 <TableCell>
                   <Link href={productUrl(item.slug!, item.productPublicId!)} className="flex items-center">
-                    <Image src="https://placehold.co/1000x1000/png" alt={item.name} width={50} height={50} />
+                    <Image src={item.thumb!} alt={item.name} width={50} height={50} className="object-cover aspect-square" />
                     <span className="px-2">{item.name}</span>
                   </Link>
                 </TableCell>
