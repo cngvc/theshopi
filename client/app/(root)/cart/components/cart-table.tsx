@@ -33,7 +33,7 @@ const CartTable = () => {
       <div>
         <h1 className="py-4 h2-bold">Shopping Cart</h1>
         <div>
-          Cart is empty. <Link href={pages.home}>Go Shopping</Link>
+          Cart is empty. <Link href={pages.home}>Go Shopping.</Link>
         </div>
       </div>
     );

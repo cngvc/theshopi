@@ -24,11 +24,11 @@ const SignupPage = async (props: { searchParams: Promise<{ callbackUrl: string }
           </Link>
           <CardTitle className="text-center">Sign Up</CardTitle>
           <CardDescription className="text-center">Create a new account</CardDescription>
-
-          <CardContent className="space-y-4">
-            <CredentialsSignupForm />
-          </CardContent>
         </CardHeader>
+
+        <CardContent>
+          <CredentialsSignupForm />
+        </CardContent>
       </Card>
     </div>
   );

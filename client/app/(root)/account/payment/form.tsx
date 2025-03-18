@@ -33,8 +33,8 @@ const PaymentMethodForm = ({ payment }: { payment?: IBuyerPayment }) => {
 
   return (
     <>
-      <div className="max-w-md mx-auto space-y-4 w-full">
-        <h1 className="h2-bold mt-4">Payment Method</h1>
+      <div className="max-w-md space-y-4 w-full">
+        <h2 className="text-md font-bold">Payment Method</h2>
         <p className="text-sm text-muted-foreground">Please select a payment method</p>
         <Form {...form}>
           <form method="post" className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>

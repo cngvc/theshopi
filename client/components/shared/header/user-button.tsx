@@ -49,12 +49,7 @@ const UserButton = async () => {
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0">
             <Button className="w-full px-2 justify-start" variant={'ghost'} asChild>
-              <Link href={pages.account_shipping_address}>Shipping</Link>
-            </Button>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="p-0">
-            <Button className="w-full px-2 justify-start" variant={'ghost'} asChild>
-              <Link href={pages.account_payment}>Payment</Link>
+              <Link href={pages.account_shipping_address}>Account Settings</Link>
             </Button>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

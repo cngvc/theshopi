@@ -37,8 +37,8 @@ const ShippingAddressForm = ({ address }: { address?: IShippingAddress }) => {
 
   return (
     <>
-      <div className="max-w-md mx-auto space-y-4 w-full">
-        <h1 className="h2-bold mt-4">Shipping Address</h1>
+      <div className="max-w-md space-y-4 w-full">
+        <h2 className="text-md font-bold">Shipping Address</h2>
         <p className="text-sm text-muted-foreground">Please enter and address to ship to</p>
 
         {error && <p className="text-destructive">{(error as Error).message}</p>}
