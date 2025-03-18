@@ -1,5 +1,6 @@
-import { authService } from '@auth/services/auth.service';
+import { authGrpcService } from '@auth/services/auth-grpc.service';
 import { IAuthPayload } from '@cngvc/shopi-shared';
+import { IConversationParticipant } from '@cngvc/shopi-types/build/src/chat.interface';
 import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 
 interface GetCurrentUserByTokenRequest {
@@ -8,6 +9,14 @@ interface GetCurrentUserByTokenRequest {
 
 interface GetCurrentUserByTokenResponse {
   payload?: IAuthPayload | null;
+}
+
+interface GetParticipantsByAuthIdsRequest {
+  authIds: string[];
+}
+
+interface GetParticipantsByAuthIdsResponse {
+  participants: IConversationParticipant[];
 }
 
 export class AuthServiceGrpcHandler {
@@ -20,8 +29,21 @@ export class AuthServiceGrpcHandler {
       if (!token) {
         callback(null, { payload: null });
       }
-      const payload = await authService.verifyUserByToken(token);
+      const payload = await authGrpcService.verifyUserByToken(token);
       callback(null, { payload });
+    } catch (error) {
+      callback({ code: status.INTERNAL, message: 'Internal Server Error' });
+    }
+  };
+
+  static findParticipantsByAuthIds = async (
+    call: ServerUnaryCall<GetParticipantsByAuthIdsRequest, GetParticipantsByAuthIdsResponse>,
+    callback: sendUnaryData<GetParticipantsByAuthIdsResponse>
+  ) => {
+    try {
+      const { authIds } = call.request;
+      const participants = await authGrpcService.findParticipantsByAuthIds(authIds);
+      callback(null, { participants });
     } catch (error) {
       callback({ code: status.INTERNAL, message: 'Internal Server Error' });
     }

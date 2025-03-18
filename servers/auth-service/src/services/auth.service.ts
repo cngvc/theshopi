@@ -3,8 +3,8 @@ import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
-import { ExchangeNames, IAuthDocument, IAuthPayload, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
-import { sign, verify } from 'jsonwebtoken';
+import { ExchangeNames, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
+import { sign } from 'jsonwebtoken';
 import { MoreThan, Repository } from 'typeorm';
 
 export class AuthService {
@@ -96,18 +96,6 @@ export class AuthService {
       config.AUTH_JWT_TOKEN_SECRET!,
       { expiresIn: '7d' }
     );
-  }
-
-  async verifyUserByToken(token: string): Promise<IAuthPayload | null> {
-    try {
-      if (!token) return null;
-      const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-      const user = await this.authRepository.exists({ where: { id: payload.id } });
-      if (!user) return null;
-      return payload;
-    } catch (error) {
-      return null;
-    }
   }
 }
 

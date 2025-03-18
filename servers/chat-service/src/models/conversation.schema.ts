@@ -5,7 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 const conversationSchema: Schema = new Schema(
   {
     conversationPublicId: { type: String, unique: true, index: true, default: uuidv4 },
-    participants: { type: [String], required: true },
+    participants: {
+      type: [
+        {
+          authId: { type: String, required: true },
+          username: { type: String, required: true }
+        }
+      ],
+      required: true
+    },
     lastMessage: {
       type: {
         messagePublicId: { type: String, default: null },

@@ -22,9 +22,8 @@ class ChatController {
   };
 
   getConversationByConversationPublicId = async (req: Request, res: Response): Promise<void> => {
-    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
     const { conversationPublicId } = req.params;
-    const conversation = await chatService.getConversationByConversationPublicId(conversationPublicId, currentUser.id);
+    const conversation = await chatService.getConversationByConversationPublicId(conversationPublicId);
     new OkRequestSuccess('Chat conversation.', {
       conversation
     }).send(res);

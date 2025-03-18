@@ -18,6 +18,7 @@ if (process.env.ENABLE_APM === '1' && !apm.isStarted()) {
 
 class Config {
   public API_GATEWAY_URL: string | undefined;
+  public AUTH_BASE_URL_GRPC: string | undefined;
   public AUTH_JWT_TOKEN_SECRET: string | undefined;
   public CLIENT_URL: string | undefined;
   public DATABASE_URL: string | undefined;
@@ -28,6 +29,7 @@ class Config {
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
+    this.AUTH_BASE_URL_GRPC = process.env.AUTH_BASE_URL_GRPC || '';
     this.AUTH_JWT_TOKEN_SECRET = process.env.AUTH_JWT_TOKEN_SECRET || '';
     this.CLIENT_URL = process.env.CLIENT_URL || '';
     this.DATABASE_URL = process.env.DATABASE_URL || '';

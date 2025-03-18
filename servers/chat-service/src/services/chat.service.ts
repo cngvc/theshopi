@@ -1,18 +1,10 @@
-import { elasticSearch } from '@chat/elasticsearch';
+import { grpcAuthClient } from '@chat/grpc/clients/auth-client.grpc';
 import { ConversationModel } from '@chat/models/conversation.schema';
 import { MessageModel } from '@chat/models/message.schema';
 import { socketServer } from '@chat/server';
 import { log } from '@chat/utils/logger.util';
-import {
-  ElasticsearchIndexes,
-  IBuyerDocument,
-  IConversationDocument,
-  IMessageDocument,
-  IStoreDocument,
-  SocketEvents
-} from '@cngvc/shopi-types';
-import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
-import { faker } from '@faker-js/faker';
+import { BadRequestError } from '@cngvc/shopi-shared';
+import { IBuyerDocument, IConversationDocument, IMessageDocument, IStoreDocument, SocketEvents } from '@cngvc/shopi-types';
 
 class ChatService {
   createConversation = async (senderAuthId: string, receiverAuthId: string): Promise<IConversationDocument> => {
@@ -22,8 +14,12 @@ class ChatService {
     }
     if (senderAuthId === receiverAuthId) {
     }
+    const { participants } = await grpcAuthClient.getParticipantsByAuthIds([senderAuthId, receiverAuthId]);
+    if (!participants.length) {
+      throw new BadRequestError('Participants not found', 'createConversation');
+    }
     const conversation = await ConversationModel.create({
-      participants: [senderAuthId, receiverAuthId]
+      participants
     });
     const defaultMessage = await MessageModel.create({
       conversationPublicId: conversation.conversationPublicId,
@@ -43,20 +39,16 @@ class ChatService {
   };
 
   createMessage = async (data: IMessageDocument) => {
-    const message = await MessageModel.create(data);
-    const _message = message.toJSON();
-    const map = await this.findElasticsearchAuthByMessage(_message);
-    _message['counterpartName'] = map.get(message.senderAuthId)?.username;
-    _message['counterpartId'] = message.senderAuthId;
-    socketServer.emit(SocketEvents.MESSAGE_RECEIVED, _message);
+    const message = (await MessageModel.create(data)).toJSON();
+    socketServer.emit(SocketEvents.MESSAGE_RECEIVED, message);
     await ConversationModel.updateOne(
       { conversationPublicId: data.conversationPublicId },
       {
         $set: {
           lastMessage: {
-            messagePublicId: _message.messagePublicId,
-            senderAuthId: _message.senderAuthId,
-            body: _message.body
+            messagePublicId: message.messagePublicId,
+            senderAuthId: message.senderAuthId,
+            body: message.body
           }
         },
         $currentDate: { updatedAt: true }
@@ -67,30 +59,23 @@ class ChatService {
   findUserConversation = async (senderPublicId: string, receiverPublicId: string) => {
     const conversations = await ConversationModel.aggregate([
       {
-        $match: { participants: { $all: [senderPublicId, receiverPublicId] } }
+        $match: {
+          $and: [{ 'participants.authId': senderPublicId }, { 'participants.authId': receiverPublicId }]
+        }
       },
-      {
-        $limit: 1
-      }
+      { $limit: 1 }
     ]);
-    return conversations[0];
+    return conversations[0] || null;
   };
 
   findConversationByConversationPublicId = async (conversationPublicId: string) => {
-    const conversation = await ConversationModel.findOne({ conversationPublicId: conversationPublicId }, { _id: 0 }).lean();
+    const conversation = await ConversationModel.findOne({ conversationPublicId: conversationPublicId }).lean();
     return conversation;
   };
 
-  getConversationByConversationPublicId = async (conversationPublicId: string, currentId: string) => {
+  getConversationByConversationPublicId = async (conversationPublicId: string) => {
     const conversation = await this.findConversationByConversationPublicId(conversationPublicId);
     if (!conversation) return null;
-    const map = await this.findElasticsearchAuthByConversations(conversation);
-    conversation.participants.forEach((participant) => {
-      if (participant !== currentId) {
-        conversation['counterpartName'] = map.get(participant)?.username;
-        conversation['counterpartId'] = participant;
-      }
-    });
     return conversation;
   };
 
@@ -105,13 +90,6 @@ class ChatService {
       { $limit: 20 }
     ]);
     if (messages.length) {
-      try {
-        const map = await this.findElasticsearchAuthByMessage(messages[0]);
-        messages.forEach((message) => {
-          message['counterpartName'] = map.get(message.senderAuthId)?.username;
-          message['counterpartId'] = message.senderAuthId;
-        });
-      } catch (error) {}
       return messages.reverse();
     }
     return [];
@@ -121,9 +99,7 @@ class ChatService {
     const conversations: IConversationDocument[] = await ConversationModel.aggregate([
       {
         $match: {
-          participants: {
-            $in: [authId]
-          },
+          participants: { $elemMatch: { authId } },
           lastMessage: { $ne: null }
         }
       },
@@ -133,18 +109,6 @@ class ChatService {
         }
       }
     ]);
-    try {
-      const map = await this.findElasticsearchAuthByConversations(conversations);
-      conversations.forEach((conversation) => {
-        conversation.participants.forEach((participant) => {
-          if (participant !== authId) {
-            conversation['counterpartName'] = map.get(participant)?.username;
-            conversation['counterpartId'] = participant;
-          }
-        });
-      });
-    } catch (error) {}
-
     return conversations;
   };
 
@@ -152,9 +116,7 @@ class ChatService {
     const latestConversation: IConversationDocument[] = await ConversationModel.aggregate([
       {
         $match: {
-          participants: {
-            $in: [authId]
-          },
+          participants: { $elemMatch: { authId } },
           lastMessage: { $ne: null }
         }
       },
@@ -182,14 +144,6 @@ class ChatService {
         }
         const savedConversation = await this.createConversation(`${sender.authId}`, `${receiver.ownerAuthId}`);
         const messages: IMessageDocument[] = [];
-        for (let i = 0; i < count * 5; i++) {
-          messages.push({
-            conversationPublicId: savedConversation.conversationPublicId!,
-            senderAuthId: savedConversation.participants[0],
-            receiverAuthId: savedConversation.participants[1],
-            body: faker.lorem.sentence()
-          });
-        }
         await MessageModel.insertMany(messages);
         const lastMessage = messages.at(-1);
         if (lastMessage) {
@@ -210,40 +164,6 @@ class ChatService {
       }
       log.info(`***Seeding chat:*** - ${i + 1} of ${count}`);
     }
-  };
-
-  private findElasticsearchAuthByConversations = async (conversations: IConversationDocument | IConversationDocument[]) => {
-    const uniqueUserIds = new Set<string>();
-    if (Array.isArray(conversations)) {
-      conversations.forEach((conversation) => {
-        conversation.participants.forEach((participant) => {
-          uniqueUserIds.add(participant);
-        });
-      });
-    } else {
-      conversations.participants.forEach((participant) => {
-        uniqueUserIds.add(participant);
-      });
-    }
-    let users: IBuyerDocument[] = [];
-    const queryList = [{ terms: { 'authId.keyword': [...new Set(uniqueUserIds)] } }];
-    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.auth, queryList);
-    for (const item of hits.hits) {
-      users.push(item._source as IBuyerDocument);
-    }
-    const map = new Map(users.map((u) => [u.authId, u]));
-    return map;
-  };
-
-  private findElasticsearchAuthByMessage = async (message: IMessageDocument) => {
-    let users: IBuyerDocument[] = [];
-    const queryList = [{ terms: { 'authId.keyword': [message.senderAuthId!, message.receiverAuthId!] } }];
-    const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.auth, queryList);
-    for (const item of hits.hits) {
-      users.push(item._source as IBuyerDocument);
-    }
-    const map = new Map(users.map((u) => [u.authId, u]));
-    return map;
   };
 }
 
