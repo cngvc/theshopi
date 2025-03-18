@@ -32,6 +32,7 @@ class OrderService {
       notes: payload.notes || ''
     });
 
+    // call payment service
     const createOrderMailObject: IEmailLocals = {
       username: buyer.username,
       receiverEmail: buyer.email,

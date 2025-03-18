@@ -3,16 +3,6 @@ import { elasticSearch } from '@user/elasticsearch';
 import { BuyerModel } from '@user/models/buyer.schema';
 
 class BuyerService {
-  getBuyerByUsername = async (authId: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }, { _id: 0 }).lean();
-    return buyer;
-  };
-
-  getBuyerByEmail = async (email: string): Promise<IBuyerDocument | null> => {
-    const buyer: IBuyerDocument | null = await BuyerModel.findOne({ email }, { _id: 0 }).lean();
-    return buyer;
-  };
-
   getBuyerByAuthId = async (authId: string): Promise<IBuyerDocument | null> => {
     const buyer: IBuyerDocument | null = await BuyerModel.findOne({ authId }, { _id: 0 }).lean();
     return buyer;

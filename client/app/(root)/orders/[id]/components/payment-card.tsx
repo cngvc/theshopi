@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDate } from '@/lib/utils';
-import { IPayment } from '@cngvc/shopi-types';
+import { IOrderPayment } from '@cngvc/shopi-types';
 import { MapPinHouse } from 'lucide-react';
 
 const PaymentCard = ({
@@ -9,7 +9,7 @@ const PaymentCard = ({
   isDelivered = false,
   deliveredAt = null
 }: {
-  payment?: IPayment;
+  payment?: IOrderPayment;
   isDelivered: boolean;
   deliveredAt: string | null;
 }) => {

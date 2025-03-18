@@ -14,7 +14,7 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
   const data = await getProductByIdentifier(productPublicId);
   if (!data) notFound();
 
-  const { product, store } = data;
+  const { product } = data;
   return (
     <>
       <section className="mb-10">
@@ -45,7 +45,7 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
           </div>
 
           <div className="flex flex-col space-y-5 col-span-full lg:col-span-1">
-            {store && <StoreCard store={store} />}
+            {<StoreCard storePublicId={product.storePublicId} />}
             <StockCard product={product} />
           </div>
         </div>

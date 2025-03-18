@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import pages from '@/lib/constants/pages';
-import { IPayment } from '@cngvc/shopi-types';
+import { IBuyerPayment } from '@cngvc/shopi-types';
 import { CreditCard, MapPinHouse } from 'lucide-react';
 import Link from 'next/link';
 
-const PaymentCard = ({ payment }: { payment?: IPayment }) => {
+const PaymentCard = ({ payment }: { payment?: IBuyerPayment }) => {
   return (
     <Card className="flex-1">
       <CardHeader className="space-y-2">

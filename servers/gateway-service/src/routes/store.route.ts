@@ -9,8 +9,6 @@ class StoreRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/store/:storePublicId', storeController.getStoreByStorePublicId);
-    this.router.get('/store/username/:username', storeController.getStoreByUsername);
     this.router.get('/store/random/:size', storeController.getRandomStores);
     this.router.post('/store', storeController.createStore);
     this.router.put('/store/:storePublicId', storeController.updateStore);

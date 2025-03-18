@@ -37,11 +37,6 @@ class StoreController {
     new OkRequestSuccess('Store profile.', { store }).send(res);
   };
 
-  getStoreByUsername = async (req: Request, res: Response): Promise<void> => {
-    const store: IStoreDocument | null = await storeService.getStoreByUsername(req.params.username);
-    new OkRequestSuccess('Store profile.', { store }).send(res);
-  };
-
   getRandomStores = async (req: Request, res: Response): Promise<void> => {
     const stores: IStoreDocument[] = await storeService.getRandomStores(parseInt(req.params.size, 10));
     new OkRequestSuccess('Random stores profile.', { stores }).send(res);

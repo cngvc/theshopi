@@ -8,10 +8,6 @@ class StoreController {
     const response: AxiosResponse = await storeService.getStoreByStorePublicId(req.params.storePublicId);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
-  getStoreByUsername = async (req: Request, res: Response) => {
-    const response: AxiosResponse = await storeService.getStoreByUsername(req.params.username);
-    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
-  };
   getRandomStores = async (req: Request, res: Response) => {
     const response: AxiosResponse = await storeService.getRandomStores(req.params.size);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);

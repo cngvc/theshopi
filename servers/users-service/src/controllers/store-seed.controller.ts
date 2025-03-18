@@ -12,7 +12,7 @@ class StoreSeedController {
     const buyers: IBuyerDocument[] = await buyerService.getRandomBuyers(parseInt(count, 10));
     for (let i = 0; i < buyers.length; i++) {
       const buyer: IBuyerDocument = buyers[i];
-      const checkIfStoreExist: IStoreDocument | null = await storeService.getStoreByEmail(`${buyer.email}`);
+      const checkIfStoreExist: IStoreDocument | null = await storeService.getStoreByOwnerAuthId(`${buyer.authId}`);
       if (!checkIfStoreExist) {
         const basicDescription: string = faker.commerce.productDescription();
         const store: IStoreDocument = {

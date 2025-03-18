@@ -3,24 +3,24 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useUpdateBuyerPayment } from '@/lib/hooks/use-update-payment.hook';
-import { IPayment, PaymentMethod, paymentScheme } from '@cngvc/shopi-types';
+import { IBuyerPayment, PaymentMethod, paymentScheme } from '@cngvc/shopi-types';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ArrowRight, Loader } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-const PaymentMethodForm = ({ payment }: { payment?: IPayment }) => {
+const PaymentMethodForm = ({ payment }: { payment?: IBuyerPayment }) => {
   const router = useRouter();
   const { mutate: updateBuyerPayment, isPending } = useUpdateBuyerPayment();
 
-  const form = useForm<IPayment>({
+  const form = useForm<IBuyerPayment>({
     resolver: joiResolver(paymentScheme),
     defaultValues: {
       method: payment?.method || PaymentMethod.cod
     }
   });
 
-  const onSubmit: SubmitHandler<IPayment> = async (values) => {
+  const onSubmit: SubmitHandler<IBuyerPayment> = async (values) => {
     updateBuyerPayment(values, {
       onSuccess: () => {
         router.back();

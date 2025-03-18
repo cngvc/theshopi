@@ -58,7 +58,13 @@ const CartTable = () => {
                 <TableRow key={item.productPublicId}>
                   <TableCell>
                     <Link href={productUrl(item.slug!, item.productPublicId!)} className="flex items-center">
-                      <Image src={item.thumb!} alt={item.name} width={50} height={50} className="object-cover aspect-square" />
+                      <Image
+                        src={item.thumb!}
+                        alt={item.name || 'product-image'}
+                        width={50}
+                        height={50}
+                        className="object-cover aspect-square"
+                      />
                       <span className="px-2">{item.name}</span>
                     </Link>
                   </TableCell>
@@ -77,7 +83,7 @@ const CartTable = () => {
             <CardContent className="gap-4">
               <div className="pb-3 text-xl flex-1">
                 Subtotal({items.reduce((a, c) => a + c.quantity, 0)}):{' '}
-                <span className="font-bold">{formatCurrency(items.reduce((a, c) => a + c.price * c.quantity, 0))}</span>
+                <span className="font-bold">{formatCurrency(items.reduce((a, c) => a + c.price! * c.quantity, 0))}</span>
               </div>
               <Button className="w-full" disabled={isPending} onClick={() => startTransition(() => router.push(pages.checkout))}>
                 {isPending ? <Loader className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />} Proceed to Checkout

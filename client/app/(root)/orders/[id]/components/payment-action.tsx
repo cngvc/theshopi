@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { IPayment } from '@cngvc/shopi-types';
+import { IOrderPayment } from '@cngvc/shopi-types';
 
 const MarkAsPaidButton = () => {
   return (
@@ -17,7 +17,7 @@ const MarkAsDeliveredButton = () => {
   );
 };
 
-const PaymentAction = ({ isPaid, isDelivered, payment }: { isPaid: boolean; isDelivered: boolean; payment: IPayment }) => {
+const PaymentAction = ({ isPaid, isDelivered, payment }: { isPaid: boolean; isDelivered: boolean; payment: IOrderPayment }) => {
   return (
     <div>
       {/* Cash On Delivery */}

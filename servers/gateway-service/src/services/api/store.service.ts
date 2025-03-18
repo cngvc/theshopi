@@ -13,11 +13,6 @@ class StoreService extends AxiosService {
     return response;
   }
 
-  async getStoreByUsername(username: string): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get(`/username/${username}`);
-    return response;
-  }
-
   async getRandomStores(size: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.get(`/random/${size}`);
     return response;

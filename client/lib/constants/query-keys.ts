@@ -5,5 +5,6 @@ export default {
   messages: 'messages',
   buyer: 'buyer',
   orders: 'orders',
-  order: 'order'
+  order: 'order',
+  store: 'store'
 };

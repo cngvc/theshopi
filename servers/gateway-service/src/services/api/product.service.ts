@@ -23,7 +23,6 @@ class ProductService extends AxiosService {
     const response: AxiosResponse = await this.get(`/stores/${storePublicId}`);
     return response;
   }
-
   async getProducts(): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.get(`/`);
     return response;

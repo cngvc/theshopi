@@ -2,28 +2,17 @@ import { ElasticsearchIndexes, IStoreDocument } from '@cngvc/shopi-types';
 import { elasticSearch } from '@user/elasticsearch';
 import { StoreModel } from '@user/models/store.schema';
 import { buyerService } from '@user/services/buyer.service';
-import mongoose from 'mongoose';
 
 class StoreService {
   getStoreByStorePublicId = async (storePublicId: string): Promise<IStoreDocument | null> => {
-    const store: IStoreDocument | null = (await StoreModel.findOne({
-      _id: new mongoose.Types.ObjectId(storePublicId)
-    }).lean()) as IStoreDocument;
+    const store: IStoreDocument | null = await StoreModel.findOne({
+      storePublicId: storePublicId
+    }).lean();
     return store;
   };
 
   getStoreByOwnerAuthId = async (ownerAuthId: string): Promise<IStoreDocument | null> => {
     const store: IStoreDocument | null = (await StoreModel.findOne({ ownerAuthId }).lean()) as IStoreDocument;
-    return store;
-  };
-
-  getStoreByUsername = async (username: string): Promise<IStoreDocument | null> => {
-    const store: IStoreDocument | null = (await StoreModel.findOne({ username }).lean()) as IStoreDocument;
-    return store;
-  };
-
-  getStoreByEmail = async (email: string): Promise<IStoreDocument | null> => {
-    const store: IStoreDocument | null = (await StoreModel.findOne({ email }).lean()) as IStoreDocument;
     return store;
   };
 

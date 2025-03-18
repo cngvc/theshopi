@@ -3,7 +3,6 @@ import { ElasticsearchIndexes, IProductDocument, IStoreDocument } from '@cngvc/s
 import { SearchResponse } from '@elastic/elasticsearch/lib/api/types';
 import { faker } from '@faker-js/faker';
 import { elasticSearch } from '@product/elasticsearch';
-import { grpcUserClient } from '@product/grpc/clients/user-client.grpc';
 import { ProductModel } from '@product/models/product.schema';
 import { productProducer } from '@product/queues/product.producer';
 import { productChannel } from '@product/server';
@@ -151,15 +150,6 @@ class ProductService {
       await elasticSearch.indexDocument(ElasticsearchIndexes.products, `${product.productPublicId}`, product);
     }
     return product;
-  };
-
-  private findCachedStoreByStorePublicId = async (storePublicId: string) => {
-    let store: IStoreDocument | null = await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
-    if (!store) {
-      store = await grpcUserClient.getStoreByStorePublicId(storePublicId);
-      if (!store) throw new NotFoundError('Store not found', 'findCachedStoreByStorePublicId');
-    }
-    return store;
   };
 }
 

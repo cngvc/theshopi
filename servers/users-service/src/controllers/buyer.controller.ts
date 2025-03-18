@@ -4,21 +4,10 @@ import { buyerService } from '@user/services/buyer.service';
 import { Request, Response } from 'express';
 
 class BuyerController {
-  getBuyerByEmail = async (req: Request, res: Response): Promise<void> => {
-    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
-    const buyer: IBuyerDocument | null = await buyerService.getBuyerByEmail(currentUser.email);
-    new OkRequestSuccess('Buyer profile.', { buyer }).send(res);
-  };
-
   getCurrentBuyer = async (req: Request, res: Response): Promise<void> => {
     const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
     const buyer: IBuyerDocument | null = await buyerService.getBuyerByAuthId(currentUser.id);
     new OkRequestSuccess('Current buyer profile.', { buyer }).send(res);
-  };
-
-  getBuyerByUsername = async (req: Request, res: Response): Promise<void> => {
-    const buyer: IBuyerDocument | null = await buyerService.getBuyerByUsername(req.params.username);
-    new OkRequestSuccess('Buyer profile.', { buyer }).send(res);
   };
 
   updateBuyerAddress = async (req: Request, res: Response): Promise<void> => {

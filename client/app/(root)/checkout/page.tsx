@@ -14,7 +14,7 @@ const Page = () => {
   const { data: items = [], isLoading: isFetchingCart } = useCart();
 
   const prices = useMemo(() => {
-    const itemsPrice = items.reduce((a, c) => a + c.price * c.quantity, 0);
+    const itemsPrice = items.reduce((a, c) => a + c.price! * c.quantity, 0);
     const taxPrice = 0;
     const shippingPrice = 0;
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
