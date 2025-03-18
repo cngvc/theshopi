@@ -3,10 +3,8 @@
 import { auth } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import pages from '@/lib/constants/pages';
-import { IOrderDocument, IOrderItem, IProductDocument } from '@cngvc/shopi-types';
+import { IOrderDocument } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
-
-export type IOrderProduct = IProductDocument & IOrderItem;
 
 export async function getOrderByOrderPublicId(id: string) {
   const session = await auth();

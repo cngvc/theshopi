@@ -14,8 +14,6 @@ interface GetBuyerByAuthIdRequest {
   authId: string;
 }
 
-interface GetBuyerByAuthIdResponse extends IBuyerDocument {}
-
 export class UserServiceGrpcHandler {
   static findStoreByStorePublicId = async (
     call: ServerUnaryCall<GetStoreByStorePublicIdRequest, GetStoreByStorePublicIdResponse>,
@@ -34,8 +32,8 @@ export class UserServiceGrpcHandler {
   };
 
   static findBuyerByAuthId = async (
-    call: ServerUnaryCall<GetBuyerByAuthIdRequest, GetBuyerByAuthIdResponse>,
-    callback: sendUnaryData<GetBuyerByAuthIdResponse>
+    call: ServerUnaryCall<GetBuyerByAuthIdRequest, IBuyerDocument>,
+    callback: sendUnaryData<IBuyerDocument>
   ) => {
     try {
       const buyer = await BuyerModel.findOne({ authId: call.request.authId }, { _id: 0 }).lean();

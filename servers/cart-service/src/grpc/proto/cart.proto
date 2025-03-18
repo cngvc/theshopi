@@ -17,4 +17,8 @@ message GetCartByAuthIdResponse {
 message CartItem {
   string productPublicId = 1;
   int32 quantity = 2;
+  string slug = 3;
+  float price = 4;
+  string name = 5;
+  string thumb = 6;
 }

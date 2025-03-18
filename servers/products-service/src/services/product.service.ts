@@ -39,12 +39,10 @@ class ProductService {
     await elasticSearch.deleteDocument(ElasticsearchIndexes.products, productPublicId);
   };
 
-  getProductByProductPublicId = async (
-    productPublicId: string
-  ): Promise<{ product: IProductDocument | null; store: IStoreDocument | null }> => {
+  getProductByProductPublicId = async (productPublicId: string): Promise<IProductDocument | null> => {
+    console.log('productPublicId', productPublicId);
     const product = await this.findCachedProductByProductPublicId(productPublicId);
-    const store = await this.findCachedStoreByStorePublicId(product.storePublicId);
-    return { product, store };
+    return product;
   };
 
   getProductsByProductPublicIds = async (productPublicIds: string[], useCaching = false): Promise<IProductDocument[]> => {
@@ -156,8 +154,7 @@ class ProductService {
   };
 
   private findCachedStoreByStorePublicId = async (storePublicId: string) => {
-    let store: IStoreDocument | null = null;
-    // await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
+    let store: IStoreDocument | null = await elasticSearch.getDocument(ElasticsearchIndexes.stores, storePublicId);
     if (!store) {
       store = await grpcUserClient.getStoreByStorePublicId(storePublicId);
       if (!store) throw new NotFoundError('Store not found', 'findCachedStoreByStorePublicId');

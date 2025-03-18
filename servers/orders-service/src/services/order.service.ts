@@ -1,9 +1,8 @@
 import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument, IOrderItem, IProductDocument } from '@cngvc/shopi-types';
+import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument } from '@cngvc/shopi-types';
 import { config } from '@order/config';
 import { elasticSearch } from '@order/elasticsearch';
 import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
-import { grpcProductClient } from '@order/grpc/clients/product-client.grpc';
 import { grpcUserClient } from '@order/grpc/clients/user-client.grpc';
 import { OrderModel } from '@order/models/order.schema';
 import { orderProducer } from '@order/queues/order.producer';
@@ -18,32 +17,16 @@ class OrderService {
     if (!buyer?.payment) {
       throw new NotFoundError('Payment method is missing', 'createOrder');
     }
-
     const itemsInCart = await this.findCachedCartByAuthId(authId);
-    const productPublicIds = itemsInCart.map(({ productPublicId }) => productPublicId);
-    const products = await this.findProductsByProductPublicIds(productPublicIds);
 
-    const productMap = new Map(products.map((p) => [p.productPublicId, p]));
-    const orderItems = itemsInCart.map((item) => {
-      const product = productMap.get(item.productPublicId);
-      if (!product) {
-        throw new NotFoundError(`Product ${item.productPublicId} not found`, 'createOrder');
-      }
-      return {
-        productPublicId: item.productPublicId,
-        quantity: item.quantity,
-        price: product.price
-      };
-    });
     const order = await OrderModel.create({
       buyerPublicId: buyer.buyerPublicId,
       buyerAuthId: authId,
-      items: orderItems,
+      items: itemsInCart,
       shippingFee: 0,
       shipping: buyer.shippingAddress,
       payment: {
-        method: buyer.payment.method,
-        transactionId: ''
+        method: buyer.payment!.method
       },
       isPaid: false,
       notes: payload.notes || ''
@@ -82,17 +65,6 @@ class OrderService {
     }).lean();
     if (!order) return null;
 
-    const productPublicIds = order?.items?.map((e) => e.productPublicId);
-    if (productPublicIds?.length) {
-      const { products } = await grpcProductClient.getProductsByProductPublicIds(productPublicIds);
-      order.items = order.items.map((item) => {
-        const product = products.find((p) => p.productPublicId === item.productPublicId);
-        return {
-          ...product,
-          ...item
-        } as IOrderItem & IProductDocument;
-      });
-    }
     return order;
   };
 
@@ -115,14 +87,6 @@ class OrderService {
     const { items } = await grpcCartClient.getCartByAuthId(authId);
     if (!items?.length) throw new NotFoundError('Cart not found', 'findCachedCartByAuthId');
     return items;
-  };
-
-  private findProductsByProductPublicIds = async (productPublicIds: string[]) => {
-    const { products } = await grpcProductClient.getProductsByProductPublicIds(productPublicIds);
-    if (!products?.length) {
-      throw new NotFoundError('Products not found', 'findProductsByProductPublicIds');
-    }
-    return products;
   };
 }
 

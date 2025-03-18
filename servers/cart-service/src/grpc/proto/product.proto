@@ -4,6 +4,12 @@ package product;
 
 service ProductService {
   rpc GetProductsByProductPublicIds (GetProductsByProductPublicIdsRequest) returns (GetProductsByProductPublicIdsResponse);
+
+  rpc GetProductByProductPublicId (GetProductByProductPublicIdRequest) returns (Product);
+}
+
+message GetProductByProductPublicIdRequest {
+  string productPublicId = 1;
 }
 
 message GetProductsByProductPublicIdsRequest {

@@ -15,6 +15,10 @@ interface IClient extends grpc.Client {
     request: { productPublicIds: string[]; useCaching: boolean },
     callback: (error: grpc.ServiceError | null, response: GetProductsByProductPublicIdsResponse) => void
   ) => void;
+  GetProductByProductPublicId: (
+    request: { productPublicId: string },
+    callback: (error: grpc.ServiceError | null, response: IProductDocument) => void
+  ) => void;
 }
 
 class GrpcClient {
@@ -36,7 +40,7 @@ class GrpcClient {
   getProductsByProductPublicIds = async (productPublicIds: string[], useCaching = true): Promise<GetProductsByProductPublicIdsResponse> => {
     try {
       return await new Promise((resolve, reject) => {
-        this.client.GetProductsByProductPublicIds({ productPublicIds, useCaching: true }, (err, response) => {
+        this.client.GetProductsByProductPublicIds({ productPublicIds, useCaching }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);
         });
@@ -45,6 +49,20 @@ class GrpcClient {
       captureError(error, 'getProductsByProductPublicIds');
     }
     return { products: [] };
+  };
+
+  getProductByProductPublicId = async (productPublicId: string): Promise<IProductDocument | null> => {
+    try {
+      return await new Promise((resolve, reject) => {
+        this.client.GetProductByProductPublicId({ productPublicId }, (err, response) => {
+          if (err) return reject(err);
+          return resolve(response);
+        });
+      });
+    } catch (error) {
+      captureError(error, 'getProductByProductPublicId');
+    }
+    return null;
   };
 }
 export const grpcProductClient = new GrpcClient(path.join(PROTO_PATH), 'product', 'ProductService');

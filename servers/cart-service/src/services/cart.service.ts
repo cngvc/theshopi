@@ -1,25 +1,17 @@
 import { grpcProductClient } from '@cart/grpc/clients/product-client.grpc';
 import { cartCache } from '@cart/redis/cart-cache';
-import { ICartItem, IProductDocument } from '@cngvc/shopi-types';
+import { NotFoundError } from '@cngvc/shopi-shared';
+import { ICartItem } from '@cngvc/shopi-types';
 
 class CartService {
   private generateCartKey(authId: string): string {
     return `cart:user:${authId}`;
   }
 
-  async getCart(authId: string): Promise<(ICartItem & IProductDocument)[]> {
+  async getCart(authId: string): Promise<ICartItem[]> {
     const key = this.generateCartKey(authId);
     const items = await cartCache.getCart(key);
-    const productPublicIds = items.map((e) => e.productPublicId);
-    if (!productPublicIds.length) return [];
-    const { products } = await grpcProductClient.getProductsByProductPublicIds(productPublicIds);
-    return items.map((item) => {
-      const product = products.find((p) => p.productPublicId === item.productPublicId);
-      return {
-        ...product,
-        ...item
-      } as ICartItem & IProductDocument;
-    });
+    return items;
   }
 
   async deleteCart(authId: string): Promise<void> {
@@ -29,8 +21,20 @@ class CartService {
   }
 
   async addToCart(authId: string, item: ICartItem) {
+    const product = await grpcProductClient.getProductByProductPublicId(item.productPublicId);
+    if (!product) {
+      throw new NotFoundError('Product not found.', 'addToCart');
+    }
+    const cartItem: ICartItem = {
+      productPublicId: item.productPublicId,
+      quantity: item.quantity,
+      slug: product.slug,
+      price: product.price,
+      name: product.name,
+      thumb: product.thumb
+    };
     const key = this.generateCartKey(authId);
-    const cart = await cartCache.saveCart(key, item.productPublicId, item.quantity);
+    const cart = await cartCache.saveCart(key, cartItem, cartItem.quantity);
     return cart;
   }
 

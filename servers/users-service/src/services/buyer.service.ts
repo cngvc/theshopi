@@ -1,4 +1,4 @@
-import { ElasticsearchIndexes, IBuyerDocument, IPayment, IShippingAddress } from '@cngvc/shopi-types';
+import { ElasticsearchIndexes, IBuyerDocument, IBuyerPayment, IShippingAddress } from '@cngvc/shopi-types';
 import { elasticSearch } from '@user/elasticsearch';
 import { BuyerModel } from '@user/models/buyer.schema';
 
@@ -69,7 +69,7 @@ class BuyerService {
     ).exec();
   };
 
-  updateBuyerPaymentMethod = async (authId: string, payment: IPayment): Promise<void> => {
+  updateBuyerPaymentMethod = async (authId: string, payment: IBuyerPayment): Promise<void> => {
     await BuyerModel.updateOne(
       { authId: authId },
       {

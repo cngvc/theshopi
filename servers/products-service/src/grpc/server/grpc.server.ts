@@ -23,7 +23,8 @@ class GrpcServer {
     this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
     this.serviceDefinition = this.proto[service].service;
     this.addService({
-      GetProductsByProductPublicIds: ProductServiceGrpcHandler.findProductsByProductPublicIds
+      GetProductsByProductPublicIds: ProductServiceGrpcHandler.findProductsByProductPublicIds,
+      GetProductByProductPublicId: ProductServiceGrpcHandler.findProductByProductPublicId
     });
   }
 

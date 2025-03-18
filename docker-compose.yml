@@ -17,8 +17,6 @@ services:
     restart: unless-stopped
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_DATABASE=theshopi_users
     volumes:
       - mongodb-data:/data/db
   mysql:

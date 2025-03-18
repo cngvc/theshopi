@@ -1,9 +1,9 @@
 'use client';
 
 import Loading from '@/components/shared/loading';
-import { IOrderProduct } from '@/lib/actions/order.action';
 import { useParamId } from '@/lib/hooks/use-id.hook';
 import { useOrder } from '@/lib/hooks/use-order.hook';
+import { ICartItem } from '@cngvc/shopi-types';
 import { notFound } from 'next/navigation';
 import { useMemo } from 'react';
 import Bill from './components/bill';
@@ -18,7 +18,7 @@ const Page = () => {
   const { data: order, isLoading: isFetchingOrder } = useOrder(id);
 
   const prices = useMemo(() => {
-    const itemsPrice = order?.items?.reduce((a, c) => a + c.price * c.quantity, 0) || 0;
+    const itemsPrice = order?.items?.reduce((a, c) => a + c.price! * c.quantity, 0) || 0;
     const taxPrice = 0;
     const shippingPrice = 0;
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
@@ -45,7 +45,7 @@ const Page = () => {
         <PaymentCard payment={order?.payment} isDelivered={!!order.isDelivered} deliveredAt={order.deliveredAt as string | null} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <OrderItems items={order!.items as IOrderProduct[]} />
+        <OrderItems items={order!.items as ICartItem[]} />
         <div className="col-span-1">
           <Bill
             itemsPrice={prices.itemsPrice}

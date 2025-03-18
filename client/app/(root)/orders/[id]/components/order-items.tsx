@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ICartProduct } from '@/lib/actions/cart.action';
 import { productUrl } from '@/lib/utils';
+import { ICartItem } from '@cngvc/shopi-types';
 import { ListCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const OrderItems = ({ items }: { items: ICartProduct[] }) => {
+const OrderItems = ({ items }: { items: ICartItem[] }) => {
   return (
     <Card className="md:col-span-3">
       <CardContent className=" gap-4">
@@ -28,7 +28,7 @@ const OrderItems = ({ items }: { items: ICartProduct[] }) => {
               <TableRow key={item.productPublicId}>
                 <TableCell>
                   <Link href={productUrl(item.slug!, item.productPublicId!)} className="flex items-center">
-                    <Image src={item.thumb!} alt={item.name} width={50} height={50} className="object-cover aspect-square" />
+                    <Image src={item.thumb!} alt={item.name!} width={50} height={50} className="object-cover aspect-square" />
                     <span className="px-2">{item.name}</span>
                   </Link>
                 </TableCell>

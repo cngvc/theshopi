@@ -34,19 +34,18 @@ class CartCache {
     return this.modifyCart(key, productPublicId, (items, index) => {
       if (index !== -1) {
         items[index].quantity = Math.max(amount, 1);
-      } else {
-        items.push({ productPublicId, quantity: Math.max(amount, 1) });
+        return items;
       }
       return items;
     });
   }
 
-  async saveCart(key: string, productPublicId: string, amount: number = 1): Promise<ICartItem[]> {
-    return this.modifyCart(key, productPublicId, (items, index) => {
+  async saveCart(key: string, cartItem: ICartItem, amount = 1): Promise<ICartItem[]> {
+    return this.modifyCart(key, cartItem.productPublicId!, (items, index) => {
       if (index !== -1) {
-        items[index].quantity += Math.max(amount, 1);
+        items[index].quantity += Math.max(amount || 1, 1);
       } else {
-        items.push({ productPublicId, quantity: Math.max(amount, 1) });
+        items.push({ ...cartItem, quantity: Math.max(amount, 1) });
       }
       return items;
     });

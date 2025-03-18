@@ -3,17 +3,15 @@
 import { auth } from '@/auth';
 import axiosInstance from '@/lib/axios';
 import pages from '@/lib/constants/pages';
-import { ICartItem, IProductDocument } from '@cngvc/shopi-types';
+import { ICartItem } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
-
-export type ICartProduct = IProductDocument & ICartItem;
 
 export async function getCart() {
   const session = await auth();
   if (!session) redirect(pages.signin);
   try {
     const { data } = await axiosInstance.get('/cart/');
-    const cart: ICartProduct[] = data.metadata?.cart || [];
+    const cart: ICartItem[] = data.metadata?.cart || [];
     return cart;
   } catch (error) {
     return [];
