@@ -7,5 +7,6 @@ export default {
   products: '/products',
   account_shipping_address: '/account/shipping-address',
   account_payment: '/account/payment',
-  checkout: '/checkout'
+  checkout: '/checkout',
+  orders: '/orders'
 };

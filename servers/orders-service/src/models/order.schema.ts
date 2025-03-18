@@ -38,7 +38,10 @@ const orderSchema: Schema = new Schema(
       default: 'pending',
       index: true
     },
+    isPaid: { type: Boolean, default: false },
     paidAt: { type: Date, default: null },
+    isDelivered: { type: Boolean, default: false },
+    deliveredAt: { type: Date, default: null },
     notes: { type: String }
   },
   {

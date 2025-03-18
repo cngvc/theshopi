@@ -1,5 +1,5 @@
 import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
-import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument } from '@cngvc/shopi-types';
+import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument, IOrderItem, IProductDocument } from '@cngvc/shopi-types';
 import { config } from '@order/config';
 import { elasticSearch } from '@order/elasticsearch';
 import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
@@ -42,9 +42,10 @@ class OrderService {
       shippingFee: 0,
       shipping: buyer.shippingAddress,
       payment: {
-        method: payload.payment.method,
-        transactionId: payload.payment.transactionId
+        method: buyer.payment.method,
+        transactionId: ''
       },
+      isPaid: false,
       notes: payload.notes || ''
     });
 
@@ -72,6 +73,34 @@ class OrderService {
       JSON.stringify({ authId })
     );
     return order;
+  };
+
+  getOrderByOrderPublicId = async (orderPublicId: string | null): Promise<IOrderDocument | null> => {
+    if (!orderPublicId) return null;
+    const order = await OrderModel.findOne({
+      orderPublicId
+    }).lean();
+    if (!order) return null;
+
+    const productPublicIds = order?.items?.map((e) => e.productPublicId);
+    if (productPublicIds?.length) {
+      const { products } = await grpcProductClient.getProductsByProductPublicIds(productPublicIds);
+      order.items = order.items.map((item) => {
+        const product = products.find((p) => p.productPublicId === item.productPublicId);
+        return {
+          ...product,
+          ...item
+        } as IOrderItem & IProductDocument;
+      });
+    }
+    return order;
+  };
+
+  getCurrentUserOrders = async (authId: string): Promise<IOrderDocument[]> => {
+    const orders = await OrderModel.find({
+      buyerAuthId: authId
+    }).lean();
+    return orders;
   };
 
   private findCachedBuyerByAuthId = async (authId: string): Promise<IBuyerDocument> => {

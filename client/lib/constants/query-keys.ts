@@ -1,7 +1,9 @@
 export default {
   conversations: 'conversations',
-  cart: 'cart',
   conversation: 'conversation',
+  cart: 'cart',
   messages: 'messages',
-  buyer: 'buyer'
+  buyer: 'buyer',
+  orders: 'orders',
+  order: 'order'
 };

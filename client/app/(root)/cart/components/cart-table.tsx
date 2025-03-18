@@ -1,5 +1,6 @@
 'use client';
 
+import CartSkeleton from '@/components/shared/cart-skeleton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -11,7 +12,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
-import CartSkeleton from './cart-skeleton';
 import ItemQuantity from './item-quantity';
 
 const CartTable = () => {

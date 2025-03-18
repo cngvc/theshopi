@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Checkout'
+  title: 'Order'
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

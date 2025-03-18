@@ -8,6 +8,8 @@ class OrderRoutes {
   }
 
   public routes(): Router {
+    this.router.get('/', orderController.getCurrentUserOrder);
+    this.router.get('/:orderPublicId', orderController.getOrderByOrderPublicId);
     this.router.post('/', orderController.createOrder);
     return this.router;
   }

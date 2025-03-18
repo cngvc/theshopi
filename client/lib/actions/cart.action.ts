@@ -6,7 +6,7 @@ import pages from '@/lib/constants/pages';
 import { ICartItem, IProductDocument } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
 
-type ICartProduct = IProductDocument & ICartItem;
+export type ICartProduct = IProductDocument & ICartItem;
 
 export async function getCart() {
   const session = await auth();

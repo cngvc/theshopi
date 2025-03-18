@@ -7,6 +7,14 @@ class OrderController {
     const response = await orderService.createOrder(req.body);
     new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
+  getCurrentUserOrders = async (req: Request, res: Response) => {
+    const response = await orderService.getCurrentUserOrders();
+    new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
+  };
+  getOrderByOrderPublicId = async (req: Request, res: Response) => {
+    const response = await orderService.getOrderByOrderPublicId(req.params.orderPublicId);
+    new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
+  };
 }
 
 export const orderController = new OrderController();

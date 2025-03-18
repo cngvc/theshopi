@@ -11,6 +11,14 @@ class OrderService extends AxiosService {
     const response: AxiosResponse = await this.post('/', payload);
     return response;
   };
+  getCurrentUserOrders = async () => {
+    const response: AxiosResponse = await this.get('/');
+    return response;
+  };
+  getOrderByOrderPublicId = async (orderPublicId: string) => {
+    const response: AxiosResponse = await this.get(`${orderPublicId}`);
+    return response;
+  };
 }
 
 export const orderService = new OrderService();

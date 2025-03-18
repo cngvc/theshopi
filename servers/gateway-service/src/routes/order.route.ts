@@ -9,6 +9,8 @@ class OrderRoutes {
   }
 
   public routes(): Router {
+    this.router.get('/orders/', orderController.getCurrentUserOrders);
+    this.router.get('/orders/:orderPublicId', orderController.getOrderByOrderPublicId);
     this.router.post('/orders/', orderController.createOrder);
     return this.router;
   }

@@ -8,18 +8,17 @@ const Header = () => {
     <header className="w-full border-b sticky top-0 z-50 bg-background">
       <div className="wrapper flex-between">
         <div className="flex-start">
-          <Link href={'/'}>
+          <Link href={'/'} className="p-1 rounded-md bg-white">
             <Image
               src="/images/logo.png"
               alt={`${APP_NAME} logo`}
               height={26}
               width={130}
               priority={true}
-              className="dark:hidden block flex-shrink-0 object-contain"
+              className="block flex-shrink-0 object-contain"
             />
           </Link>
         </div>
-
         <Menu />
       </div>
     </header>

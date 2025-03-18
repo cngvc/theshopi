@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 const ShippingCard = ({ shippingAddress }: { shippingAddress?: IShippingAddress }) => {
   return (
-    <Card>
+    <Card className="flex-1">
       <CardHeader className="space-y-2">
         <CardTitle className="gap-2 flex items-center">
           <MapPinHouse className="w-6 h-6" /> <span>Delivery Address</span>

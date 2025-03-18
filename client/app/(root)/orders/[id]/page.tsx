@@ -1,20 +1,24 @@
 'use client';
 
 import Loading from '@/components/shared/loading';
-import { useCurrentBuyer } from '@/lib/hooks/use-buyer.hook';
-import { useCart } from '@/lib/hooks/use-cart.hook';
+import { IOrderProduct } from '@/lib/actions/order.action';
+import { useParamId } from '@/lib/hooks/use-id.hook';
+import { useOrder } from '@/lib/hooks/use-order.hook';
+import { notFound } from 'next/navigation';
 import { useMemo } from 'react';
 import Bill from './components/bill';
 import OrderItems from './components/order-items';
+import PaymentAction from './components/payment-action';
 import PaymentCard from './components/payment-card';
 import ShippingCard from './components/shipping-card';
 
 const Page = () => {
-  const { data: buyer, isLoading: isFetchingCurrentBuyer } = useCurrentBuyer();
-  const { data: items = [], isLoading: isFetchingCart } = useCart();
+  const id = useParamId();
+  if (!id) notFound();
+  const { data: order, isLoading: isFetchingOrder } = useOrder(id);
 
   const prices = useMemo(() => {
-    const itemsPrice = items.reduce((a, c) => a + c.price * c.quantity, 0);
+    const itemsPrice = order?.items?.reduce((a, c) => a + c.price * c.quantity, 0) || 0;
     const taxPrice = 0;
     const shippingPrice = 0;
     const totalPrice = itemsPrice + taxPrice + shippingPrice;
@@ -24,30 +28,34 @@ const Page = () => {
       shippingPrice,
       totalPrice
     };
-  }, [items]);
+  }, [order]);
 
-  if (isFetchingCurrentBuyer || isFetchingCart) {
+  if (isFetchingOrder) {
     return <Loading />;
+  }
+
+  if (!order) {
+    return notFound();
   }
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ShippingCard shippingAddress={buyer?.shippingAddress} />
-        <PaymentCard payment={buyer?.payment} />
+        <ShippingCard shippingAddress={order.shipping} isPaid={!!order.isPaid} paidAt={order.paidAt as string | null} />
+        <PaymentCard payment={order?.payment} isDelivered={!!order.isDelivered} deliveredAt={order.deliveredAt as string | null} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <OrderItems items={items} />
+        <OrderItems items={order!.items as IOrderProduct[]} />
         <div className="col-span-1">
           <Bill
-            disabled={!items.length}
             itemsPrice={prices.itemsPrice}
             taxPrice={prices.taxPrice}
             shippingPrice={prices.shippingPrice}
             totalPrice={prices.totalPrice}
-          />
+          >
+            <PaymentAction isPaid={!!order.isPaid} isDelivered={!!order.isDelivered} payment={order.payment} />
+          </Bill>
         </div>
-
         <div />
       </div>
     </div>
