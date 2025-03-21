@@ -42,7 +42,6 @@ class GrpcClient {
 
   createPayment = async (payload: CreatePaymentRequest): Promise<CreatePaymentResponse | null> => {
     try {
-      console.log(config.PAYMENT_BASE_URL_GRPC);
       return await new Promise((resolve, reject) => {
         this.client.CreatePayment(payload, (err, response) => {
           if (err) return reject(err);

@@ -39,7 +39,6 @@ class ProductService {
   };
 
   getProductByProductPublicId = async (productPublicId: string): Promise<IProductDocument | null> => {
-    console.log('productPublicId', productPublicId);
     const product = await this.findCachedProductByProductPublicId(productPublicId);
     return product;
   };

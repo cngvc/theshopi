@@ -20,7 +20,6 @@ export class PaymentServiceGrpcHandler {
     callback: sendUnaryData<CreatePaymentResponse>
   ) => {
     try {
-      console.log(1312312);
       const { orderPublicId, method, totalAmount, currency } = call.request;
       const payment = await paymentService.createPaymentService({ orderPublicId, method: method as PaymentMethod, totalAmount, currency });
       return callback(null, {

@@ -21,7 +21,6 @@ class KeyTokenService {
   };
 
   deleteKeyToken = async (params: Partial<IKeyTokenDocument>) => {
-    console.log(params);
     await this.keyTokenRepository.delete(params);
   };
 

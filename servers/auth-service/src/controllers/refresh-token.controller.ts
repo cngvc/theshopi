@@ -17,7 +17,6 @@ class RefreshTokenController {
     res: Response
   ) {
     const { refreshToken, deviceInfo = DEFAULT_DEVICE } = req.body;
-    console.log(deviceInfo);
     const existingToken = await keyTokenService.findKeyToken({ refreshToken });
     if (!existingToken) throw new BadRequestError('Invalid refresh token', 'refreshAccessToken');
 
