@@ -3,7 +3,7 @@ import * as protoLoader from '@grpc/proto-loader';
 import { SERVICE_NAME } from '@payment/constants';
 import { log } from '@payment/utils/logger.util';
 import path from 'path';
-import { CartServiceGrpcHandler } from './payment.grpc-server.handler';
+import { PaymentServiceGrpcHandler } from './payment.grpc-server.handler';
 const PROTO_PATH = path.join(__dirname, '../proto/payment.proto');
 
 class GrpcServer {
@@ -23,7 +23,7 @@ class GrpcServer {
     this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
     this.serviceDefinition = this.proto[service].service;
     this.addService({
-      GetCartItemsByAuthId: CartServiceGrpcHandler.findCachedCartItemsByAuthId
+      CreatePayment: PaymentServiceGrpcHandler.createPayment
     });
   }
 
@@ -54,8 +54,8 @@ class GrpcServer {
 
 process.on('SIGINT', () => {
   log.info(`🛑 Shutting down ${SERVICE_NAME}...`);
-  grpcCartServer.tryShutdown();
+  grpcPaymentServer.tryShutdown();
   process.exit(1);
 });
 
-export const grpcCartServer = new GrpcServer(PROTO_PATH, 'cart', 'CartService');
+export const grpcPaymentServer = new GrpcServer(PROTO_PATH, 'payment', 'PaymentService');

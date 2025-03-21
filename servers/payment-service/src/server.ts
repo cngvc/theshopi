@@ -13,7 +13,7 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { grpcCartServer } from './grpc/server/grpc.server';
+import { grpcPaymentServer } from './grpc/server/grpc.server';
 import { paymentConsumes } from './queues/payment.consumer';
 
 export class UserServer {
@@ -64,7 +64,7 @@ export class UserServer {
   }
 
   private startRPCServer() {
-    grpcCartServer.start(Number(`${SERVER_PORT}0`));
+    grpcPaymentServer.start(Number(`${SERVER_PORT}0`));
   }
 
   private errorHandler(): void {

@@ -1,21 +1,32 @@
-import { ICartItem } from '@cngvc/shopi-types';
+import { PaymentMethod } from '@cngvc/shopi-types';
 import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
+import { paymentService } from '@payment/services/payment.service';
 
-interface GetCartByAuthIdRequest {
-  authId: string;
+interface CreatePaymentRequest {
+  orderPublicId: string;
+  method: string;
+  totalAmount: number;
+  currency: string;
 }
 
-interface GetCartByAuthIdResponse {
-  items: ICartItem[];
+interface CreatePaymentResponse {
+  paymentPublicId: string;
+  status: string;
 }
 
-export class CartServiceGrpcHandler {
-  static findCachedCartItemsByAuthId = async (
-    call: ServerUnaryCall<GetCartByAuthIdRequest, GetCartByAuthIdResponse>,
-    callback: sendUnaryData<GetCartByAuthIdResponse>
+export class PaymentServiceGrpcHandler {
+  static createPayment = async (
+    call: ServerUnaryCall<CreatePaymentRequest, CreatePaymentResponse>,
+    callback: sendUnaryData<CreatePaymentResponse>
   ) => {
     try {
-      return callback({ code: status.NOT_FOUND, message: 'Cart items not found' });
+      console.log(1312312);
+      const { orderPublicId, method, totalAmount, currency } = call.request;
+      const payment = await paymentService.createPaymentService({ orderPublicId, method: method as PaymentMethod, totalAmount, currency });
+      return callback(null, {
+        paymentPublicId: payment.paymentPublicId!,
+        status: payment.status!
+      });
     } catch (error) {
       callback({ code: status.INTERNAL, message: 'Internal Server Error' });
     }

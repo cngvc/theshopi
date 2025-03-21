@@ -28,6 +28,7 @@ class Config {
   public USERS_BASE_URL_GRPC: string | undefined;
   public CART_BASE_URL_GRPC: string | undefined;
   public PRODUCT_BASE_URL_GRPC: string | undefined;
+  public PAYMENT_BASE_URL_GRPC: string | undefined;
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
@@ -41,6 +42,7 @@ class Config {
     this.USERS_BASE_URL_GRPC = process.env.USERS_BASE_URL_GRPC || '';
     this.CART_BASE_URL_GRPC = process.env.CART_BASE_URL_GRPC || '';
     this.PRODUCT_BASE_URL_GRPC = process.env.PRODUCT_BASE_URL_GRPC || '';
+    this.PAYMENT_BASE_URL_GRPC = process.env.PAYMENT_BASE_URL_GRPC || '';
   }
 }
 

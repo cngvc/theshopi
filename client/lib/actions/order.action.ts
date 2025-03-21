@@ -32,11 +32,7 @@ export async function getOrders() {
 export async function createOrder() {
   const session = await auth();
   if (!session) redirect(pages.signin);
-  try {
-    const { data } = await axiosInstance.post('/orders');
-    const order: IOrderDocument = data.metadata?.order;
-    return order;
-  } catch (error) {
-    return null;
-  }
+  const { data } = await axiosInstance.post('/orders');
+  const order: IOrderDocument = data.metadata?.order;
+  return order;
 }

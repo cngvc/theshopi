@@ -1,8 +1,9 @@
-import { ExchangeNames, NotFoundError, RoutingKeys } from '@cngvc/shopi-shared';
+import { ExchangeNames, NotFoundError, RoutingKeys, ServerError } from '@cngvc/shopi-shared';
 import { ElasticsearchIndexes, IBuyerDocument, IEmailLocals, IOrderDocument } from '@cngvc/shopi-types';
 import { config } from '@order/config';
 import { elasticSearch } from '@order/elasticsearch';
 import { grpcCartClient } from '@order/grpc/clients/cart-client.grpc';
+import { grpcPaymentClient } from '@order/grpc/clients/payment-client.grpc';
 import { grpcUserClient } from '@order/grpc/clients/user-client.grpc';
 import { OrderModel } from '@order/models/order.schema';
 import { orderProducer } from '@order/queues/order.producer';
@@ -31,6 +32,21 @@ class OrderService {
       isPaid: false,
       notes: payload.notes || ''
     });
+
+    const payment = await grpcPaymentClient.createPayment({
+      currency: 'USD',
+      method: order.payment.method,
+      orderPublicId: order.orderPublicId!,
+      totalAmount: order.totalAmount!
+    });
+
+    if (!payment) {
+      throw new ServerError('Cannot create payment', 'createOrder');
+    }
+
+    order.payment.paymentPublicId = payment.paymentPublicId;
+    order.payment.status = payment.status;
+    await order.save();
 
     // call payment service
     const createOrderMailObject: IEmailLocals = {

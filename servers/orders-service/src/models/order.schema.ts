@@ -29,7 +29,7 @@ const orderSchema: Schema = new Schema(
       postalCode: { type: String, required: false, default: '' }
     },
     payment: {
-      method: { type: String, enum: Object.values(PaymentMethod), required: true },
+      method: { type: String, enum: PaymentMethod, required: true },
       paymentPublicId: { type: String },
       status: { type: String }
     },
