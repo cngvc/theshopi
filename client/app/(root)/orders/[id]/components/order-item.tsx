@@ -8,7 +8,7 @@ import { ListCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const OrderItems = ({ items }: { items: ICartItem[] }) => {
+const OrderItem = ({ items }: { items: ICartItem[] }) => {
   return (
     <Card className="md:col-span-3">
       <CardContent className=" gap-4">
@@ -43,4 +43,4 @@ const OrderItems = ({ items }: { items: ICartItem[] }) => {
   );
 };
 
-export default OrderItems;
+export default OrderItem;

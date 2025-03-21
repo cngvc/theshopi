@@ -8,5 +8,6 @@ export default {
   account_shipping_address: '/account/shipping-address',
   account_payment: '/account/payment',
   checkout: '/checkout',
-  orders: '/orders'
+  orders: '/orders',
+  purchases_all: '/purchases/all'
 };

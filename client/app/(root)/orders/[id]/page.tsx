@@ -7,7 +7,7 @@ import { ICartItem } from '@cngvc/shopi-types';
 import { notFound } from 'next/navigation';
 import { useMemo } from 'react';
 import Bill from './components/bill';
-import OrderItems from './components/order-items';
+import OrderItem from './components/order-item';
 import PaymentAction from './components/payment-action';
 import PaymentCard from './components/payment-card';
 import ShippingCard from './components/shipping-card';
@@ -45,7 +45,7 @@ const Page = () => {
         <PaymentCard payment={order?.payment} isDelivered={!!order.isDelivered} deliveredAt={order.deliveredAt as string | null} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <OrderItems items={order!.items as ICartItem[]} />
+        <OrderItem items={order!.items as ICartItem[]} />
         <div className="col-span-1">
           <Bill
             itemsPrice={prices.itemsPrice}

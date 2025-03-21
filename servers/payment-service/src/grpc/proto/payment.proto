@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package cart;
+
+service CartService {
+  rpc GetCartItemsByAuthId (GetCartByAuthIdRequest) returns (GetCartByAuthIdResponse);
+}
+
+message GetCartByAuthIdRequest {
+  string authId = 1;
+}
+
+message GetCartByAuthIdResponse {
+  repeated CartItem items = 1;
+}
+
+message CartItem {
+  string productPublicId = 1;
+  int32 quantity = 2;
+  string slug = 3;
+  float price = 4;
+  string name = 5;
+  string thumb = 6;
+}

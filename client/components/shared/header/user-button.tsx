@@ -52,6 +52,11 @@ const UserButton = async () => {
               <Link href={pages.account_shipping_address}>Account Settings</Link>
             </Button>
           </DropdownMenuItem>
+          <DropdownMenuItem className="p-0">
+            <Button className="w-full px-2 justify-start" variant={'ghost'} asChild>
+              <Link href={pages.purchases_all}>My Purchases</Link>
+            </Button>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0">
             <form action={signoutUser} className="flex-1">
