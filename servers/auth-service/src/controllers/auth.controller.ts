@@ -1,14 +1,17 @@
 import { config } from '@auth/config';
+import { DEFAULT_DEVICE } from '@auth/constants';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { authService } from '@auth/services/auth.service';
+import { keyTokenService } from '@auth/services/key-token.service';
 import {
   BadRequestError,
   CreatedRequestSuccess,
   ExchangeNames,
+  getCurrentUser,
   IAuthDocument,
+  IAuthPayload,
   IEmailMessageDetails,
-  isEmail,
   lowerCase,
   OkRequestSuccess,
   RoutingKeys
@@ -27,6 +30,7 @@ class AuthController {
         username: string;
         email: string;
         password: string;
+        deviceInfo?: string;
       }
     >,
     res: Response
@@ -35,7 +39,7 @@ class AuthController {
     if (error?.details) {
       throw new BadRequestError(error?.details[0].message, 'signup method error validation');
     }
-    const { username, email, password } = req.body;
+    const { username, email, password, deviceInfo = DEFAULT_DEVICE } = req.body;
     const existingUser = await authService.getAuthUserByUsernameOrEmail(username, email);
     if (existingUser) {
       throw new BadRequestError('User already exists', 'signup method error existing');
@@ -61,13 +65,13 @@ class AuthController {
         template: 'verify-email'
       } as IEmailMessageDetails)
     );
-
-    const token = authService.signToken(result.id!, result.email!, result.username!);
-    if (!token) {
+    const tokens = await keyTokenService.generateTokens(result, deviceInfo);
+    if (!tokens) {
       throw new BadRequestError('Error when signing token', 'signup method error');
     }
     new CreatedRequestSuccess('User created successfully', {
-      accessToken: token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       user: {
         id: result.id,
         username: result.username,
@@ -75,6 +79,7 @@ class AuthController {
       }
     }).send(res);
   }
+
   async signin(
     req: Request<
       {},
@@ -82,6 +87,7 @@ class AuthController {
       {
         username: string;
         password: string;
+        deviceInfo?: string;
       }
     >,
     res: Response
@@ -90,9 +96,8 @@ class AuthController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'signin method error validation');
     }
-    const { username, password } = req.body;
-    const isValidEmail: boolean = isEmail(username);
-    const existingUser = !isValidEmail ? await authService.getAuthUserByUsername(username) : await authService.getAuthUserByEmail(username);
+    const { username, password, deviceInfo = DEFAULT_DEVICE } = req.body;
+    const existingUser = await authService.getAuthUserByUsernameOrEmail(username);
     if (!existingUser) {
       throw new BadRequestError('Invalid credentials', 'signin method error existing');
     }
@@ -100,18 +105,39 @@ class AuthController {
     if (!passwordsMatch) {
       throw new BadRequestError('Invalid credentials', 'signin method error password');
     }
-    const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
-    if (!token) {
-      throw new BadRequestError('Error when signing token', 'signin method error jwt');
+    await keyTokenService.deleteKeyToken({ authId: existingUser.id!, deviceInfo });
+    const tokens = await keyTokenService.generateTokens(existingUser, deviceInfo);
+    if (!tokens) {
+      throw new BadRequestError('Error when signing token', 'signin method error');
     }
     new OkRequestSuccess('User login successfully', {
-      accessToken: token,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
       user: {
         id: existingUser.id,
         username: existingUser.username,
         email: existingUser.email
       }
     }).send(res);
+  }
+
+  async logout(
+    req: Request<
+      {},
+      {},
+      {
+        refreshToken?: string;
+      }
+    >,
+    res: Response
+  ): Promise<void> {
+    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    if (req.body.refreshToken) {
+      await keyTokenService.deleteKeyToken({ authId: currentUser.id, refreshToken: req.body.refreshToken });
+    } else {
+      await keyTokenService.deleteKeyToken({ authId: currentUser.id });
+    }
+    new OkRequestSuccess('User logout successfully', {}).send(res);
   }
 }
 

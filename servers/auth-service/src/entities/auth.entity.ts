@@ -43,6 +43,7 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
   }
 
   async comparePassword(password: string): Promise<boolean> {
+    console.log(1);
     return argon2.verify(this.password, password);
   }
 }

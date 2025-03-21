@@ -1,20 +1,39 @@
+import { DEFAULT_DEVICE } from '@auth/constants';
 import { authService } from '@auth/services/auth.service';
-import { BadRequestError, getCurrentUser, IAuthPayload, OkRequestSuccess } from '@cngvc/shopi-shared';
+import { keyTokenService } from '@auth/services/key-token.service';
+import { BadRequestError, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { Request, Response } from 'express';
 
 class RefreshTokenController {
-  async refreshToken(req: Request, res: Response): Promise<void> {
-    const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
-    const existingUser = await authService.getAuthUserById(currentUser.id);
-    if (!existingUser) {
-      throw new BadRequestError('Invalid credentials', 'refreshToken method error');
+  async refreshAccessToken(
+    req: Request<
+      {},
+      {},
+      {
+        refreshToken: string;
+        deviceInfo: string;
+      }
+    >,
+    res: Response
+  ) {
+    const { refreshToken, deviceInfo = DEFAULT_DEVICE } = req.body;
+    console.log(deviceInfo);
+    const existingToken = await keyTokenService.findKeyToken({ refreshToken });
+    if (!existingToken) throw new BadRequestError('Invalid refresh token', 'refreshAccessToken');
+
+    if (deviceInfo && existingToken.deviceInfo !== deviceInfo) {
+      throw new BadRequestError('Device mismatch', 'refreshAccessToken');
     }
-    const token = authService.signToken(existingUser.id!, existingUser.email!, existingUser.username!);
-    if (!token) {
-      throw new BadRequestError('Error when signing token', 'refreshToken method error');
+    const { authId } = existingToken;
+    await keyTokenService.deleteKeyToken({ refreshToken });
+    const user = await authService.getAuthUserById(authId);
+    if (!user) {
+      throw new BadRequestError('User not found', 'refreshAccessToken');
     }
-    new OkRequestSuccess('Refresh token successfully.', {
-      accessToken: token
+    const tokens = await keyTokenService.generateTokens(user, deviceInfo);
+    new OkRequestSuccess('Refreshed tokens successfully', {
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken
     }).send(res);
   }
 }

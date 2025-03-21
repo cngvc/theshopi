@@ -13,8 +13,11 @@ class AuthService extends AxiosService {
     return response;
   }
 
-  async getRefreshToken(): Promise<AxiosResponse> {
-    const response: AxiosResponse = await this.get('/refresh-token');
+  async refreshAccessToken(refreshToken: string, deviceInfo: string): Promise<AxiosResponse> {
+    const response: AxiosResponse = await this.post('/refresh-token', {
+      refreshToken,
+      deviceInfo
+    });
     return response;
   }
 

@@ -139,7 +139,6 @@ services:
     environment:
       - ENABLE_APM=0
       - AUTH_BASE_URL=http://auth_container:4002
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - CHAT_BASE_URL=http://chat_container:4005
       - COOKIE_SECRET_KEY_FIRST=jZqygPQGEOX1M2jxpQX09g
@@ -192,7 +191,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mysql://admin:Asdfgh123@mysql_container:3306/theshopi_auth
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
@@ -220,7 +218,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_users
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
@@ -247,7 +244,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_products
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
@@ -295,7 +291,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_chat
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
@@ -345,7 +340,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
       - GATEWAY_JWT_TOKEN_SECRET=9d9uaKBfV3FEhTNCgvaJZQ
@@ -372,7 +366,6 @@ services:
     environment:
       - ENABLE_APM=0
       - API_GATEWAY_URL= http://gateway_container:4000
-      - AUTH_JWT_TOKEN_SECRET=8ktMOQllYwY4wTRKvL707g
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_orders
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200

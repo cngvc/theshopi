@@ -24,7 +24,7 @@ class PasswordController {
       throw new BadRequestError(error.details[0].message, 'forgotPassword method error');
     }
     const { email } = req.body;
-    const existingUser = await authService.getAuthUserByEmail(email);
+    const existingUser = await authService.getAuthUserByUsernameOrEmail(email);
     if (!existingUser) {
       throw new BadRequestError('Invalid credentials', 'forgotPassword method error');
     }

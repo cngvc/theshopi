@@ -1,22 +1,32 @@
-import { config } from '@auth/config';
+import { DEFAULT_DEVICE } from '@auth/constants';
 import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
-import { IAuthPayload } from '@cngvc/shopi-shared';
+import { IAuthPayload, NotAuthorizedError } from '@cngvc/shopi-shared';
 import { IConversationParticipant } from '@cngvc/shopi-types/build/src/chat.interface';
-import { verify } from 'jsonwebtoken';
+import { decode, verify } from 'jsonwebtoken';
 import { In, Repository } from 'typeorm';
+import { keyTokenService } from './key-token.service';
 
 export class AuthGrpcService {
   private authRepository: Repository<AuthModel>;
   constructor() {
     this.authRepository = AppDataSource.getRepository(AuthModel);
   }
-  async verifyUserByToken(token: string): Promise<IAuthPayload | null> {
+
+  // this function is called from gateway service each request.
+  async verifyUserByToken(token: string, deviceInfo = DEFAULT_DEVICE): Promise<IAuthPayload | null> {
     try {
       if (!token) return null;
-      const payload = verify(token, `${config.AUTH_JWT_TOKEN_SECRET}`) as IAuthPayload;
-      const user = await this.authRepository.exists({ where: { id: payload.id } });
-      if (!user) return null;
+      const tokenPayload = decode(token) as IAuthPayload;
+      const keyToken = await keyTokenService.findKeyToken({
+        authId: tokenPayload.id,
+        deviceInfo
+      });
+      if (!keyToken || !keyToken.publicKey) {
+        throw new NotAuthorizedError('Public key not found', 'verifyAccessToken');
+      }
+      const payload = verify(token, keyToken.publicKey) as IAuthPayload;
+      if (!(await this.authRepository.exists({ where: { id: payload.id } }))) return null;
       return payload;
     } catch (error) {
       return null;

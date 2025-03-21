@@ -1,11 +1,9 @@
-import { config } from '@auth/config';
 import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
 import { authProducer } from '@auth/queues/auth.producer';
 import { authChannel } from '@auth/server';
 import { ExchangeNames, IAuthDocument, lowerCase, RoutingKeys } from '@cngvc/shopi-shared';
-import { sign } from 'jsonwebtoken';
-import { MoreThan, Repository } from 'typeorm';
+import { FindOptionsWhere, MoreThan, Repository } from 'typeorm';
 
 export class AuthService {
   private authRepository: Repository<AuthModel>;
@@ -34,18 +32,17 @@ export class AuthService {
     return this.authRepository.findOne({ where: { id: authId } });
   }
 
-  async getAuthUserByUsernameOrEmail(username: string, email: string): Promise<IAuthDocument | null> {
+  async getAuthUserByUsernameOrEmail(username: string, email?: string): Promise<IAuthDocument | null> {
+    const query: FindOptionsWhere<IAuthDocument>[] = [{ username: lowerCase(username) }];
+    if (email) {
+      query.push({ email: lowerCase(email) });
+    } else {
+      query.push({ email: lowerCase(username) });
+    }
     return this.authRepository.findOne({
-      where: [{ username: lowerCase(username ?? '') }, { email: lowerCase(email ?? '') }]
+      where: query,
+      select: ['id', 'username', 'email', 'password']
     });
-  }
-
-  async getAuthUserByEmail(email: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { email: lowerCase(email) }, select: ['id', 'username', 'email', 'password'] });
-  }
-
-  async getAuthUserByUsername(username: string): Promise<IAuthDocument | null> {
-    return this.authRepository.findOne({ where: { username: lowerCase(username) }, select: ['id', 'username', 'email', 'password'] });
   }
 
   async getAuthUserByVerificationToken(token: string): Promise<IAuthDocument | null> {
@@ -84,18 +81,6 @@ export class AuthService {
       passwordResetExpires: new Date()
     });
     return !!result.affected && result?.affected > 0;
-  }
-
-  signToken(id: string, email: string, username: string): string {
-    return sign(
-      {
-        id,
-        email,
-        username
-      },
-      config.AUTH_JWT_TOKEN_SECRET!,
-      { expiresIn: '7d' }
-    );
   }
 }
 

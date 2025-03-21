@@ -18,7 +18,7 @@ if (process.env.ENABLE_APM === '1') {
 
 class Config {
   public AUTH_BASE_URL: string | undefined;
-  public AUTH_JWT_TOKEN_SECRET: string | undefined;
+  public REDIS_HOST: string | undefined;
   public CLIENT_URL: string | undefined;
   public CHAT_BASE_URL: string | undefined;
   public COOKIE_SECRET_KEY_FIRST: string | undefined;
@@ -36,8 +36,8 @@ class Config {
 
   constructor() {
     this.AUTH_BASE_URL = process.env.AUTH_BASE_URL || '';
-    this.AUTH_JWT_TOKEN_SECRET = process.env.AUTH_JWT_TOKEN_SECRET || '';
     this.CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+    this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.CHAT_BASE_URL = process.env.CHAT_BASE_URL || '';
     this.COOKIE_SECRET_KEY_FIRST = process.env.COOKIE_SECRET_KEY_FIRST || '*';
     this.COOKIE_SECRET_KEY_SECOND = process.env.COOKIE_SECRET_KEY_SECOND || '';

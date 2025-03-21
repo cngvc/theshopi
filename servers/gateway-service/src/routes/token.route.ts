@@ -1,4 +1,5 @@
 import { tokenController } from '@gateway/controllers/auth/token.controller';
+import { userAgentMiddleware } from '@gateway/middlewares/user-agent.middleware';
 import express, { Router } from 'express';
 
 class TokenRoutes {
@@ -8,7 +9,8 @@ class TokenRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/auth/refresh-token', tokenController.refreshToken);
+    this.router.use(userAgentMiddleware.attachUseragentToBody);
+    this.router.post('/auth/refresh-token', tokenController.refreshAccessToken);
     return this.router;
   }
 }

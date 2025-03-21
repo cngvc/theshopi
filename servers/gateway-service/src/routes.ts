@@ -21,6 +21,7 @@ export const appRoutes = (app: Application) => {
   publicRouter.use(authRoute.routes());
   publicRouter.use(productPublicRoutes.routes());
   publicRouter.use(storePublicRoutes.routes());
+  publicRouter.use(tokenRoutes.routes());
 
   app.use(BASE_PATH, publicRouter);
 
@@ -28,7 +29,6 @@ export const appRoutes = (app: Application) => {
   privateRouter.use(AuthMiddleware.verifyUserJwt);
 
   privateRouter.use(productRoutes.routes());
-  privateRouter.use(tokenRoutes.routes());
   privateRouter.use(storeRoutes.routes());
   privateRouter.use(buyerRoutes.routes());
   privateRouter.use(currentUserRoutes.routes());

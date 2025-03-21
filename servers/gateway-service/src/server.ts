@@ -18,12 +18,14 @@ import { isAxiosError } from 'axios';
 import compression from 'compression';
 import cors from 'cors';
 import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
+import * as useragent from 'express-useragent';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
 import { AuthMiddleware } from './middlewares/auth.middleware';
+import { rateLimitMiddleware } from './middlewares/redis-rate-limit.middleware';
 
 export class GatewayServer {
   private app: Application;
@@ -44,6 +46,7 @@ export class GatewayServer {
 
   private securityMiddleware(): void {
     this.app.set('trust proxy', 1);
+    this.app.use(useragent.express());
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(
@@ -54,6 +57,7 @@ export class GatewayServer {
       })
     );
     this.app.use(endpointMiddleware.gatewayRequestLogger);
+    this.app.use(rateLimitMiddleware.redisRateLimit);
 
     this.app.use(AuthMiddleware.attachUser);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
