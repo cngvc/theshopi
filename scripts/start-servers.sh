@@ -13,7 +13,7 @@ npx concurrently \
 "cd ../servers/products-service && npm run dev" \
 "cd ../servers/cart-service && npm run dev" \
 "cd ../servers/orders-service && npm run dev" \
-"cd ../servers/payment-service && npm run dev" \
+# "cd ../servers/payment-service && npm run dev" \
 # "cd ../servers/notification-service && npm run dev" \
 # "cd ../servers/socket-service && npm run dev" \
 # "cd ../servers/online-status-service && npm run dev" \

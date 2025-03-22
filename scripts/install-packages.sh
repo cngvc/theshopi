@@ -12,6 +12,7 @@ SERVICES=(
   "orders-service"
   "reviews-service"
   "cart-service"
+  "payment-service"
 )
 
 echo "🔄 Install packages in all services..."

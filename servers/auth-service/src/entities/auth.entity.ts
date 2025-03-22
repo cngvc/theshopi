@@ -1,7 +1,8 @@
-import { IAuthDocument } from '@cngvc/shopi-shared';
+import { IAuthDocument, IUserProviderDocument } from '@cngvc/shopi-shared';
 
 import * as argon2 from 'argon2';
-import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { UserProviderModel } from './user-provider.entity';
 
 export type UserRole = 'admin' | 'basic';
 
@@ -37,12 +38,15 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
   @Column({ type: 'enum', enum: ['admin', 'basic'], default: 'basic', select: false })
   role!: UserRole;
 
+  @OneToMany(() => UserProviderModel, (provider) => provider.user, { nullable: true })
+  private _providers!: UserProviderModel[];
+
+  get providers(): IUserProviderDocument[] {
+    return (this._providers ?? []) as IUserProviderDocument[];
+  }
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await argon2.hash(this.password);
-  }
-
-  async comparePassword(password: string): Promise<boolean> {
-    return argon2.verify(this.password, password);
   }
 }

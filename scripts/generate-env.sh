@@ -1,5 +1,9 @@
 #!/bin/bash
 
+SOURCE_FILE=".env.dev"
+TARGET_FILE=".env"
+
+
 SERVICES=(
   "auth-service" 
   "chat-service" 
@@ -15,13 +19,13 @@ SERVICES=(
   "payment-service"
 )
 
-echo "🔄 Run test in all services..."
+echo "🔄 Install packages in all services..."
 
 for SERVICE in "${SERVICES[@]}"; do
-  echo "📦 Install packages in $SERVICE..."
   cd "./servers/$SERVICE" || continue
-  npm run test
+  cp "$SOURCE_FILE" "$TARGET_FILE"
   cd - > /dev/null
 done
 
-echo "✅ Done! All services have been tested"
+
+echo "✅ File $TARGET_FILE was created from $SOURCE_FILE!"

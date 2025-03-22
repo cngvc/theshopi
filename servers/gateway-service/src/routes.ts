@@ -10,6 +10,7 @@ import { orderRoutes } from '@gateway/routes/order.route';
 import { productPublicRoutes } from '@gateway/routes/product-public.route';
 import { productRoutes } from '@gateway/routes/product.route';
 import { seedRoutes } from '@gateway/routes/seed.routes';
+import { ssoRoute } from '@gateway/routes/sso.route';
 import { storePublicRoutes } from '@gateway/routes/store-public.route';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
@@ -18,6 +19,7 @@ import { Application, Router } from 'express';
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
   publicRouter.use(healthRoutes.routes());
+  publicRouter.use(ssoRoute.routes());
   publicRouter.use(authRoute.routes());
   publicRouter.use(productPublicRoutes.routes());
   publicRouter.use(storePublicRoutes.routes());

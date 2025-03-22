@@ -18,6 +18,7 @@ class AuthRoutes {
 
     this.router.put('/auth/forgot-password', passwordController.forgotPassword);
     this.router.put('/auth/reset-password/:token', passwordController.resetPassword);
+
     return this.router;
   }
 }

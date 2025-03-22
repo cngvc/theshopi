@@ -63,6 +63,16 @@ class AuthService extends AxiosService {
     const response: AxiosResponse = await this.put(`/seed/${count}`);
     return response;
   }
+
+  async github() {
+    const response: AxiosResponse = await this.get('/github');
+    return response;
+  }
+
+  async githubCallback(params: Record<string, string>) {
+    const response: AxiosResponse = await this.get('/github/callback', params);
+    return response;
+  }
 }
 
 export const authService = new AuthService();

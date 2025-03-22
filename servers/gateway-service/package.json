@@ -17,7 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.6",
+    "@cngvc/shopi-shared": "^0.0.9",
     "@cngvc/shopi-types": "^0.0.13",
     "@grpc/grpc-js": "^1.12.6",
     "@grpc/proto-loader": "^0.7.13",

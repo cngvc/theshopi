@@ -17,7 +17,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.6",
+    "@cngvc/shopi-shared": "^0.0.9",
     "@cngvc/shopi-types": "^0.0.14",
     "@faker-js/faker": "^9.5.1",
     "@grpc/grpc-js": "^1.12.6",
@@ -26,6 +26,7 @@
     "@types/jest": "^29.5.14",
     "amqplib": "^0.10.5",
     "argon2": "^0.41.1",
+    "axios": "^1.8.4",
     "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

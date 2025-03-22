@@ -14,8 +14,8 @@ export class AxiosService {
     this.axios.defaults.headers['x-user'] = xUser;
   }
 
-  protected async get<T>(url: string): Promise<AxiosResponse<T>> {
-    return this.axios.get<T>(url);
+  protected async get<T>(url: string, params?: Record<string, string | number>): Promise<AxiosResponse<T>> {
+    return this.axios.get<T>(url, { params });
   }
 
   protected async post<T>(url: string, data?: Record<string, any>): Promise<AxiosResponse<T>> {
