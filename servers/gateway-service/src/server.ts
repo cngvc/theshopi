@@ -86,6 +86,10 @@ export class GatewayServer {
   }
 
   private routesMiddleware(): void {
+    this.app.get('/', (req: Request, res: Response) => {
+      res.send({ message: 'Theshopi microservice-based project, it was developed by Joe as a portfolio project!' });
+    });
+
     appRoutes(this.app);
   }
 
