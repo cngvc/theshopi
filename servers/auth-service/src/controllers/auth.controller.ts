@@ -37,7 +37,6 @@ class AuthController {
     if (error?.details) {
       throw new BadRequestError(error?.details[0].message, 'signup method error validation');
     }
-    const fingerprint = req.headers['x-device-fingerprint'] as string;
     const { username, email, password } = req.body;
     const existingUser = await authService.getAuthUserByUsernameOrEmail(username, email);
     if (existingUser) {
@@ -64,7 +63,7 @@ class AuthController {
         template: 'verify-email'
       } as IEmailMessageDetails)
     );
-    const tokens = await keyTokenService.generateTokens(result, fingerprint);
+    const tokens = await keyTokenService.generateTokens(result);
     if (!tokens) {
       throw new BadRequestError('Error when signing token', 'signup method error');
     }
@@ -86,7 +85,6 @@ class AuthController {
       {
         username: string;
         password: string;
-        fingerprint?: string;
       }
     >,
     res: Response
@@ -95,7 +93,6 @@ class AuthController {
     if (error?.details) {
       throw new BadRequestError(error.details[0].message, 'signin method error validation');
     }
-    const fingerprint = req.headers['x-device-fingerprint'] as string;
     const { username, password } = req.body;
     const existingUser = await authService.getAuthUserByUsernameOrEmail(username);
     if (!existingUser) {
@@ -105,8 +102,8 @@ class AuthController {
     if (!passwordsMatch) {
       throw new BadRequestError('Invalid credentials', 'signin method error password');
     }
-    await keyTokenService.deleteKeyToken({ authId: existingUser.id!, fingerprint });
-    const tokens = await keyTokenService.generateTokens(existingUser, fingerprint);
+    await keyTokenService.deleteKeyToken({ authId: existingUser.id! });
+    const tokens = await keyTokenService.generateTokens(existingUser);
     if (!tokens) {
       throw new BadRequestError('Error when signing token', 'signin method error');
     }

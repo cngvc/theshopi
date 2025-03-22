@@ -1,4 +1,3 @@
-import { DEFAULT_DEVICE } from '@auth/constants';
 import { AppDataSource } from '@auth/database';
 import { IKeyTokenDocument, KeyTokenModel } from '@auth/entities/key-token.entity';
 import { generateKeyPair } from '@auth/utils/generate.util';
@@ -24,13 +23,12 @@ class KeyTokenService {
     await this.keyTokenRepository.delete(params);
   };
 
-  createKeyToken = async ({ authId, publicKey, privateKey, refreshToken, fingerprint }: IKeyTokenDocument): Promise<void> => {
+  createKeyToken = async ({ authId, publicKey, privateKey, refreshToken }: IKeyTokenDocument): Promise<void> => {
     const keyToken = this.keyTokenRepository.create({
       authId,
       publicKey,
       privateKey,
-      refreshToken,
-      fingerprint
+      refreshToken
     });
     await this.keyTokenRepository.save(keyToken);
   };
@@ -38,7 +36,7 @@ class KeyTokenService {
   createTokenPair = ({ payload, publicKey, privateKey }: { payload: IAuthPayload; publicKey: string; privateKey: string }) => {
     try {
       const accessToken = sign(payload, privateKey, {
-        expiresIn: '8h',
+        expiresIn: '30s',
         algorithm: 'RS256'
       });
       const refreshToken = sign(payload, privateKey, {
@@ -56,7 +54,7 @@ class KeyTokenService {
     }
   };
 
-  generateTokens = async (user: IAuthDocument, fingerprint = DEFAULT_DEVICE) => {
+  generateTokens = async (user: IAuthDocument) => {
     const { privateKey, publicKey } = generateKeyPair();
     const tokens = await keyTokenService.createTokenPair({
       payload: {
@@ -71,8 +69,7 @@ class KeyTokenService {
       authId: user.id!,
       privateKey,
       publicKey,
-      refreshToken: tokens.accessToken,
-      fingerprint
+      refreshToken: tokens.refreshToken
     });
     return tokens;
   };

@@ -1,14 +1,14 @@
 'use client';
 
+import { useAuth } from '@/lib/hooks/use-auth-id.hook';
 import { socketClient } from '@/sockets/socket-client';
 import { SocketEvents } from '@cngvc/shopi-types';
 import { useThrottle } from '@uidotdev/usehooks';
-import { useSession } from 'next-auth/react';
 import { useCallback, useEffect } from 'react';
 
 export default function SocketInitializer() {
-  const session = useSession();
-  const throttledId = useThrottle(session.data?.user?.id, 5000);
+  const { id } = useAuth();
+  const throttledId = useThrottle(id, 5000);
 
   useEffect(() => {
     if (throttledId) {
@@ -18,12 +18,11 @@ export default function SocketInitializer() {
   }, [throttledId]);
 
   const emitUserOffline = useCallback(() => {
-    const id = session.data?.user?.id;
     if (id) {
       console.log('🔴 User offline: ', socketClient.socket.connected);
       socketClient.socket.emit(SocketEvents.REMOVE_LOGGED_IN_USERS, id);
     }
-  }, [session.data?.user]);
+  }, [id]);
 
   useEffect(() => {
     const handleBeforeUnload = () => {

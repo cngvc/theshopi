@@ -9,7 +9,6 @@ service AuthService {
 
 message GetCurrentUserByTokenRequest {
   string token = 1;
-  optional string fingerprint = 2;
 }
 
 message GetCurrentUserByTokenResponse {

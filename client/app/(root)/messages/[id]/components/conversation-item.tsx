@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useMemo } from 'react';
 
 const ConversationItem = ({ conversation, isOnline }: { conversation: IConversationDocument; isOnline: boolean }) => {
-  const id = useAuth();
+  const { id } = useAuth();
 
   const partner = useMemo(() => {
     return conversation.participants.find((e) => e.authId !== id);

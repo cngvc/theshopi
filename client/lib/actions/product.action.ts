@@ -1,11 +1,11 @@
 'use server';
 
 import { IProductDocument, IStoreDocument } from '@cngvc/shopi-types';
-import axiosInstance from '../axios';
+import axiosPrivateInstance from '../axios-private';
 
 export async function getProductList() {
   try {
-    const { data } = await axiosInstance.get('/products/');
+    const { data } = await axiosPrivateInstance.get('/products/');
     const products: IProductDocument[] = data.metadata?.products || [];
     return products;
   } catch (error) {
@@ -15,7 +15,7 @@ export async function getProductList() {
 
 export async function getProductByIdentifier(identifier: string) {
   try {
-    const { data } = await axiosInstance.get(`/products/${identifier}`);
+    const { data } = await axiosPrivateInstance.get(`/products/${identifier}`);
     const { product, store }: { product: IProductDocument; store: IStoreDocument | null } = data.metadata;
     return { product, store };
   } catch (error) {

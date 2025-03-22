@@ -34,7 +34,7 @@ const renderEmptyState = () => (
 );
 
 const MessageBox = ({ conversationPublicId }: { conversationPublicId: string }) => {
-  const id = useAuth();
+  const { id } = useAuth();
   const editorRef = useRef<Quill | null>(null);
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
 

@@ -1,6 +1,4 @@
 import '@/assets/globals.css';
-import FpInitializer from '@/components/shared/fp-initializer';
-import SocketInitializer from '@/components/shared/socket/socket-initializer';
 import { SERVER_URL } from '@/lib/configs';
 import { APP_DESC, APP_NAME } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -25,8 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body className={cn(inter.className, 'min-h-screen flex flex-col')}>
         <Providers>
           {children}
-          <SocketInitializer />
-          <FpInitializer />
+          {/* <SocketInitializer /> */}
         </Providers>
       </body>
     </html>

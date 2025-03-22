@@ -14,10 +14,6 @@ export class AxiosService {
     this.axios.defaults.headers['x-user'] = xUser;
   }
 
-  public setXUserDeviceFPHeader(xUserAgent: string): void {
-    this.axios.defaults.headers['x-device-fingerprint'] = xUserAgent;
-  }
-
   protected async get<T>(url: string, params?: Record<string, string | number>): Promise<AxiosResponse<T>> {
     return this.axios.get<T>(url, { params });
   }

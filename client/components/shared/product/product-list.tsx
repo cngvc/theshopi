@@ -5,7 +5,7 @@ const ProductList = ({ data }: { data: IProductDocument[] }) => {
   if (!data?.length) {
     return (
       <div className="">
-        <p className="text-2xl">Unfortunately, no products found</p>
+        <p className="text-2xl">Unfortunately, no products found.</p>
       </div>
     );
   }

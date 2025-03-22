@@ -9,10 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
-import { signoutUser } from '@/lib/actions/auth.action';
 import pages from '@/lib/constants/pages';
 import { UserIcon } from 'lucide-react';
 import Link from 'next/link';
+import SignoutButton from './signout-button';
 
 const UserButton = async () => {
   const session = await auth();
@@ -26,7 +26,7 @@ const UserButton = async () => {
       </Button>
     );
   }
-  const firstCharacter = session?.user?.name?.charAt(0).toUpperCase();
+  const firstCharacter = session.user.name!.charAt(0).toUpperCase();
 
   return (
     <div>
@@ -59,11 +59,7 @@ const UserButton = async () => {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="p-0">
-            <form action={signoutUser} className="flex-1">
-              <Button className="w-full px-2 justify-start" variant={'ghost'}>
-                Signout
-              </Button>
-            </form>
+            <SignoutButton />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

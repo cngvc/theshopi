@@ -38,6 +38,11 @@ class AuthService extends AxiosService {
     return response;
   }
 
+  async signout(payload: IAuth) {
+    const response: AxiosResponse = await this.post('/signout', payload);
+    return response;
+  }
+
   async verifyEmail(token: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.put(`/verify-email?token=${token}`);
     return response;
@@ -63,8 +68,7 @@ class AuthService extends AxiosService {
     return response;
   }
 
-  async github(fingerprint: string) {
-    this.setXUserDeviceFPHeader(fingerprint);
+  async github() {
     const response: AxiosResponse = await this.get('/github');
     return response;
   }

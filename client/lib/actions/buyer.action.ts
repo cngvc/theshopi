@@ -3,13 +3,13 @@
 import { auth } from '@/auth';
 import { IBuyerDocument, IBuyerPayment, paymentScheme, shippingAddressSchema } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
-import axiosInstance from '../axios';
+import axiosPrivateInstance from '../axios-private';
 import pages from '../constants/pages';
 
 export async function getCurrentBuyer() {
   const session = await auth();
   if (!session) redirect(pages.signin);
-  const { data } = await axiosInstance.get('/buyer/me');
+  const { data } = await axiosPrivateInstance.get('/buyer/me');
   const buyer: IBuyerDocument = data.metadata?.buyer;
   return buyer;
 }
@@ -21,7 +21,7 @@ export async function updateBuyerShippingAddress(payload: { address: string; cit
   if (error) {
     throw new Error(error.details[0].message);
   }
-  await axiosInstance.put('/buyer/shipping-address', value);
+  await axiosPrivateInstance.put('/buyer/shipping-address', value);
   return true;
 }
 
@@ -32,6 +32,6 @@ export async function updateBuyerPayment(payload: IBuyerPayment) {
   if (error) {
     throw new Error(error.details[0].message);
   }
-  await axiosInstance.put('/buyer/payment', value);
+  await axiosPrivateInstance.put('/buyer/payment', value);
   return true;
 }

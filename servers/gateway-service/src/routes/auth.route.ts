@@ -1,6 +1,4 @@
 import { authController } from '@gateway/controllers/auth/auth.controller';
-import { passwordController } from '@gateway/controllers/auth/password.controller';
-import { verifyEmailController } from '@gateway/controllers/auth/verify-email.controller';
 import express, { Router } from 'express';
 
 class AuthRoutes {
@@ -10,13 +8,7 @@ class AuthRoutes {
   }
 
   public routes(): Router {
-    this.router.post('/auth/signup', authController.signup);
-    this.router.post('/auth/signin', authController.signin);
-    this.router.get('/auth/verify-email', verifyEmailController.verifyEmail);
-
-    this.router.put('/auth/forgot-password', passwordController.forgotPassword);
-    this.router.put('/auth/reset-password/:token', passwordController.resetPassword);
-
+    this.router.post('/auth/signout', authController.signout);
     return this.router;
   }
 }

@@ -3,11 +3,11 @@
 import { auth } from '@/auth';
 import { IBuyerPayment, IStoreDocument, paymentScheme, shippingAddressSchema } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
-import axiosInstance from '../axios';
+import axiosPrivateInstance from '../axios-private';
 import pages from '../constants/pages';
 
 export async function getStoreByStorePublicId(storePublicId: string) {
-  const { data } = await axiosInstance.get(`store/${storePublicId}`);
+  const { data } = await axiosPrivateInstance.get(`store/${storePublicId}`);
   const store: IStoreDocument = data.metadata?.store;
   return store;
 }
@@ -19,7 +19,7 @@ export async function updateBuyerShippingAddress(payload: { address: string; cit
   if (error) {
     throw new Error(error.details[0].message);
   }
-  await axiosInstance.put('/buyer/shipping-address', value);
+  await axiosPrivateInstance.put('/buyer/shipping-address', value);
   return true;
 }
 
@@ -30,6 +30,6 @@ export async function updateBuyerPayment(payload: IBuyerPayment) {
   if (error) {
     throw new Error(error.details[0].message);
   }
-  await axiosInstance.put('/buyer/payment', value);
+  await axiosPrivateInstance.put('/buyer/payment', value);
   return true;
 }

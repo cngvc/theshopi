@@ -8,15 +8,13 @@ export class AuthMiddleware {
     // that means AttachUser-middleware has completed the verification job !!!
     if (req.headers['x-user']) return next();
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new NotAuthorizedError('Authorization token is missing or invalid.', 'verifyUserJwt method');
+      throw new NotAuthorizedError('Authorization token is missing or invalid.', 'verifyUserJwt method, missing token');
     }
     try {
       const token = authHeader.split(' ')[1];
-      const fingerprint = req.headers['x-device-fingerprint'] as string;
-
-      const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, fingerprint);
+      const { payload } = await grpcAuthClient.getCurrentUserByJwt(token);
       if (!payload) {
-        throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method');
+        throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method, cannot fetch user');
       }
       req.headers['x-user'] = JSON.stringify(payload);
     } catch (error) {
@@ -30,8 +28,7 @@ export class AuthMiddleware {
     if (authHeader && authHeader.startsWith('Bearer ')) {
       try {
         const token = authHeader.split(' ')[1];
-        const fingerprint = req.headers['x-device-fingerprint'] as string;
-        const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, fingerprint);
+        const { payload } = await grpcAuthClient.getCurrentUserByJwt(token);
         if (payload) {
           req.headers['x-user'] = JSON.stringify(payload);
         }

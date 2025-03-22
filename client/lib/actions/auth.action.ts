@@ -1,10 +1,11 @@
 'use server';
 
-import { signIn, signOut } from '@/auth';
-import axiosInstance from '@/lib/axios';
+import { auth, signIn, signOut } from '@/auth';
+import axiosPrivateInstance from '@/lib/axios-private';
 import { formatError } from '@/lib/utils';
 import { signinSchema, signupClientSchema } from '@cngvc/shopi-types';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import axiosPublicInstance from '../axios-public';
 import { signinSSOFormSchema } from '../validators/auth-validator';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
@@ -16,7 +17,7 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
     if (error) {
       return { success: false, message: error.details[0].message };
     }
-    await signIn('credentials', { ...user, type: 'credentials', fingerprint: formData.get('fingerprint') });
+    await signIn('credentials', { ...user, type: 'credentials' });
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
     if (isRedirectError(error)) {
@@ -26,15 +27,7 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
   }
 }
 
-export async function signinWithSSO({
-  accessToken,
-  refreshToken,
-  fingerprint
-}: {
-  accessToken: string;
-  refreshToken: string;
-  fingerprint: string;
-}) {
+export async function signinWithSSO({ accessToken, refreshToken }: { accessToken: string; refreshToken: string }) {
   try {
     const { error, value: tokens } = signinSSOFormSchema.validate({
       accessToken,
@@ -43,7 +36,7 @@ export async function signinWithSSO({
     if (error) {
       return { success: false, message: error.details[0].message };
     }
-    await signIn('credentials', { ...tokens, type: 'sso', fingerprint });
+    await signIn('credentials', { ...tokens, type: 'sso' });
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
     if (isRedirectError(error)) {
@@ -64,7 +57,7 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
     if (error) {
       return { success: false, message: error.details[0].message };
     }
-    await axiosInstance.post(`/auth/signup`, {
+    await axiosPrivateInstance.post(`/auth/signup`, {
       username: user.username,
       password: user.password,
       email: user.email
@@ -83,5 +76,25 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
 }
 
 export async function signoutUser() {
+  const session = await auth();
+  if (session?.user?.refreshToken) {
+    try {
+      await axiosPrivateInstance.post('/auth/signout', {
+        refreshToken: session?.user?.refreshToken
+      });
+    } catch (error) {}
+  }
   await signOut({ redirect: true });
+}
+
+export async function getRefreshToken(refreshToken: string) {
+  try {
+    const { data } = await axiosPublicInstance.post('/auth/refresh-token', {
+      refreshToken: refreshToken
+    });
+    return data.metadata as { accessToken: string; refreshToken: string };
+  } catch (error) {
+    await signOut({ redirect: true });
+    return null;
+  }
 }

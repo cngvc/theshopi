@@ -1,4 +1,4 @@
-import axiosInstance from '@/lib/axios';
+import axiosPrivateInstance from '@/lib/axios-private';
 import pages from '@/lib/constants/pages';
 import NextAuth, { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -11,7 +11,6 @@ const config: NextAuthConfig = {
       credentials: {
         username: { type: 'text' },
         password: { type: 'password' },
-        fingerprint: { type: 'text', required: true },
         accessToken: { type: 'text', required: false },
         refreshToken: { type: 'text', required: false },
         type: { type: 'text', required: true, defaultValue: 'credentials' }
@@ -19,20 +18,13 @@ const config: NextAuthConfig = {
       async authorize(credentials) {
         if (credentials.type === 'credentials') {
           try {
-            const { data } = await axiosInstance.post(
-              '/auth/signin',
-              {
-                username: credentials?.username,
-                password: credentials?.password
-              },
-              {
-                headers: {
-                  'x-device-fingerprint': credentials.fingerprint
-                } as Record<string, string>
-              }
-            );
+            const { data } = await axiosPrivateInstance.post('/auth/signin', {
+              username: credentials?.username,
+              password: credentials?.password
+            });
             if (data?.metadata?.user) {
               const { user, accessToken, refreshToken } = data.metadata;
+              console.log({ accessToken, refreshToken });
               return {
                 id: user.id,
                 name: user.username,
@@ -48,10 +40,9 @@ const config: NextAuthConfig = {
           }
         }
         if (credentials.type === 'sso') {
-          const { data } = await axiosInstance.get('/auth/me', {
+          const { data } = await axiosPrivateInstance.get('/auth/me', {
             headers: {
-              Authorization: `Bearer ${credentials.accessToken}`,
-              'x-device-fingerprint': credentials.fingerprint
+              Authorization: `Bearer ${credentials.accessToken}`
             } as Record<string, string>
           });
           if (data?.metadata?.user) {
@@ -67,6 +58,12 @@ const config: NextAuthConfig = {
           }
           return null;
         }
+        if (credentials.type === 'refresh-token') {
+          return {
+            accessToken: credentials.accessToken!,
+            refreshToken: credentials.refreshToken!
+          } as User;
+        }
         return null;
       }
     })
@@ -75,21 +72,37 @@ const config: NextAuthConfig = {
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (user && account) {
-        const { accessToken } = user;
-        return { ...token, accessToken, user };
+    async jwt({ token, user }) {
+      if (user) {
+        return {
+          sub: user.id,
+          email: user.email,
+          id: user.id,
+          name: user.username,
+          accessToken: user.accessToken,
+          refreshToken: user.refreshToken
+        };
       }
       return token;
     },
-    async session({ session, token }) {
-      if (token) {
-        session.user = { ...(token.user as any), accessToken: token.accessToken };
+    async session({ session, token, trigger }) {
+      if (token.sub) {
+        session.user.id = token.sub!;
+        session.user.username = token.name!;
+        session.user.email = token.email!;
+      }
+      if (token?.accessToken) {
+        session.accessToken = token.accessToken as string;
+      }
+      if (token?.refreshToken) {
+        session.refreshToken = token.refreshToken as string;
       }
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url === '/api/auth/signout') return `${baseUrl}/login`;
+      if (url === '/api/auth/signout') {
+        return `${baseUrl}/login`;
+      }
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     async authorized({ request, auth }: any) {

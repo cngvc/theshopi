@@ -1,6 +1,6 @@
 import { BASE_PATH } from '@gateway/constants/path';
 import { authMiddleware } from '@gateway/middlewares/auth.middleware';
-import { authRoute } from '@gateway/routes/auth.route';
+import { authPublicRoute } from '@gateway/routes/auth-public.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
 import { cartRoutes } from '@gateway/routes/cart.route';
 import { chatRoutes } from '@gateway/routes/chat.route';
@@ -15,12 +15,13 @@ import { storePublicRoutes } from '@gateway/routes/store-public.route';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
+import { authRoute } from './routes/auth.route';
 
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
   publicRouter.use(healthRoutes.routes());
   publicRouter.use(ssoRoute.routes());
-  publicRouter.use(authRoute.routes());
+  publicRouter.use(authPublicRoute.routes());
   publicRouter.use(productPublicRoutes.routes());
   publicRouter.use(storePublicRoutes.routes());
   publicRouter.use(tokenRoutes.routes());
@@ -29,7 +30,7 @@ export const appRoutes = (app: Application) => {
 
   const privateRouter = Router();
   privateRouter.use(authMiddleware.verifyUserJwt);
-
+  privateRouter.use(authRoute.routes());
   privateRouter.use(productRoutes.routes());
   privateRouter.use(storeRoutes.routes());
   privateRouter.use(buyerRoutes.routes());

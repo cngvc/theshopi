@@ -24,7 +24,7 @@ const renderLoadingState = () => (
 );
 
 const ConversationList = () => {
-  const id = useAuth();
+  const { id } = useAuth();
   const { data: conversations, isLoading } = useConversations();
   const { onlineUsers } = useOnline();
 

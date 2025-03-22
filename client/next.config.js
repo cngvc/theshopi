@@ -8,9 +8,7 @@ const nextConfig = {
       }
     ]
   },
-  compiler: {
-    removeConsole: true
-  },
+  compiler: {},
   experimental: {},
   webpack: (config) => {
     config.resolve.fallback = { fs: false };

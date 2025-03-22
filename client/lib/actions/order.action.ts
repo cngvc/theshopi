@@ -1,7 +1,7 @@
 'use server';
 
 import { auth } from '@/auth';
-import axiosInstance from '@/lib/axios';
+import axiosPrivateInstance from '@/lib/axios-private';
 import pages from '@/lib/constants/pages';
 import { IOrderDocument } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
@@ -10,7 +10,7 @@ export async function getOrderByOrderPublicId(id: string) {
   const session = await auth();
   if (!session) redirect(pages.signin);
   try {
-    const { data } = await axiosInstance.get(`/orders/${id}`);
+    const { data } = await axiosPrivateInstance.get(`/orders/${id}`);
     const order: IOrderDocument = data.metadata?.order || null;
     return order;
   } catch (error) {
@@ -22,7 +22,7 @@ export async function getOrders() {
   const session = await auth();
   if (!session) redirect(pages.signin);
   try {
-    const { data } = await axiosInstance.get('/orders/');
+    const { data } = await axiosPrivateInstance.get('/orders/');
     const orders: IOrderDocument[] = data.metadata?.orders || [];
     return orders;
   } catch (error) {
@@ -32,7 +32,7 @@ export async function getOrders() {
 export async function createOrder() {
   const session = await auth();
   if (!session) redirect(pages.signin);
-  const { data } = await axiosInstance.post('/orders');
+  const { data } = await axiosPrivateInstance.post('/orders');
   const order: IOrderDocument = data.metadata?.order;
   return order;
 }
