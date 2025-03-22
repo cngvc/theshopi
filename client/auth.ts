@@ -17,7 +17,6 @@ const config: NextAuthConfig = {
         type: { type: 'text', required: true, defaultValue: 'credentials' }
       },
       async authorize(credentials) {
-        console.log(credentials);
         if (credentials.type === 'credentials') {
           try {
             const { data } = await axiosInstance.post(
@@ -66,6 +65,7 @@ const config: NextAuthConfig = {
               refreshToken: credentials.refreshToken
             } as User;
           }
+          return null;
         }
         return null;
       }

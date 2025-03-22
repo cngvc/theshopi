@@ -21,8 +21,8 @@ class AuthController {
     new OkRequestSuccess(message, metadata).send(res);
   }
 
-  async github(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await authService.github();
+  async githubLogin(req: Request, res: Response): Promise<void> {
+    const response: AxiosResponse = await authService.github(req.query.fingerprint as string);
     const { message, metadata } = response.data;
     new OkRequestSuccess(message, metadata).redirect(res, metadata.authUrl);
   }

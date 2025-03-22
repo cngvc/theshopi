@@ -6,8 +6,8 @@ import { Request, Response } from 'express';
 class VerifyEmailController {
   public async verifyEmail(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.verifyEmail(req.query?.token as string);
-    const { message } = response.data;
-    new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
+    const { message, metadata } = response.data;
+    new OkRequestSuccess(message, metadata).send(res);
   }
 }
 

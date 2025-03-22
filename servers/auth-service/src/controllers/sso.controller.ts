@@ -15,16 +15,19 @@ class SSOController {
   constructor() {}
 
   githubLogin = (req: Request, res: Response) => {
-    const githubAuthUrl = `${GITHUB_URL}/login/oauth/authorize?client_id=${config.GITHUB_CLIENT_ID}&scope=user:email`;
+    const fingerprint = req.headers['x-device-fingerprint'] as string;
+    const githubAuthUrl = `${GITHUB_URL}/login/oauth/authorize?client_id=${config.GITHUB_CLIENT_ID}&state=${fingerprint}&scope=user:email`;
     new OkRequestSuccess('SSO Github', {
       authUrl: githubAuthUrl
     }).send(res);
   };
 
   githubCallback = async (req: Request, res: Response) => {
-    const { code } = req.query;
-    const fingerprint = req.headers['x-device-fingerprint'] as string;
-
+    const { code, state } = req.query;
+    const fingerprint = state as string | null;
+    if (!fingerprint) {
+      throw new BadRequestError('No code provided', 'githubCallback');
+    }
     if (!code) {
       throw new BadRequestError('No code provided', 'githubCallback');
     }

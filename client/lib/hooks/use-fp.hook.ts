@@ -1,7 +1,7 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import { useEffect, useState } from 'react';
 
-const useFingerprintInterceptor = () => {
+const useFingerprint = () => {
   const [fingerprint, $fingerprint] = useState<string | null>(null);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ const useFingerprintInterceptor = () => {
     fetchFingerprint();
   }, []);
 
-  return null;
+  return { fingerprint };
 };
 
-export default useFingerprintInterceptor;
+export default useFingerprint;

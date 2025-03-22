@@ -6,32 +6,22 @@ import { Label } from '@/components/ui/label';
 import { signinWithCredentials } from '@/lib/actions/auth.action';
 import { GATEWAY_URL } from '@/lib/configs';
 import pages from '@/lib/constants/pages';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import useFingerprint from '@/lib/hooks/use-fp.hook';
 import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 const CredentialsSigninForm = () => {
-  const [fingerprint, $fingerprint] = useState('');
   const [data, action] = useActionState(signinWithCredentials, {
     success: false,
     message: ''
   });
-  const searchParams = useSearchParams();
-  const handleLoginWithGithub = () => {
-    window.location.href = `${GATEWAY_URL}/auth/github`;
-  };
+  const { fingerprint } = useFingerprint();
 
-  useEffect(() => {
-    const fetchFP = async () => {
-      const fp = await FingerprintJS.load();
-      const { visitorId } = await fp.get();
-      $fingerprint(visitorId);
-    };
-    fetchFP();
-  }, []);
+  const handleLoginWithGithub = async () => {
+    window.location.href = `${GATEWAY_URL}/auth/github?fingerprint=${fingerprint}`;
+  };
 
   const SigninButton = () => {
     const { pending } = useFormStatus();
@@ -44,7 +34,7 @@ const CredentialsSigninForm = () => {
 
   return (
     <form action={action}>
-      <input type="hidden" name="fingerprint" value={fingerprint} />
+      <input type="hidden" name="fingerprint" value={fingerprint || ''} />
 
       <div className="space-y-6">
         <div className="space-y-2">

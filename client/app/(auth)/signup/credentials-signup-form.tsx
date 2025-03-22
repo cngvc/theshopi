@@ -6,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import { signupWithCredentials } from '@/lib/actions/auth.action';
 import pages from '@/lib/constants/pages';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -15,7 +14,6 @@ const CredentialsSignupForm = () => {
     success: false,
     message: ''
   });
-  const searchParams = useSearchParams();
 
   const SignupButton = () => {
     const { pending } = useFormStatus();

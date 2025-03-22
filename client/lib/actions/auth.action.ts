@@ -26,16 +26,24 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
   }
 }
 
-export async function signinWithSSO(_prevState: unknown, formData: FormData) {
+export async function signinWithSSO({
+  accessToken,
+  refreshToken,
+  fingerprint
+}: {
+  accessToken: string;
+  refreshToken: string;
+  fingerprint: string;
+}) {
   try {
     const { error, value: tokens } = signinSSOFormSchema.validate({
-      accessToken: formData.get('accessToken'),
-      refreshToken: formData.get('refreshToken')
+      accessToken,
+      refreshToken
     });
     if (error) {
       return { success: false, message: error.details[0].message };
     }
-    await signIn('credentials', { ...tokens, type: 'sso', fingerprint: formData.get('fingerprint') });
+    await signIn('credentials', { ...tokens, type: 'sso', fingerprint });
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
     if (isRedirectError(error)) {

@@ -18,7 +18,6 @@ export class AuthGrpcService {
     try {
       if (!token) return null;
       const tokenPayload = decode(token) as IAuthPayload;
-      console.log(tokenPayload.id, fingerprint);
       const keyToken = await keyTokenService.findKeyToken({
         authId: tokenPayload.id,
         fingerprint

@@ -7,7 +7,7 @@ class SSORoutes {
     this.router = express.Router();
   }
   public routes(): Router {
-    this.router.get('/auth/github', authController.github);
+    this.router.get('/auth/github', authController.githubLogin);
     this.router.get('/auth/github/callback', authController.githubCallback);
     return this.router;
   }
