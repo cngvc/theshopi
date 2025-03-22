@@ -5,8 +5,8 @@ import { Request, Response } from 'express';
 
 export class TokenController {
   public async refreshAccessToken(req: Request, res: Response): Promise<void> {
-    const { refreshToken, deviceInfo } = req.body;
-    const response: AxiosResponse = await authService.refreshAccessToken(refreshToken, deviceInfo);
+    const { refreshToken } = req.body;
+    const response: AxiosResponse = await authService.refreshAccessToken(refreshToken);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
 }

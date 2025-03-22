@@ -1,12 +1,13 @@
+'use client';
+
 import ProductList from '@/components/shared/product/product-list';
-import { getProductList } from '@/lib/actions/product.action';
+import { useProducts } from '@/lib/hooks/use-products.hook';
 
-const Page = async () => {
-  const products = await getProductList();
-
+const Page = () => {
+  const { data } = useProducts();
   return (
     <div>
-      <ProductList data={products} />
+      <ProductList data={data || []} />
     </div>
   );
 };

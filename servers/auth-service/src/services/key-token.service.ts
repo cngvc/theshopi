@@ -24,13 +24,13 @@ class KeyTokenService {
     await this.keyTokenRepository.delete(params);
   };
 
-  createKeyToken = async ({ authId, publicKey, privateKey, refreshToken, deviceInfo }: IKeyTokenDocument): Promise<void> => {
+  createKeyToken = async ({ authId, publicKey, privateKey, refreshToken, fingerprint }: IKeyTokenDocument): Promise<void> => {
     const keyToken = this.keyTokenRepository.create({
       authId,
       publicKey,
       privateKey,
       refreshToken,
-      deviceInfo
+      fingerprint
     });
     await this.keyTokenRepository.save(keyToken);
   };
@@ -56,7 +56,7 @@ class KeyTokenService {
     }
   };
 
-  generateTokens = async (user: IAuthDocument, deviceInfo = DEFAULT_DEVICE) => {
+  generateTokens = async (user: IAuthDocument, fingerprint = DEFAULT_DEVICE) => {
     const { privateKey, publicKey } = generateKeyPair();
     const tokens = await keyTokenService.createTokenPair({
       payload: {
@@ -72,7 +72,7 @@ class KeyTokenService {
       privateKey,
       publicKey,
       refreshToken: tokens.accessToken,
-      deviceInfo
+      fingerprint
     });
     return tokens;
   };

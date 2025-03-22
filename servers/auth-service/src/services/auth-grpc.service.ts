@@ -14,19 +14,20 @@ export class AuthGrpcService {
   }
 
   // this function is called from gateway service each request.
-  async verifyUserByToken(token: string, deviceInfo = DEFAULT_DEVICE): Promise<IAuthPayload | null> {
+  async verifyUserByToken(token: string, fingerprint = DEFAULT_DEVICE): Promise<IAuthPayload | null> {
     try {
       if (!token) return null;
       const tokenPayload = decode(token) as IAuthPayload;
+      console.log(tokenPayload.id, fingerprint);
       const keyToken = await keyTokenService.findKeyToken({
         authId: tokenPayload.id,
-        deviceInfo
+        fingerprint
       });
       if (!keyToken || !keyToken.publicKey) {
         throw new NotAuthorizedError('Public key not found', 'verifyAccessToken');
       }
       const payload = verify(token, keyToken.publicKey) as IAuthPayload;
-      if (!(await this.authRepository.exists({ where: { id: payload.id } }))) return null;
+      if (!(await this.authRepository.exists({ where: { id: payload?.id } }))) return null;
       return payload;
     } catch (error) {
       return null;

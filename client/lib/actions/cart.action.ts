@@ -8,7 +8,7 @@ import { redirect } from 'next/navigation';
 
 export async function getCart() {
   const session = await auth();
-  if (!session) redirect(pages.signin);
+  if (!session) return [];
   try {
     const { data } = await axiosInstance.get('/cart/');
     const cart: ICartItem[] = data.metadata?.cart || [];

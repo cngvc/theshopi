@@ -16,7 +16,6 @@ const CredentialsSignupForm = () => {
     message: ''
   });
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || pages.home;
 
   const SignupButton = () => {
     const { pending } = useFormStatus();
@@ -29,8 +28,6 @@ const CredentialsSignupForm = () => {
 
   return (
     <form action={action}>
-      <input type="hidden" name="callbackUrl" value={callbackUrl} />
-
       <div className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>

@@ -3,9 +3,7 @@ import { grpcAuthClient } from '@gateway/grpc/clients/auth-client.grpc';
 import { NextFunction, Request, Response } from 'express';
 
 export class AuthMiddleware {
-  private constructor() {}
-
-  static async verifyUserJwt(req: Request, _: Response, next: NextFunction) {
+  async verifyUserJwt(req: Request, _: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     // that means AttachUser-middleware has completed the verification job !!!
     if (req.headers['x-user']) return next();
@@ -14,8 +12,9 @@ export class AuthMiddleware {
     }
     try {
       const token = authHeader.split(' ')[1];
-      const deviceInfo = `${req.useragent?.os}-${req.useragent?.browser}`;
-      const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, deviceInfo);
+      const fingerprint = req.headers['x-device-fingerprint'] as string;
+
+      const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, fingerprint);
       if (!payload) {
         throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method');
       }
@@ -26,13 +25,13 @@ export class AuthMiddleware {
     next();
   }
 
-  static async attachUser(req: Request, _: Response, next: NextFunction) {
+  async attachUser(req: Request, _: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       try {
         const token = authHeader.split(' ')[1];
-        const deviceInfo = `${req.useragent?.os}-${req.useragent?.browser}`;
-        const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, deviceInfo);
+        const fingerprint = req.headers['x-device-fingerprint'] as string;
+        const { payload } = await grpcAuthClient.getCurrentUserByJwt(token, fingerprint);
         if (payload) {
           req.headers['x-user'] = JSON.stringify(payload);
         }
@@ -41,3 +40,5 @@ export class AuthMiddleware {
     next();
   }
 }
+
+export const authMiddleware = new AuthMiddleware();

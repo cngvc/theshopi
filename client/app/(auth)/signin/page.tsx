@@ -7,12 +7,10 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import CredentialsSigninForm from './credentials-signin-form';
 
-const SigninPage = async (props: { searchParams: Promise<{ callbackUrl: string }> }) => {
-  const { callbackUrl } = await props.searchParams;
+const SigninPage = async () => {
   const session = await auth();
-
   if (session?.user) {
-    redirect(callbackUrl || pages.home);
+    redirect(pages.home);
   }
 
   return (

@@ -19,6 +19,7 @@ import { Request, Response } from 'express';
 class CurrentUserController {
   async getCurrentUser(req: Request, res: Response): Promise<void> {
     const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
+    console.log(currentUser);
     const existingUser = await authService.getAuthUserById(currentUser.id);
     if (!existingUser) {
       throw new NotFoundError('User not found', 'getCurrentUser');

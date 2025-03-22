@@ -28,9 +28,6 @@ const ShippingAddressForm = ({ address }: { address?: IShippingAddress }) => {
     updateBuyerShippingAddress(values, {
       onSuccess: () => {
         router.back();
-      },
-      onError: (err) => {
-        console.error('Failed to update address:', err);
       }
     });
   };

@@ -1,5 +1,5 @@
 import { BASE_PATH } from '@gateway/constants/path';
-import { AuthMiddleware } from '@gateway/middlewares/auth.middleware';
+import { authMiddleware } from '@gateway/middlewares/auth.middleware';
 import { authRoute } from '@gateway/routes/auth.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
 import { cartRoutes } from '@gateway/routes/cart.route';
@@ -28,7 +28,7 @@ export const appRoutes = (app: Application) => {
   app.use(BASE_PATH, publicRouter);
 
   const privateRouter = Router();
-  privateRouter.use(AuthMiddleware.verifyUserJwt);
+  privateRouter.use(authMiddleware.verifyUserJwt);
 
   privateRouter.use(productRoutes.routes());
   privateRouter.use(storeRoutes.routes());

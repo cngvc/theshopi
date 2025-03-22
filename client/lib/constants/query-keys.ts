@@ -6,5 +6,6 @@ export default {
   buyer: 'buyer',
   orders: 'orders',
   order: 'order',
-  store: 'store'
+  store: 'store',
+  products: 'products'
 };

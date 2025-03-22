@@ -1,5 +1,5 @@
 import { config } from '@auth/config';
-import { DEFAULT_DEVICE, USER_PROVIDER } from '@auth/constants';
+import { USER_PROVIDER } from '@auth/constants';
 import { authService } from '@auth/services/auth.service';
 import { keyTokenService } from '@auth/services/key-token.service';
 import { userProviderService } from '@auth/services/user-provider.service';
@@ -23,7 +23,8 @@ class SSOController {
 
   githubCallback = async (req: Request, res: Response) => {
     const { code } = req.query;
-    const deviceInfo = DEFAULT_DEVICE;
+    const fingerprint = req.headers['x-device-fingerprint'] as string;
+
     if (!code) {
       throw new BadRequestError('No code provided', 'githubCallback');
     }
@@ -43,7 +44,6 @@ class SSOController {
       const userResponse = await axios.get(`${API_GITHUB_URL}/user`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
-      console.log(userResponse);
       const emailResponse = await axios.get(`${API_GITHUB_URL}/user/emails`, {
         headers: { Authorization: `Bearer ${accessToken}` }
       });
@@ -59,24 +59,25 @@ class SSOController {
         provider: USER_PROVIDER.github,
         providerId: githubUser.id
       });
-      let authUser = await authService.getAuthUserByUsernameOrEmail(githubUser.email);
+      let user = await authService.getAuthUserByUsernameOrEmail(githubUser.email);
       if (!userProvider) {
-        if (!authUser) {
+        if (!user) {
           const authData: IAuthDocument = {
             username: lowerCase(githubUser.username),
             email: lowerCase(githubUser.email),
             password: crypto.randomBytes(16).toString('hex'),
             emailVerified: true
           };
-          authUser = await authService.createAuthUser(authData);
+          user = await authService.createAuthUser(authData);
         }
         await userProviderService.createUserProvider({
           provider: USER_PROVIDER.github,
           providerId: githubUser.id,
-          user: authUser
+          user: user
         });
       }
-      const tokens = await keyTokenService.generateTokens(authUser!, deviceInfo);
+      await keyTokenService.deleteKeyToken({ authId: user!.id, fingerprint });
+      const tokens = await keyTokenService.generateTokens(user!, fingerprint);
       new OkRequestSuccess('SSO Github Callback', {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken

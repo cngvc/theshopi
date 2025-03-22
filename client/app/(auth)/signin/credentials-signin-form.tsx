@@ -4,19 +4,34 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signinWithCredentials } from '@/lib/actions/auth.action';
+import { GATEWAY_URL } from '@/lib/configs';
 import pages from '@/lib/constants/pages';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useActionState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 const CredentialsSigninForm = () => {
+  const [fingerprint, $fingerprint] = useState('');
   const [data, action] = useActionState(signinWithCredentials, {
     success: false,
     message: ''
   });
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || pages.home;
+  const handleLoginWithGithub = () => {
+    window.location.href = `${GATEWAY_URL}/auth/github`;
+  };
+
+  useEffect(() => {
+    const fetchFP = async () => {
+      const fp = await FingerprintJS.load();
+      const { visitorId } = await fp.get();
+      $fingerprint(visitorId);
+    };
+    fetchFP();
+  }, []);
 
   const SigninButton = () => {
     const { pending } = useFormStatus();
@@ -29,7 +44,7 @@ const CredentialsSigninForm = () => {
 
   return (
     <form action={action}>
-      <input type="hidden" name="callbackUrl" value={callbackUrl} />
+      <input type="hidden" name="fingerprint" value={fingerprint} />
 
       <div className="space-y-6">
         <div className="space-y-2">
@@ -41,7 +56,7 @@ const CredentialsSigninForm = () => {
             type="text"
             autoComplete="username"
             placeholder="Enter your email or username"
-            defaultValue={'kneelingpony'}
+            defaultValue={'thurman_hayes83@gmail.com'}
           />
         </div>
         <div className="space-y-2">
@@ -58,6 +73,12 @@ const CredentialsSigninForm = () => {
         </div>
 
         <SigninButton />
+        <Button className="w-full" type="button" variant={'default'} onClick={handleLoginWithGithub}>
+          <SiGithub className="text-background size-5" /> Signin with Github
+        </Button>
+        <Button disabled className="w-full" variant={'default'}>
+          <SiGoogle className="text-background size-5" /> Signin with Google
+        </Button>
 
         {data && !data?.success && <div className="text-center text-destructive">{data.message}</div>}
 

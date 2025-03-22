@@ -6,7 +6,7 @@ export interface IKeyTokenDocument {
   publicKey: string;
   privateKey: string;
   refreshToken: string;
-  deviceInfo: string;
+  fingerprint: string;
 }
 
 @Entity('key-tokens')
@@ -27,5 +27,5 @@ export class KeyTokenModel extends BaseEntity implements IKeyTokenDocument {
   refreshToken!: string;
 
   @Column()
-  deviceInfo!: string;
+  fingerprint!: string;
 }

@@ -1,4 +1,3 @@
-import { DEFAULT_DEVICE } from '@auth/constants';
 import { authService } from '@auth/services/auth.service';
 import { keyTokenService } from '@auth/services/key-token.service';
 import { BadRequestError, OkRequestSuccess } from '@cngvc/shopi-shared';
@@ -11,25 +10,26 @@ class RefreshTokenController {
       {},
       {
         refreshToken: string;
-        deviceInfo: string;
       }
     >,
     res: Response
   ) {
-    const { refreshToken, deviceInfo = DEFAULT_DEVICE } = req.body;
+    const fingerprint = req.headers['x-device-fingerprint'] as string;
+
+    const { refreshToken } = req.body;
     const existingToken = await keyTokenService.findKeyToken({ refreshToken });
     if (!existingToken) throw new BadRequestError('Invalid refresh token', 'refreshAccessToken');
 
-    if (deviceInfo && existingToken.deviceInfo !== deviceInfo) {
+    if (fingerprint && existingToken.fingerprint !== fingerprint) {
       throw new BadRequestError('Device mismatch', 'refreshAccessToken');
     }
     const { authId } = existingToken;
-    await keyTokenService.deleteKeyToken({ refreshToken });
     const user = await authService.getAuthUserById(authId);
     if (!user) {
       throw new BadRequestError('User not found', 'refreshAccessToken');
     }
-    const tokens = await keyTokenService.generateTokens(user, deviceInfo);
+    await keyTokenService.deleteKeyToken({ refreshToken });
+    const tokens = await keyTokenService.generateTokens(user, fingerprint);
     new OkRequestSuccess('Refreshed tokens successfully', {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken

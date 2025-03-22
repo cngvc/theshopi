@@ -1,4 +1,5 @@
 import '@/assets/globals.css';
+import FpInitializer from '@/components/shared/fp-initializer';
 import SocketInitializer from '@/components/shared/socket/socket-initializer';
 import { SERVER_URL } from '@/lib/configs';
 import { APP_DESC, APP_NAME } from '@/lib/constants';
@@ -24,6 +25,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <Providers>
           {children}
           <SocketInitializer />
+          <FpInitializer />
         </Providers>
       </body>
     </html>

@@ -5,6 +5,7 @@ import axiosInstance from '@/lib/axios';
 import { formatError } from '@/lib/utils';
 import { signinSchema, signupClientSchema } from '@cngvc/shopi-types';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import { signinSSOFormSchema } from '../validators/auth-validator';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
   try {
@@ -15,7 +16,26 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
     if (error) {
       return { success: false, message: error.details[0].message };
     }
-    await signIn('credentials', user);
+    await signIn('credentials', { ...user, type: 'credentials', fingerprint: formData.get('fingerprint') });
+    return { success: true, message: 'Signed in successfully' };
+  } catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function signinWithSSO(_prevState: unknown, formData: FormData) {
+  try {
+    const { error, value: tokens } = signinSSOFormSchema.validate({
+      accessToken: formData.get('accessToken'),
+      refreshToken: formData.get('refreshToken')
+    });
+    if (error) {
+      return { success: false, message: error.details[0].message };
+    }
+    await signIn('credentials', { ...tokens, type: 'sso', fingerprint: formData.get('fingerprint') });
     return { success: true, message: 'Signed in successfully' };
   } catch (error) {
     if (isRedirectError(error)) {

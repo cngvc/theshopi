@@ -9,29 +9,65 @@ const config: NextAuthConfig = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        username: { label: 'Username', type: 'text' },
-        password: { label: 'Password', type: 'password' }
+        username: { type: 'text' },
+        password: { type: 'password' },
+        fingerprint: { type: 'text', required: true },
+        accessToken: { type: 'text', required: false },
+        refreshToken: { type: 'text', required: false },
+        type: { type: 'text', required: true, defaultValue: 'credentials' }
       },
       async authorize(credentials) {
-        try {
-          const { data } = await axiosInstance.post(`/auth/signin`, {
-            username: credentials?.username,
-            password: credentials?.password
+        console.log(credentials);
+        if (credentials.type === 'credentials') {
+          try {
+            const { data } = await axiosInstance.post(
+              `/auth/signin`,
+              {
+                username: credentials?.username,
+                password: credentials?.password
+              },
+              {
+                headers: {
+                  'x-device-fingerprint': credentials.fingerprint
+                } as Record<string, string>
+              }
+            );
+            if (data?.metadata?.user) {
+              const { user, accessToken, refreshToken } = data.metadata;
+              return {
+                id: user.id,
+                name: user.username,
+                email: user.email,
+                username: user.username,
+                accessToken: accessToken,
+                refreshToken: refreshToken
+              } as User;
+            }
+            return null;
+          } catch (error: unknown) {
+            return null;
+          }
+        }
+        if (credentials.type === 'sso') {
+          const { data } = await axiosInstance.get('/auth/me', {
+            headers: {
+              Authorization: `Bearer ${credentials.accessToken}`,
+              'x-device-fingerprint': credentials.fingerprint
+            } as Record<string, string>
           });
           if (data?.metadata?.user) {
-            const { user, accessToken } = data.metadata;
+            const { user } = data.metadata;
             return {
               id: user.id,
               name: user.username,
               email: user.email,
               username: user.username,
-              accessToken: accessToken
+              accessToken: credentials.accessToken,
+              refreshToken: credentials.refreshToken
             } as User;
           }
-          return null;
-        } catch (error: unknown) {
-          return null;
         }
+        return null;
       }
     })
   ],

@@ -2,7 +2,7 @@ import 'express-async-errors';
 
 import { CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
-import { DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
+import { DEFAULT_DEVICE, DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
 import { elasticSearch } from '@gateway/elasticsearch';
 import { endpointMiddleware } from '@gateway/middlewares/endpoint.middleware';
 import { appRoutes } from '@gateway/routes';
@@ -18,14 +18,14 @@ import { isAxiosError } from 'axios';
 import compression from 'compression';
 import cors from 'cors';
 import { Application, json, NextFunction, Request, Response, urlencoded } from 'express';
-import * as useragent from 'express-useragent';
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { StatusCodes } from 'http-status-codes';
-import { AuthMiddleware } from './middlewares/auth.middleware';
+import { authMiddleware } from './middlewares/auth.middleware';
 import { rateLimitMiddleware } from './middlewares/redis-rate-limit.middleware';
+import { userAgentMiddleware } from './middlewares/user-agent.middleware';
 
 export class GatewayServer {
   private app: Application;
@@ -46,7 +46,6 @@ export class GatewayServer {
 
   private securityMiddleware(): void {
     this.app.set('trust proxy', 1);
-    this.app.use(useragent.express());
     this.app.use(hpp());
     this.app.use(helmet());
     this.app.use(
@@ -56,10 +55,10 @@ export class GatewayServer {
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
       })
     );
-    this.app.use(endpointMiddleware.gatewayRequestLogger);
     this.app.use(rateLimitMiddleware.redisRateLimit);
+    this.app.use(authMiddleware.attachUser);
+    this.app.use(userAgentMiddleware.attachUseragent);
 
-    this.app.use(AuthMiddleware.attachUser);
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       const headerXUser = req.headers['x-user'] as string | undefined;
       if (headerXUser) {
@@ -71,8 +70,14 @@ export class GatewayServer {
         cartService.setXUserHeader(headerXUser);
         orderService.setXUserHeader(headerXUser);
       }
+      const headerXUserDeviceFP = (req.headers['x-device-fingerprint'] as string) || DEFAULT_DEVICE;
+      if (headerXUserDeviceFP) {
+        authService.setXUserDeviceFPHeader(headerXUserDeviceFP);
+      }
       next();
     });
+
+    this.app.use(endpointMiddleware.gatewayRequestLogger);
   }
 
   private startElasticSearch(): void {
