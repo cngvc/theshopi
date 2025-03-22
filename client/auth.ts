@@ -20,7 +20,7 @@ const config: NextAuthConfig = {
         if (credentials.type === 'credentials') {
           try {
             const { data } = await axiosInstance.post(
-              `/auth/signin`,
+              '/auth/signin',
               {
                 username: credentials?.username,
                 password: credentials?.password

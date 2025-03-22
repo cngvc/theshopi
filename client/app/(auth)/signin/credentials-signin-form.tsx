@@ -26,8 +26,8 @@ const CredentialsSigninForm = () => {
   const SigninButton = () => {
     const { pending } = useFormStatus();
     return (
-      <Button className="w-full" variant={'default'}>
-        {pending ? 'Loading...' : 'Sign In'}
+      <Button className="w-full h-12" variant={'default'}>
+        {pending ? 'Loading...' : 'Sign In with Account'}
       </Button>
     );
   };
@@ -36,7 +36,7 @@ const CredentialsSigninForm = () => {
     <form action={action}>
       <input type="hidden" name="fingerprint" value={fingerprint || ''} />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
           <Input
@@ -63,10 +63,10 @@ const CredentialsSigninForm = () => {
         </div>
 
         <SigninButton />
-        <Button className="w-full" type="button" variant={'default'} onClick={handleLoginWithGithub}>
+        <Button className="w-full h-12" type="button" variant={'default'} onClick={handleLoginWithGithub}>
           <SiGithub className="text-background size-5" /> Signin with Github
         </Button>
-        <Button disabled className="w-full" variant={'default'}>
+        <Button disabled className="w-full h-12" variant={'default'}>
           <SiGoogle className="text-background size-5" /> Signin with Google
         </Button>
 

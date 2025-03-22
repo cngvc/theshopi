@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { signupWithCredentials } from '@/lib/actions/auth.action';
+import { GATEWAY_URL } from '@/lib/configs';
 import pages from '@/lib/constants/pages';
+import useFingerprint from '@/lib/hooks/use-fp.hook';
+import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -15,10 +18,16 @@ const CredentialsSignupForm = () => {
     message: ''
   });
 
+  const { fingerprint } = useFingerprint();
+
+  const handleLoginWithGithub = async () => {
+    window.location.href = `${GATEWAY_URL}/auth/github?fingerprint=${fingerprint}`;
+  };
+
   const SignupButton = () => {
     const { pending } = useFormStatus();
     return (
-      <Button className="w-full" variant={'default'}>
+      <Button className="w-full h-12" variant={'default'}>
         {pending ? 'Loading...' : 'Sign Up'}
       </Button>
     );
@@ -26,7 +35,7 @@ const CredentialsSignupForm = () => {
 
   return (
     <form action={action}>
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>
           <Input
@@ -78,6 +87,12 @@ const CredentialsSignupForm = () => {
         </div>
 
         <SignupButton />
+        <Button className="w-full h-12" type="button" variant={'default'} onClick={handleLoginWithGithub}>
+          <SiGithub className="text-background size-5" /> Signin with Github
+        </Button>
+        <Button disabled className="w-full h-12" variant={'default'}>
+          <SiGoogle className="text-background size-5" /> Signin with Google
+        </Button>
 
         {data && !data?.success && <div className="text-center text-destructive">{data.message}</div>}
 
