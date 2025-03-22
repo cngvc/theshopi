@@ -24,7 +24,6 @@ const config: NextAuthConfig = {
             });
             if (data?.metadata?.user) {
               const { user, accessToken, refreshToken } = data.metadata;
-              console.log({ accessToken, refreshToken });
               return {
                 id: user.id,
                 name: user.username,

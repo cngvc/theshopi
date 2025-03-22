@@ -24,7 +24,6 @@ export class Database {
       await this.createDefaultAdmin();
       log.info(SERVICE_NAME + ' Mysql database connection has been established successfully');
     } catch (error) {
-      console.log(error);
       captureError(error, 'connection');
     }
   }

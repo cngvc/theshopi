@@ -16,8 +16,9 @@ class RefreshTokenController {
   ) {
     const { refreshToken } = req.body;
     const existingToken = await keyTokenService.findKeyToken({ refreshToken });
-    if (!existingToken) throw new BadRequestError('Invalid refresh token', 'refreshAccessToken');
-
+    if (!existingToken) {
+      throw new BadRequestError('Invalid refresh token', 'refreshAccessToken');
+    }
     const { authId } = existingToken;
     const user = await authService.getAuthUserById(authId);
     if (!user) {
