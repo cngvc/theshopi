@@ -36,7 +36,7 @@ class KeyTokenService {
   createTokenPair = ({ payload, publicKey, privateKey }: { payload: IAuthPayload; publicKey: string; privateKey: string }) => {
     try {
       const accessToken = sign(payload, privateKey, {
-        expiresIn: '30s',
+        expiresIn: '1d',
         algorithm: 'RS256'
       });
       const refreshToken = sign(payload, privateKey, {

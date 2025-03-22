@@ -18,7 +18,8 @@ export class AuthMiddleware {
       }
       req.headers['x-user'] = JSON.stringify(payload);
     } catch (error) {
-      throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method missing user');
+      console.log(error);
+      throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method');
     }
     next();
   }

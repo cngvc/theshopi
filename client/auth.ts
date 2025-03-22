@@ -2,6 +2,7 @@ import axiosPrivateInstance from '@/lib/axios-private';
 import pages from '@/lib/constants/pages';
 import NextAuth, { NextAuthConfig, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import axiosPublicInstance from './lib/axios-public';
 import { NEXTAUTH_SECRET } from './lib/configs';
 
 const config: NextAuthConfig = {
@@ -38,8 +39,8 @@ const config: NextAuthConfig = {
             return null;
           }
         }
-        if (credentials.type === 'sso') {
-          const { data } = await axiosPrivateInstance.get('/auth/me', {
+        if (credentials.type === 'sso' || credentials.type === 'refresh-token') {
+          const { data } = await axiosPublicInstance.get('/auth/me', {
             headers: {
               Authorization: `Bearer ${credentials.accessToken}`
             } as Record<string, string>
@@ -56,12 +57,6 @@ const config: NextAuthConfig = {
             } as User;
           }
           return null;
-        }
-        if (credentials.type === 'refresh-token') {
-          return {
-            accessToken: credentials.accessToken!,
-            refreshToken: credentials.refreshToken!
-          } as User;
         }
         return null;
       }

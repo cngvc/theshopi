@@ -14,14 +14,7 @@ const ItemQuantity = ({ quantity, productPublicId }: { quantity: number; product
 
   return (
     <div className="flex-center gap-2">
-      <Button
-        disabled={isDecreaseCartPending}
-        variant="outline"
-        type="button"
-        onClick={() => {
-          decreaseCartItem(productPublicId);
-        }}
-      >
+      <Button disabled={isDecreaseCartPending} variant="outline" type="button" onClick={() => decreaseCartItem(productPublicId)}>
         {isDecreaseCartPending ? <Loader className="w-4 h-4 animate-spin" /> : <Minus className="w-4 h-4" />}
       </Button>
       <span>
@@ -38,14 +31,7 @@ const ItemQuantity = ({ quantity, productPublicId }: { quantity: number; product
         />
       </span>
 
-      <Button
-        disabled={isIncreaseCartPending}
-        variant="outline"
-        type="button"
-        onClick={() => {
-          increaseCartItem(productPublicId);
-        }}
-      >
+      <Button disabled={isIncreaseCartPending} variant="outline" type="button" onClick={() => increaseCartItem(productPublicId)}>
         {isIncreaseCartPending ? <Loader className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
       </Button>
     </div>

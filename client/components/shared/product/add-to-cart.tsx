@@ -9,7 +9,7 @@ import { useMemo } from 'react';
 
 const AddToCart = ({ item }: { item: IProductDocument }) => {
   const { data } = useCart();
-  const { mutate: addToCart, isPending } = useAddToCart();
+  const { mutateAsync: addToCart, isPending } = useAddToCart();
 
   const existItems = useMemo(() => {
     return data?.find((ci) => ci.productPublicId === item.productPublicId)?.quantity || 0;

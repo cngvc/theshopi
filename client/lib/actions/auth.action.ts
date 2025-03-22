@@ -63,6 +63,7 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
       email: user.email
     });
     await signIn('credentials', {
+      type: 'credentials',
       username: user.username,
       password: user.password
     });

@@ -5,10 +5,10 @@ import { useCreateOrder } from '@/lib/hooks/use-create-order.hook';
 import { Check, Loader } from 'lucide-react';
 
 const PlaceOrderForm = ({ disabled }: { disabled: boolean }) => {
-  const { mutate: createOrder, isPending } = useCreateOrder();
+  const { mutateAsync: createOrder, isPending } = useCreateOrder();
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    createOrder();
+    await createOrder();
   };
   return (
     <form onSubmit={handleSubmit} className="w-full">

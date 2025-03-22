@@ -4,10 +4,11 @@ import { auth } from '@/auth';
 import { IBuyerPayment, IStoreDocument, paymentScheme, shippingAddressSchema } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
 import axiosPrivateInstance from '../axios-private';
+import axiosPublicInstance from '../axios-public';
 import pages from '../constants/pages';
 
 export async function getStoreByStorePublicId(storePublicId: string) {
-  const { data } = await axiosPrivateInstance.get(`store/${storePublicId}`);
+  const { data } = await axiosPublicInstance.get(`store/${storePublicId}`);
   const store: IStoreDocument = data.metadata?.store;
   return store;
 }

@@ -39,7 +39,7 @@ const MessageBox = ({ conversationPublicId }: { conversationPublicId: string }) 
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
 
   const { data: messages, isLoading: fetchMessageLoading } = useMessages(conversationPublicId);
-  const { mutate: sendMessageMutation } = useSendMessage();
+  const { mutateAsync: sendMessageMutation } = useSendMessage();
   const { data: conversation, isLoading: fetchConversationLoading } = useConversation(conversationPublicId);
 
   useEffect(() => {
@@ -52,13 +52,13 @@ const MessageBox = ({ conversationPublicId }: { conversationPublicId: string }) 
     return conversation?.participants?.find((e) => e.authId !== id);
   }, [id, conversation?.participants]);
 
-  const handleSubmit = ({ content }: { content: string }) => {
+  const handleSubmit = async ({ content }: { content: string }) => {
     if (!conversation || !conversation.conversationPublicId || !content?.length || !partner) return;
 
     editorRef?.current?.enable(false);
     editorRef?.current?.setText('');
 
-    sendMessageMutation({
+    await sendMessageMutation({
       conversationPublicId: conversation.conversationPublicId,
       receiverAuthId: `${partner.authId}`,
       body: content

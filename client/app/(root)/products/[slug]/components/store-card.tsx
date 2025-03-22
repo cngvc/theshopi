@@ -11,13 +11,13 @@ import StoreSkeleton from './store-skeleton';
 
 const StoreCard = ({ storePublicId }: { storePublicId: string }) => {
   const { data, isLoading } = useStore(storePublicId);
-  const { mutate: chatWithStore, isPending } = useChatWithStore();
+  const { mutateAsync: chatWithStore, isPending } = useChatWithStore();
   const handleChatWithStore = async () => {
     if (!data) {
       toast.error('Store not found');
       return;
     }
-    chatWithStore(`${data.ownerAuthId}`);
+    await chatWithStore(`${data.ownerAuthId}`);
   };
   if (isLoading) return <StoreSkeleton />;
 
