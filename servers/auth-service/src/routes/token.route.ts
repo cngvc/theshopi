@@ -8,7 +8,7 @@ class TokenRoutes {
   }
 
   public routes(): Router {
-    this.router.post('/refresh-token', refreshTokenController.refreshAccessToken);
+    this.router.post('/refresh-token', refreshTokenController.rotateRefreshToken);
     return this.router;
   }
 }

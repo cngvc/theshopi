@@ -2,7 +2,7 @@
 
 import { auth, signIn } from '@/auth';
 import axios, { AxiosError, CreateAxiosDefaults } from 'axios';
-import { getRefreshToken } from './actions/auth.action';
+import { rotateRefreshToken } from './actions/auth.action';
 import { GATEWAY_URL } from './configs';
 
 const axiosPrivateInstance = axios.create({
@@ -29,7 +29,7 @@ axiosPrivateInstance.interceptors.response.use(
     if (originalRequest._retry) return Promise.reject(error);
     originalRequest._retry = true;
     try {
-      const result = await getRefreshToken(session?.refreshToken!);
+      const result = await rotateRefreshToken(session?.refreshToken!);
       if (!result) return Promise.reject(error);
       await signIn('credentials', {
         type: 'refresh-token',

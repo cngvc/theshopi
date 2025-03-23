@@ -15,7 +15,7 @@ import {
   OkRequestSuccess,
   RoutingKeys
 } from '@cngvc/shopi-shared';
-import { signinSchema, signupSchema } from '@cngvc/shopi-types';
+import { signinSchema, signoutSchema, signupSchema } from '@cngvc/shopi-types';
 import * as argon2 from 'argon2';
 import crypto from 'crypto';
 import { Request, Response } from 'express';
@@ -128,6 +128,10 @@ class AuthController {
     >,
     res: Response
   ): Promise<void> {
+    const { error } = await Promise.resolve(signoutSchema.validate(req.body));
+    if (error?.details) {
+      throw new BadRequestError(error.details[0].message, 'signout method error validation');
+    }
     const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
     if (req.body.refreshToken) {
       await keyTokenService.deleteKeyToken({ authId: currentUser.id, refreshToken: req.body.refreshToken });

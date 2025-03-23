@@ -24,7 +24,7 @@ const CredentialsSignupForm = () => {
   const SignupButton = () => {
     const { pending } = useFormStatus();
     return (
-      <Button className="w-full h-12" variant={'default'}>
+      <Button className="w-full" size={'lg'} variant={'default'}>
         {pending ? 'Loading...' : 'Sign Up'}
       </Button>
     );
@@ -84,10 +84,10 @@ const CredentialsSignupForm = () => {
         </div>
 
         <SignupButton />
-        <Button className="w-full h-12" type="button" variant={'default'} onClick={handleLoginWithGithub}>
+        <Button className="w-full" size={'lg'} type="button" variant={'default'} onClick={handleLoginWithGithub}>
           <SiGithub className="text-background size-5" /> Signin with Github
         </Button>
-        <Button disabled className="w-full h-12" variant={'default'}>
+        <Button disabled className="w-full" size={'lg'} variant={'default'}>
           <SiGoogle className="text-background size-5" /> Signin with Google
         </Button>
 

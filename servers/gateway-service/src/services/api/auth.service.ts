@@ -13,7 +13,7 @@ class AuthService extends AxiosService {
     return response;
   }
 
-  async refreshAccessToken(refreshToken: string): Promise<AxiosResponse> {
+  async rotateRefreshToken(refreshToken: string): Promise<AxiosResponse> {
     const response: AxiosResponse = await this.post('/refresh-token', {
       refreshToken
     });

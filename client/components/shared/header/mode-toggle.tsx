@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 
 const ModeToggle = () => {
   const [mounted, $mounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme: $theme } = useTheme();
 
   useEffect(() => {
     $mounted(true);
@@ -37,7 +37,7 @@ const ModeToggle = () => {
         <DropdownMenuCheckboxItem
           checked={theme === 'system'}
           onClick={() => {
-            setTheme('system');
+            $theme('system');
           }}
         >
           System
@@ -46,7 +46,7 @@ const ModeToggle = () => {
         <DropdownMenuCheckboxItem
           checked={theme === 'dark'}
           onClick={() => {
-            setTheme('dark');
+            $theme('dark');
           }}
         >
           Dark
@@ -55,7 +55,7 @@ const ModeToggle = () => {
         <DropdownMenuCheckboxItem
           checked={theme === 'light'}
           onClick={() => {
-            setTheme('light');
+            $theme('light');
           }}
         >
           Light

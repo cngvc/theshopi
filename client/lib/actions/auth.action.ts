@@ -6,6 +6,7 @@ import { formatError } from '@/lib/utils';
 import { signinSchema, signupClientSchema } from '@cngvc/shopi-types';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import axiosPublicInstance from '../axios-public';
+import pages from '../constants/pages';
 import { signinSSOFormSchema } from '../validators/auth-validator';
 
 export async function signinWithCredentials(_prevState: unknown, formData: FormData) {
@@ -78,17 +79,17 @@ export async function signupWithCredentials(_prevState: unknown, formData: FormD
 
 export async function signoutUser() {
   const session = await auth();
-  if (session?.user?.refreshToken) {
+  if (session?.refreshToken) {
     try {
       await axiosPrivateInstance.post('/auth/signout', {
-        refreshToken: session?.user?.refreshToken
+        refreshToken: session.refreshToken
       });
     } catch (error) {}
   }
-  await signOut({ redirect: true });
+  await signOut({ redirectTo: pages.home, redirect: true });
 }
 
-export async function getRefreshToken(refreshToken: string) {
+export async function rotateRefreshToken(refreshToken: string) {
   try {
     const { data } = await axiosPublicInstance.post('/auth/refresh-token', {
       refreshToken: refreshToken
