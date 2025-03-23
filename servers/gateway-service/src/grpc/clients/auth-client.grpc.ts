@@ -36,6 +36,7 @@ class GrpcClient {
   getCurrentUserByJwt = async (token: string): Promise<GetCurrentUserByTokenResponse> => {
     try {
       return await new Promise((resolve, reject) => {
+        if (!token || !token.length) return reject('Token is invalid.');
         this.client.GetCurrentUserByJwt({ token }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);

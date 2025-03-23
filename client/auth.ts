@@ -94,18 +94,25 @@ const config: NextAuthConfig = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url === '/api/auth/signout') {
-        return `${baseUrl}/login`;
-      }
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
     async authorized({ request, auth }: any) {
-      const protectedPaths = [/\/messages\/(.*)/, /\/account\/(.*)/, /\/checkout\/(.*)/];
+      const protectedPaths = [
+        /\/messages(?:\/.*)?/,
+        /\/account(?:\/.*)?/,
+        /\/checkout(?:\/.*)?/,
+        /\/orders(?:\/.*)?/,
+        /\/purchases(?:\/.*)?/,
+        /\/cart(?:\/.*)?/
+      ];
       const { pathname } = request.nextUrl;
-      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
+      if (!auth && protectedPaths.some((p) => p.test(pathname))) {
+        return false;
+      }
       return true;
     }
   },
+
   pages: {
     signIn: pages.signin,
     error: pages.signin

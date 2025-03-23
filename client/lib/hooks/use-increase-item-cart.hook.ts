@@ -10,9 +10,6 @@ export const useIncreaseItemCart = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.cart] });
       toast.success('The product in cart has been updated');
-    },
-    onError: () => {
-      toast.error('Something was wrong');
     }
   });
 };

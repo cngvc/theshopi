@@ -10,9 +10,11 @@ const nextConfig = {
   },
   compiler: {},
   experimental: {},
-  webpack: (config) => {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.devtool = 'source-map';
+    }
     config.resolve.fallback = { fs: false };
-
     return config;
   }
 };

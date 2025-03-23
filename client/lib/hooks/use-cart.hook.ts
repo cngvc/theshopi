@@ -5,7 +5,8 @@ import queryKeys from '../constants/query-keys';
 export const useCart = () => {
   const { data, isLoading } = useQuery({
     queryKey: [queryKeys.cart],
-    queryFn: getCart
+    queryFn: getCart,
+    initialData: []
   });
   return { data, isLoading };
 };

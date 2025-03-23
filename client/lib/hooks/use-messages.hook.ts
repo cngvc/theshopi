@@ -13,7 +13,8 @@ export const useMessages = (id?: string | null) => {
   const { data, isLoading } = useQuery({
     queryKey: [queryKeys.messages, id],
     queryFn: () => getConversationMessages(id!),
-    enabled: !!id
+    enabled: !!id,
+    initialData: []
   });
 
   useEffect(() => {

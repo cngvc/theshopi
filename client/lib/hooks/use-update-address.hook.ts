@@ -12,9 +12,6 @@ export const useUpdateBuyerShippingAddress = () => {
       toast.success('Updated your shipping address.', {
         description: 'Use shipping address has been updated'
       });
-    },
-    onError: () => {
-      toast.error('Something was wrong');
     }
   });
 };

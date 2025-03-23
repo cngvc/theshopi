@@ -26,7 +26,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </Card>
       </div>
       <Card>
-        <CardContent className="flex flex-col gap-4">{children}</CardContent>
+        <CardContent className="flex flex-col flex-1 gap-4">{children}</CardContent>
       </Card>
     </div>
   );

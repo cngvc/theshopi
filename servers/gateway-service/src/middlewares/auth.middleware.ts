@@ -1,4 +1,4 @@
-import { NotAuthorizedError } from '@cngvc/shopi-shared';
+import { CustomError, getErrorMessage, NotAuthorizedError, ServerError } from '@cngvc/shopi-shared';
 import { grpcAuthClient } from '@gateway/grpc/clients/auth-client.grpc';
 import { NextFunction, Request, Response } from 'express';
 
@@ -7,19 +7,21 @@ export class AuthMiddleware {
     const authHeader = req.headers.authorization;
     // that means AttachUser-middleware has completed the verification job !!!
     if (req.headers['x-user']) return next();
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new NotAuthorizedError('Authorization token is missing or invalid.', 'verifyUserJwt method, missing token');
-    }
     try {
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        throw new NotAuthorizedError('Authorization token is missing or invalid.', 'verifyUserJwt');
+      }
       const token = authHeader.split(' ')[1];
       const { payload } = await grpcAuthClient.getCurrentUserByJwt(token);
       if (!payload) {
-        throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method, cannot fetch user');
+        throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt');
       }
       req.headers['x-user'] = JSON.stringify(payload);
-    } catch (error) {
-      console.log(error);
-      throw new NotAuthorizedError('Token is not available, please login again.', 'verifyUserJwt method');
+    } catch (error: unknown) {
+      if (error instanceof CustomError) {
+        return next(error);
+      }
+      throw new ServerError(getErrorMessage(error), 'verifyUserJwt');
     }
     next();
   }

@@ -8,7 +8,11 @@ import PaymentMethodForm from './form';
 const Page = () => {
   const { data, isLoading } = useCurrentBuyer();
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="flex flex-1 items-center justify-center">
+        <Loading />
+      </div>
+    );
   }
   return <PaymentMethodForm payment={data?.payment as IBuyerPayment} />;
 };

@@ -5,7 +5,8 @@ import queryKeys from '../constants/query-keys';
 export const useConversations = () => {
   const { data, isLoading } = useQuery({
     queryKey: [queryKeys.conversations],
-    queryFn: () => getConversationList()
+    queryFn: () => getConversationList(),
+    initialData: []
   });
   return { data, isLoading };
 };

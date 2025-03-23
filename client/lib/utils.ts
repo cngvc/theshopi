@@ -7,14 +7,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatError(error: any) {
-  if (error?.name === 'AxiosError' && error?.response) {
-    return error.response.data?.message || 'Something was wrong';
-  }
-
-  return typeof error.message === 'string' ? error.message : JSON.stringify(error.message);
-}
-
 export const formatDate = (isoString?: string) => {
   if (!isoString || isValid(isoString)) return '-';
   const date = parseISO(isoString);

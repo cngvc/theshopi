@@ -18,9 +18,6 @@ export const useAddToCart = () => {
           onClick: () => redirect(pages.cart)
         }
       });
-    },
-    onError: () => {
-      toast.error('Something was wrong');
     }
   });
 };

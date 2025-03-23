@@ -17,9 +17,6 @@ export const useCreateOrder = () => {
       if (data?.orderPublicId) {
         router.push(`${pages.orders}/${data?.orderPublicId}`);
       }
-    },
-    onError: () => {
-      toast.error('Something was wrong');
     }
   });
 };

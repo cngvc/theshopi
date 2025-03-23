@@ -11,9 +11,6 @@ export const useChatWithStore = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (receiverAuthId: string) => chatWithStore({ receiverAuthId: receiverAuthId }),
-    onError: (_error) => {
-      toast.error('Something was wrong.');
-    },
     onSuccess: (data) => {
       if (data?.conversationPublicId) {
         queryClient.invalidateQueries({ queryKey: [queryKeys.conversations] });

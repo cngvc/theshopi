@@ -12,9 +12,6 @@ export const useUpdateBuyerPayment = () => {
       toast.success('Updated your payment.', {
         description: 'Use payment has been updated'
       });
-    },
-    onError: () => {
-      toast.error('Something was wrong');
     }
   });
 };
