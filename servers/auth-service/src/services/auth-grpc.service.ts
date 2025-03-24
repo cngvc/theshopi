@@ -1,3 +1,4 @@
+import { DEFAULT_DEVICE } from '@auth/constants';
 import { AppDataSource } from '@auth/database';
 import { AuthModel } from '@auth/entities/auth.entity';
 import { IAuthPayload, NotAuthorizedError } from '@cngvc/shopi-shared';
@@ -13,12 +14,13 @@ export class AuthGrpcService {
   }
 
   // this function is called from gateway service each request.
-  async verifyUserByToken(token: string): Promise<IAuthPayload | null> {
+  async verifyUserByToken(token: string, fingerprint = DEFAULT_DEVICE): Promise<IAuthPayload | null> {
     try {
       if (!token) return null;
       const tokenPayload = decode(token) as IAuthPayload;
       const keyToken = await keyTokenService.findKeyToken({
-        authId: tokenPayload.id
+        authId: tokenPayload.id,
+        fingerprint
       });
       if (!keyToken || !keyToken.publicKey) {
         throw new NotAuthorizedError('Public key not found', 'verifyAccessToken');

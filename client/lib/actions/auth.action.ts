@@ -16,19 +16,27 @@ export async function signinWithCredentials(_prevState: unknown, formData: FormD
       password: formData.get('password')
     });
     if (error) throw new Error(error.details[0].message);
-    await signIn('credentials', { ...user, type: 'credentials' });
+    await signIn('credentials', { ...user, type: 'credentials', fingerprint: formData.get('fingerprint') });
     return { success: true, message: 'Signed in successfully' };
   });
 }
 
-export async function signinWithSSO({ accessToken, refreshToken }: { accessToken: string; refreshToken: string }) {
+export async function signinWithSSO({
+  accessToken,
+  refreshToken,
+  fingerprint
+}: {
+  accessToken: string;
+  refreshToken: string;
+  fingerprint?: string;
+}) {
   return safeAuthCall(async () => {
     const { error, value: tokens } = signinSSOFormSchema.validate({
       accessToken,
       refreshToken
     });
     if (error) throw new Error(error.details[0].message);
-    await signIn('credentials', { ...tokens, type: 'sso' });
+    await signIn('credentials', { ...tokens, type: 'sso', fingerprint });
     return { success: true, message: 'Signed in successfully' };
   });
 }
@@ -76,7 +84,7 @@ export async function signoutUser() {
 
 export async function rotateRefreshToken(refreshToken: string) {
   const result = await unsafeApiCall(async () => {
-    const { data } = await axiosPublicInstance.post('/auth/refresh-token123', {
+    const { data } = await axiosPublicInstance.post('/auth/refresh-token', {
       refreshToken: refreshToken
     });
     return data.metadata as { accessToken: string; refreshToken: string };

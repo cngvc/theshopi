@@ -5,10 +5,12 @@ declare module 'next-auth' {
     username: string;
     accessToken: string;
     refreshToken: string;
+    fingerprint: string;
   }
 
   interface Session extends DefaultSession {
     accessToken: string;
     refreshToken: string;
+    fingerprint: string;
   }
 }

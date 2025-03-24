@@ -1,3 +1,4 @@
+import { DEFAULT_DEVICE } from '@auth/constants';
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export interface IKeyTokenDocument {
@@ -6,6 +7,7 @@ export interface IKeyTokenDocument {
   publicKey: string;
   privateKey: string;
   refreshToken: string;
+  fingerprint: string;
 }
 
 @Entity('key-tokens')
@@ -24,4 +26,7 @@ export class KeyTokenModel extends BaseEntity implements IKeyTokenDocument {
 
   @Column({ type: 'text' })
   refreshToken!: string;
+
+  @Column({ default: DEFAULT_DEVICE })
+  fingerprint!: string;
 }

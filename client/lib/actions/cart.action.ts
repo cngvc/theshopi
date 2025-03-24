@@ -1,17 +1,17 @@
 'use server';
 
 import { auth } from '@/auth';
-import axiosPrivateInstance from '@/lib/axios-private';
 import pages from '@/lib/constants/pages';
 import { ICartItem } from '@cngvc/shopi-types';
 import { redirect } from 'next/navigation';
 import { safeApiCall } from '../axios-helper';
+import axiosPrivateInstance from '../axios-private';
 
 export async function getCart() {
   const session = await auth();
   if (!session) return [];
   return safeApiCall<ICartItem[]>(async () => {
-    const response = await axiosPrivateInstance.get('/cart/');
+    const response = await axiosPrivateInstance.get('/cart');
     return response.data.metadata?.cart || [];
   });
 }

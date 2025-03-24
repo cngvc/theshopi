@@ -1,5 +1,6 @@
 import { CreatedRequestSuccess, OkRequestSuccess } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
+import { DEFAULT_DEVICE } from '@gateway/constants';
 import { authService } from '@gateway/services/api/auth.service';
 import { log } from '@gateway/utils/logger.util';
 import { AxiosResponse } from 'axios';
@@ -16,7 +17,7 @@ class AuthController {
   async signin(req: Request, res: Response): Promise<void> {
     const response: AxiosResponse = await authService.signin(req.body);
     const { message, metadata } = response.data;
-    log.info(`User ${metadata.user.username} has logged in.`);
+    log.info(`User ${metadata.user.username} has logged in. ${req.headers['x-device-fingerprint'] || DEFAULT_DEVICE}`);
     new OkRequestSuccess(message, metadata).send(res);
   }
 
@@ -28,7 +29,7 @@ class AuthController {
   }
 
   async githubLogin(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await authService.github();
+    const response: AxiosResponse = await authService.github(req.query.fingerprint as string);
     const { message, metadata } = response.data;
     new OkRequestSuccess(message, metadata).redirect(res, metadata.authUrl);
   }

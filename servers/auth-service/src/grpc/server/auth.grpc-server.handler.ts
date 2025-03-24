@@ -5,6 +5,7 @@ import { ServerUnaryCall, sendUnaryData, status } from '@grpc/grpc-js';
 
 interface GetCurrentUserByTokenRequest {
   token: string;
+  fingerprint?: string;
 }
 
 interface GetCurrentUserByTokenResponse {
@@ -25,11 +26,11 @@ export class AuthServiceGrpcHandler {
     callback: sendUnaryData<GetCurrentUserByTokenResponse>
   ) => {
     try {
-      const { token } = call.request;
+      const { token, fingerprint } = call.request;
       if (!token) {
         callback(null, { payload: null });
       }
-      const payload = await authGrpcService.verifyUserByToken(token);
+      const payload = await authGrpcService.verifyUserByToken(token, fingerprint);
       callback(null, { payload });
     } catch (error) {
       callback({ code: status.INTERNAL, message: 'Internal Server Error' });

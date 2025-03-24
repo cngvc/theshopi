@@ -68,7 +68,8 @@ class AuthService extends AxiosService {
     return response;
   }
 
-  async github() {
+  async github(fingerprint: string) {
+    this.setXUserDeviceFPHeader(fingerprint);
     const response: AxiosResponse = await this.get('/github');
     return response;
   }

@@ -1,5 +1,3 @@
-'use server';
-
 import { auth, signIn } from '@/auth';
 import axios, { AxiosError, CreateAxiosDefaults } from 'axios';
 import { rotateRefreshToken } from './actions/auth.action';
@@ -15,6 +13,9 @@ axiosPrivateInstance.interceptors.request.use(async (request) => {
   const session = await auth();
   if (session?.accessToken) {
     request.headers.Authorization = `Bearer ${session.accessToken}`;
+  }
+  if (session?.accessToken) {
+    request.headers['x-device-fingerprint'] = session.fingerprint;
   }
   return request;
 });

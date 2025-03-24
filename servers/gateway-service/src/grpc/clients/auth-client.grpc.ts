@@ -12,7 +12,7 @@ interface GetCurrentUserByTokenResponse {
 
 interface IClient extends grpc.Client {
   GetCurrentUserByJwt: (
-    request: { token: string },
+    request: { token: string; fingerprint?: string },
     callback: (error: grpc.ServiceError | null, response: GetCurrentUserByTokenResponse) => void
   ) => void;
 }
@@ -33,11 +33,11 @@ class GrpcClient {
     this.client = new this.proto[service](config.AUTH_BASE_URL_GRPC, grpc.credentials.createInsecure());
   }
 
-  getCurrentUserByJwt = async (token: string): Promise<GetCurrentUserByTokenResponse> => {
+  getCurrentUserByJwt = async (token: string, fingerprint?: string): Promise<GetCurrentUserByTokenResponse> => {
     try {
       return await new Promise((resolve, reject) => {
         if (!token || !token.length) return reject('Token is invalid.');
-        this.client.GetCurrentUserByJwt({ token }, (err, response) => {
+        this.client.GetCurrentUserByJwt({ token, fingerprint }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);
         });

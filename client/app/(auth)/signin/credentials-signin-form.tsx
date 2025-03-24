@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { signinWithCredentials } from '@/lib/actions/auth.action';
 import { GATEWAY_URL } from '@/lib/configs';
 import pages from '@/lib/constants/pages';
+import useFingerprint from '@/lib/hooks/use-fp.hook';
 import { SiGithub, SiGoogle } from '@icons-pack/react-simple-icons';
 import Link from 'next/link';
 import { useActionState } from 'react';
@@ -16,11 +17,10 @@ const CredentialsSigninForm = () => {
     success: false,
     message: ''
   });
-
+  const { fingerprint } = useFingerprint();
   const handleLoginWithGithub = async () => {
-    window.location.href = `${GATEWAY_URL}/auth/github`;
+    window.location.href = `${GATEWAY_URL}/auth/github?fingerprint=${fingerprint}`;
   };
-
   const SigninButton = () => {
     const { pending } = useFormStatus();
     return (
@@ -29,9 +29,10 @@ const CredentialsSigninForm = () => {
       </Button>
     );
   };
-
   return (
     <form action={action}>
+      <input type="hidden" name="fingerprint" value={fingerprint || ''} />
+
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="username">Username</Label>

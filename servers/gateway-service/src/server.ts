@@ -2,7 +2,7 @@ import 'express-async-errors';
 
 import { CustomError, IErrorResponse } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
-import { DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
+import { DEFAULT_DEVICE, DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
 import { elasticSearch } from '@gateway/elasticsearch';
 import { endpointMiddleware } from '@gateway/middlewares/endpoint.middleware';
 import { appRoutes } from '@gateway/routes';
@@ -69,6 +69,10 @@ export class GatewayServer {
         chatService.setXUserHeader(headerXUser);
         cartService.setXUserHeader(headerXUser);
         orderService.setXUserHeader(headerXUser);
+      }
+      const headerXUserDeviceFP = (req.headers['x-device-fingerprint'] as string) || DEFAULT_DEVICE;
+      if (headerXUserDeviceFP) {
+        authService.setXUserDeviceFPHeader(headerXUserDeviceFP);
       }
       next();
     });
