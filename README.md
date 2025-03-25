@@ -45,12 +45,18 @@ _(-v flag for volumes if needed)_
 | **Online Status Service** | `http://localhost:4009` |
 | **Socket Service**        | `http://localhost:4010` |
 | **Cart Service**          | `http://localhost:4011` |
+| **Payment Service**       | `http://localhost:4012` |
 
 ---
+
+### Built libraries
+
+| `@cngvc/shopi-shared` | [Repo](https://github.com/cngvc/shopi-shared) |
+| `@cngvc/shopi-types` | [Repo](https://github.com/cngvc/shopi-types) |
 
 ### **📌 Notes:**
 
 - Ensure **Docker** and **Docker Compose** are installed before running the script.
-- Node version: 20
+- Node version: 22
 - [Bun](https://bun.sh/) _(like yarn)_
 - Container manager UI: [OrbStack](https://orbstack.dev)

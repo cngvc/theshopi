@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { AuthError } from 'next-auth';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 export async function safeApiCall<T>(apiCall: () => Promise<T>): Promise<T> {
@@ -36,8 +37,14 @@ function getErrorMessage(error: unknown): string {
     return error.response?.data?.message || 'Something went wrong.';
   }
   if (error instanceof Error) {
+    if (error instanceof AuthError) {
+      if (error.type === 'CredentialsSignin') {
+        return 'Invalid credentials';
+      }
+    }
     return error.message;
   }
+
   if (typeof error === 'object' && error !== null && 'message' in error) {
     return typeof error.message === 'string' ? error.message : JSON.stringify(error.message);
   }
