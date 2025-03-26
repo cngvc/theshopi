@@ -5,6 +5,7 @@ import { captureError } from '@order/utils/logger.util';
 
 interface CreatePaymentRequest {
   orderPublicId: string;
+  email: string;
   method: string;
   totalAmount: number;
   currency: string;
@@ -12,6 +13,7 @@ interface CreatePaymentRequest {
 
 interface CreatePaymentResponse {
   paymentPublicId: string;
+  clientSecret: string;
   status: string;
 }
 

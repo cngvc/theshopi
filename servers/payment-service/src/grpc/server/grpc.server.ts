@@ -2,9 +2,7 @@ import { paymentProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
 import { SERVICE_NAME } from '@payment/constants';
 import { log } from '@payment/utils/logger.util';
-import path from 'path';
 import { PaymentServiceGrpcHandler } from './payment.grpc-server.handler';
-const PROTO_PATH = path.join(__dirname, '../proto/payment.proto');
 
 class GrpcServer {
   private server: grpc.Server;

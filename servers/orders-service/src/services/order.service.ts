@@ -10,7 +10,11 @@ import { orderProducer } from '@order/queues/order.producer';
 import { orderChannel } from '@order/server';
 
 class OrderService {
-  createOrder = async (authId: string, payload: IOrderDocument): Promise<IOrderDocument> => {
+  createOrder = async (
+    authId: string,
+    email: string,
+    payload: IOrderDocument
+  ): Promise<{ orderPublicId: string; clientSecret?: string }> => {
     const buyer = await this.findCachedBuyerByAuthId(authId);
     if (!buyer?.shippingAddress) {
       throw new NotFoundError('Buyer shipping address not found', 'createOrder');
@@ -21,7 +25,7 @@ class OrderService {
     const itemsInCart = await this.findCachedCartByAuthId(authId);
 
     const order = await OrderModel.create({
-      buyerPublicId: buyer.buyerPublicId,
+      buyerPublicId: buyer.buyerPublicId!,
       buyerAuthId: authId,
       items: itemsInCart,
       shippingFee: 0,
@@ -37,13 +41,20 @@ class OrderService {
       currency: 'USD',
       method: order.payment.method,
       orderPublicId: order.orderPublicId!,
+      email: email,
       totalAmount: order.totalAmount!
     });
 
+    console.log('payment', {
+      currency: 'USD',
+      method: order.payment.method,
+      orderPublicId: order.orderPublicId!,
+      email: email,
+      totalAmount: order.totalAmount!
+    });
     if (!payment) {
       throw new ServerError('Cannot create payment', 'createOrder');
     }
-
     order.payment.paymentPublicId = payment.paymentPublicId;
     order.payment.status = payment.status;
     await order.save();
@@ -72,7 +83,10 @@ class OrderService {
       RoutingKeys.DELETE_COMPLETED_CART,
       JSON.stringify({ authId })
     );
-    return order;
+    return {
+      orderPublicId: order.orderPublicId!,
+      clientSecret: payment.clientSecret
+    };
   };
 
   getOrderByOrderPublicId = async (orderPublicId: string | null): Promise<IOrderDocument | null> => {

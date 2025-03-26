@@ -19,8 +19,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb-data:/data/db
-  mysql:
-    container_name: mysql_container
+  mysql_auth:
+    container_name: mysql_auth_container
     image: mysql:oracle
     restart: unless-stopped
     environment:
@@ -31,7 +31,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - mysql-data-auth:/var/lib/mysql
   rabbitmq:
     container_name: rabbitmq_container
     image: rabbitmq:3-management-alpine
@@ -192,7 +192,7 @@ services:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
       - CLIENT_URL=http://localhost:3000
-      - DATABASE_URL=mysql://admin:Asdfgh123@mysql_container:3306/theshopi_auth
+      - DATABASE_URL=mysql://admin:Asdfgh123@mysql_auth_container:3306/theshopi_auth
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
       - GATEWAY_JWT_TOKEN_SECRET=9d9uaKBfV3FEhTNCgvaJZQ
       - NODE_ENV=development
@@ -386,7 +386,7 @@ networks:
   elastic:
     name: elastic
 volumes:
-  mysql-data:
+  mysql-data-auth:
   redis-data:
   mongodb-data:
   rabbitmq-data:

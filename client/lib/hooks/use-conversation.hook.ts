@@ -6,8 +6,7 @@ export const useConversation = (id?: string | null) => {
   const { data, isLoading } = useQuery({
     queryKey: [queryKeys.conversation, id],
     queryFn: () => getConversationByConversationPublicId(id!),
-    enabled: !!id,
-    initialData: null
+    enabled: !!id
   });
   return { data, isLoading };
 };

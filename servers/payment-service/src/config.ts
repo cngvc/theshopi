@@ -25,6 +25,7 @@ class Config {
   public RABBITMQ_ENDPOINT: string | undefined;
   public REDIS_HOST: string | undefined;
   public DATABASE_URL: string | undefined;
+  public STRIPE_API_KEY: string | undefined;
 
   constructor() {
     this.API_GATEWAY_URL = process.env.API_GATEWAY_URL || '';
@@ -35,6 +36,7 @@ class Config {
     this.RABBITMQ_ENDPOINT = process.env.RABBITMQ_ENDPOINT || '';
     this.REDIS_HOST = process.env.REDIS_HOST || '';
     this.DATABASE_URL = process.env.DATABASE_URL || '';
+    this.STRIPE_API_KEY = process.env.STRIPE_API_KEY || '';
   }
 }
 

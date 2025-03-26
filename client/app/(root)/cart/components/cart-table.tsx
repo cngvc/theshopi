@@ -86,7 +86,7 @@ const CartTable = () => {
                 <span className="font-bold">{formatCurrency(items.reduce((a, c) => a + c.price! * c.quantity, 0))}</span>
               </div>
               <Button className="w-full" disabled={isPending} onClick={() => startTransition(() => router.push(pages.checkout))}>
-                {isPending ? <Loader className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />} Proceed to Checkout
+                {isPending ? <Loader className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />} Checkout
               </Button>
             </CardContent>
           </Card>

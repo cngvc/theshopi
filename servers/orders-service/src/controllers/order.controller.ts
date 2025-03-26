@@ -5,8 +5,8 @@ import { Request, Response } from 'express';
 class OrderController {
   createOrder = async (req: Request, res: Response): Promise<void> => {
     const currentUser = getCurrentUser(req.headers['x-user'] as string) as IAuthPayload;
-    const order = await orderService.createOrder(currentUser.id, req.body);
-    new CreatedRequestSuccess('Order has been created successfully.', { order }).send(res);
+    const { orderPublicId, clientSecret } = await orderService.createOrder(currentUser.id, currentUser.email, req.body);
+    new CreatedRequestSuccess('Order has been created successfully.', { orderPublicId, clientSecret }).send(res);
   };
 
   getCurrentUserOrder = async (req: Request, res: Response): Promise<void> => {

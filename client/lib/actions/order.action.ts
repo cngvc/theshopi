@@ -23,7 +23,7 @@ export async function getOrders() {
 export async function createOrder() {
   return await safeApiCall(async () => {
     const { data } = await axiosPrivateInstance.post('/orders');
-    const order: IOrderDocument = data.metadata?.order;
+    const order: { orderPublicId: string; clientSecret?: string } = data.metadata;
     return order;
   });
 }

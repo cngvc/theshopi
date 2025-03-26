@@ -4,6 +4,7 @@ import { paymentService } from '@payment/services/payment.service';
 
 interface CreatePaymentRequest {
   orderPublicId: string;
+  email: string;
   method: string;
   totalAmount: number;
   currency: string;
@@ -11,6 +12,7 @@ interface CreatePaymentRequest {
 
 interface CreatePaymentResponse {
   paymentPublicId: string;
+  clientSecret: string;
   status: string;
 }
 
@@ -20,10 +22,17 @@ export class PaymentServiceGrpcHandler {
     callback: sendUnaryData<CreatePaymentResponse>
   ) => {
     try {
-      const { orderPublicId, method, totalAmount, currency } = call.request;
-      const payment = await paymentService.createPaymentService({ orderPublicId, method: method as PaymentMethod, totalAmount, currency });
+      const { orderPublicId, email, method, totalAmount, currency } = call.request;
+      const payment = await paymentService.createPayment({
+        orderPublicId,
+        email,
+        method: method as PaymentMethod,
+        totalAmount,
+        currency
+      });
       return callback(null, {
         paymentPublicId: payment.paymentPublicId!,
+        clientSecret: payment.clientSecret!,
         status: payment.status!
       });
     } catch (error) {

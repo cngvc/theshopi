@@ -19,6 +19,10 @@ const paymentSchema = new Schema(
       type: String,
       default: null
     },
+    paymentIntentId: {
+      type: String,
+      default: null
+    },
     method: { type: String, enum: PaymentMethod, required: true },
     totalAmount: {
       type: Number,
