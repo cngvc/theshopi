@@ -18,13 +18,6 @@ SERVICES=(
   "payment-service"
 )
 
-for SERVICE in "${SERVICES[@]}"; do
-  cd "./servers/$SERVICE" || continue
-  npm uni @cngvc/shopi-shared-types
-  cd - > /dev/null
-done
-
-
 echo "🔄 Updating $LIB_TYPE in all services..."
 for SERVICE in "${SERVICES[@]}"; do
   echo "📦 Updating $LIB_TYPE in $SERVICE..."
@@ -35,13 +28,13 @@ done
 
 echo "🔄 Updating $LIB_TYPE in all client..."
 
-# echo "🔄 Updating $LIB_NAME in all services..."
-# for SERVICE in "${SERVICES[@]}"; do
-#   echo "📦 Updating $LIB_NAME in $SERVICE..."
-#   cd "./servers/$SERVICE" || continue
-#   npm install $LIB_NAME@latest
-#   cd - > /dev/null
-# done
+echo "🔄 Updating $LIB_NAME in all services..."
+for SERVICE in "${SERVICES[@]}"; do
+  echo "📦 Updating $LIB_NAME in $SERVICE..."
+  cd "./servers/$SERVICE" || continue
+  npm install $LIB_NAME@latest
+  cd - > /dev/null
+done
 
 # echo "🔄 Updating $LIB_NAME in all client..."
 

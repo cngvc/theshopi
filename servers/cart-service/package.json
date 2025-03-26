@@ -7,7 +7,7 @@
     "stop": "pm2 stop all",
     "delete": "pm2 delete all",
     "dev": "nodemon -r tsconfig-paths/register src/app.ts | pino-pretty -c",
-    "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json && ts-node tools/copyAssets.ts",
+    "build": "rm -rf build && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "prettier:check": "prettier --check 'src/**/*.{ts,json}'",
     "prettier:fix": "prettier --write 'src/**/*.{ts,json}'",
     "test": "jest --coverage=true -w=1 --forceExit --detectOpenHandles --watchAll=false"
@@ -17,8 +17,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.4",
-    "@cngvc/shopi-types": "^0.0.12",
+    "@cngvc/shopi-shared": "^0.0.11",
+    "@cngvc/shopi-types": "^0.0.15",
     "@grpc/grpc-js": "^1.12.6",
     "@grpc/proto-loader": "^0.7.13",
     "@jest/types": "^29.6.3",
@@ -36,7 +36,6 @@
     "ioredis": "^5.6.0",
     "jest": "^29.7.0",
     "pino-pretty": "^13.0.0",
-    "shelljs": "^0.9.1",
     "ts-jest": "^29.2.6"
   },
   "devDependencies": {
@@ -46,7 +45,6 @@
     "@types/express": "^5.0.0",
     "@types/hpp": "^0.2.6",
     "@types/node": "^22.13.8",
-    "@types/shelljs": "^0.8.15",
     "@typescript-eslint/eslint-plugin": "^8.25.0",
     "@typescript-eslint/parser": "^8.25.0",
     "eslint-config-prettier": "^10.0.2",

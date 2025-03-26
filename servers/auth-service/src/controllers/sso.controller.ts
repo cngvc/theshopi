@@ -86,8 +86,7 @@ class SSOController {
         refreshToken: tokens.refreshToken
       }).send(res);
     } catch (error) {
-      console.error('GitHub OAuth error:', error);
-      throw new ServerError('SSO Github Callback', 'githubCallback');
+      throw new ServerError('SSO Github Callback Error', 'githubCallback');
     }
   };
 }

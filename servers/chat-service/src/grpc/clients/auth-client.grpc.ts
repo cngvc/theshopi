@@ -1,10 +1,8 @@
 import { config } from '@chat/config';
 import { captureError } from '@chat/utils/logger.util';
+import { authProto } from '@cngvc/shopi-shared';
 import { IConversationParticipant } from '@cngvc/shopi-types/build/src/chat.interface';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-const PROTO_PATH = path.join(__dirname, '../proto/auth.proto');
 
 interface GetParticipantsByAuthIdsResponse {
   participants: IConversationParticipant[];
@@ -19,18 +17,12 @@ interface IClient extends grpc.Client {
 
 class GrpcClient {
   public client: IClient;
-  private proto: Record<string, any>;
-
-  constructor(protoPath: string, packageName: string, service: string) {
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.client = new this.proto[service](config.AUTH_BASE_URL_GRPC, grpc.credentials.createInsecure());
+  constructor(service: string) {
+    const serviceConstructor = authProto as grpc.GrpcObject;
+    this.client = new (serviceConstructor[service] as grpc.ServiceClientConstructor)(
+      `${config.AUTH_BASE_URL_GRPC}`,
+      grpc.credentials.createInsecure()
+    ) as unknown as IClient;
   }
 
   getParticipantsByAuthIds = async (authIds: string[]): Promise<GetParticipantsByAuthIdsResponse> => {
@@ -47,4 +39,4 @@ class GrpcClient {
     return { participants: [] };
   };
 }
-export const grpcAuthClient = new GrpcClient(path.join(PROTO_PATH), 'auth', 'AuthService');
+export const grpcAuthClient = new GrpcClient('AuthService');

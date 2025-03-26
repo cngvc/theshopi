@@ -1,9 +1,7 @@
+import { paymentProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
 import { config } from '@order/config';
 import { captureError } from '@order/utils/logger.util';
-import path from 'path';
-const PROTO_PATH = path.join(__dirname, '../proto/payment.proto');
 
 interface CreatePaymentRequest {
   orderPublicId: string;
@@ -26,18 +24,13 @@ interface IClient extends grpc.Client {
 
 class GrpcClient {
   public client: IClient;
-  private proto: Record<string, any>;
 
-  constructor(protoPath: string, packageName: string, service: string) {
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.client = new this.proto[service](config.PAYMENT_BASE_URL_GRPC, grpc.credentials.createInsecure());
+  constructor(service: string) {
+    const serviceConstructor = paymentProto as grpc.GrpcObject;
+    this.client = new (serviceConstructor[service] as grpc.ServiceClientConstructor)(
+      `${config.PAYMENT_BASE_URL_GRPC}`,
+      grpc.credentials.createInsecure()
+    ) as unknown as IClient;
   }
 
   createPayment = async (payload: CreatePaymentRequest): Promise<CreatePaymentResponse | null> => {
@@ -54,4 +47,4 @@ class GrpcClient {
     return null;
   };
 }
-export const grpcPaymentClient = new GrpcClient(path.join(PROTO_PATH), 'payment', 'PaymentService');
+export const grpcPaymentClient = new GrpcClient('PaymentService');

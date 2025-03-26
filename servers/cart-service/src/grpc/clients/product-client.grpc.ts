@@ -1,10 +1,8 @@
 import { config } from '@cart/config';
 import { captureError } from '@cart/utils/logger.util';
+import { productProto } from '@cngvc/shopi-shared';
 import { IProductDocument } from '@cngvc/shopi-types';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-const PROTO_PATH = path.join(__dirname, '../proto/product.proto');
 
 interface GetProductsByProductPublicIdsResponse {
   products: IProductDocument[];
@@ -23,18 +21,12 @@ interface IClient extends grpc.Client {
 
 class GrpcClient {
   public client: IClient;
-  private proto: Record<string, any>;
-
-  constructor(protoPath: string, packageName: string, service: string) {
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.client = new this.proto[service](config.PRODUCT_BASE_URL_GRPC, grpc.credentials.createInsecure());
+  constructor(service: string) {
+    const serviceConstructor = productProto as grpc.GrpcObject;
+    this.client = new (serviceConstructor[service] as grpc.ServiceClientConstructor)(
+      `${config.PRODUCT_BASE_URL_GRPC}`,
+      grpc.credentials.createInsecure()
+    ) as unknown as IClient;
   }
 
   getProductsByProductPublicIds = async (productPublicIds: string[], useCaching = true): Promise<GetProductsByProductPublicIdsResponse> => {
@@ -65,4 +57,4 @@ class GrpcClient {
     return null;
   };
 }
-export const grpcProductClient = new GrpcClient(path.join(PROTO_PATH), 'product', 'ProductService');
+export const grpcProductClient = new GrpcClient('ProductService');

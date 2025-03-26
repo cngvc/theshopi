@@ -1,5 +1,5 @@
+import { userProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
 import { SERVICE_NAME } from '@user/constants';
 import { log } from '@user/utils/logger.util';
 import path from 'path';
@@ -8,20 +8,13 @@ const PROTO_PATH = path.join(__dirname, '../proto/user.proto');
 
 class GrpcServer {
   private server: grpc.Server;
-  private proto: Record<string, any>;
   private serviceDefinition: grpc.ServiceDefinition<Record<string, any>>;
 
-  constructor(protoPath: string, packageName: string, service: string) {
+  constructor(service: string) {
     this.server = new grpc.Server();
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: false,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.serviceDefinition = this.proto[service].service;
+    const serviceConstructor = userProto as grpc.GrpcObject;
+    this.server = new grpc.Server();
+    this.serviceDefinition = (serviceConstructor[service] as grpc.ServiceClientConstructor).service;
     this.addService({
       GetStoreByStorePublicId: UserServiceGrpcHandler.findStoreByStorePublicId,
       GetBuyerByAuthId: UserServiceGrpcHandler.findBuyerByAuthId
@@ -59,4 +52,4 @@ process.on('SIGINT', () => {
   process.exit(1);
 });
 
-export const grpcUserServer = new GrpcServer(PROTO_PATH, 'user', 'UserService');
+export const grpcUserServer = new GrpcServer('UserService');

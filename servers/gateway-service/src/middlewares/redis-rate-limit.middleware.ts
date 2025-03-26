@@ -1,4 +1,4 @@
-import { CustomError, getErrorMessage, RateLimitedError, ServerError } from '@cngvc/shopi-shared';
+import { CustomError, RateLimitedError, ServerError } from '@cngvc/shopi-shared';
 import { redisCache } from '@gateway/redis/redis.connection';
 import { NextFunction, Request, Response } from 'express';
 
@@ -21,7 +21,7 @@ class RateLimitMiddleware {
       if (error instanceof CustomError) {
         return next(error);
       }
-      throw new ServerError(getErrorMessage(error), 'redisRateLimit');
+      throw new ServerError('Internal error', 'redisRateLimit');
     }
     next();
   };

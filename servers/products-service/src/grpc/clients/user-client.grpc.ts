@@ -1,6 +1,6 @@
+import { userProto } from '@cngvc/shopi-shared';
 import { IStoreDocument } from '@cngvc/shopi-types';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
 import { config } from '@product/config';
 import { captureError } from '@product/utils/logger.util';
 import path from 'path';
@@ -15,18 +15,13 @@ interface IClient extends grpc.Client {
 
 class GrpcClient {
   public client: IClient;
-  private proto: Record<string, any>;
 
-  constructor(protoPath: string, packageName: string, service: string) {
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.client = new this.proto[service](config.USERS_BASE_URL_GRPC, grpc.credentials.createInsecure());
+  constructor(service: string) {
+    const serviceConstructor = userProto as grpc.GrpcObject;
+    this.client = new (serviceConstructor[service] as grpc.ServiceClientConstructor)(
+      `${config.USERS_BASE_URL_GRPC}`,
+      grpc.credentials.createInsecure()
+    ) as unknown as IClient;
   }
 
   getStoreByStorePublicId = async (storePublicId: string): Promise<IStoreDocument | null> => {
@@ -43,4 +38,4 @@ class GrpcClient {
     return null;
   };
 }
-export const grpcUserClient = new GrpcClient(path.join(PROTO_PATH), 'user', 'UserService');
+export const grpcUserClient = new GrpcClient('UserService');

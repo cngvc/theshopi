@@ -1,10 +1,7 @@
-import { IAuthPayload } from '@cngvc/shopi-shared';
+import { authProto, IAuthPayload } from '@cngvc/shopi-shared';
 import { config } from '@gateway/config';
 import { captureError } from '@gateway/utils/logger.util';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
-const PROTO_PATH = path.join(__dirname, '../proto/auth.proto');
 
 interface GetCurrentUserByTokenResponse {
   payload?: IAuthPayload | null;
@@ -19,18 +16,12 @@ interface IClient extends grpc.Client {
 
 class GrpcClient {
   public client: IClient;
-  private proto: Record<string, any>;
-
-  constructor(protoPath: string, packageName: string, service: string) {
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.client = new this.proto[service](config.AUTH_BASE_URL_GRPC, grpc.credentials.createInsecure());
+  constructor(service: string) {
+    const serviceConstructor = authProto as grpc.GrpcObject;
+    this.client = new (serviceConstructor[service] as grpc.ServiceClientConstructor)(
+      `${config.AUTH_BASE_URL_GRPC}`,
+      grpc.credentials.createInsecure()
+    ) as unknown as IClient;
   }
 
   getCurrentUserByJwt = async (token: string, fingerprint?: string): Promise<GetCurrentUserByTokenResponse> => {
@@ -48,4 +39,4 @@ class GrpcClient {
     return { payload: null };
   };
 }
-export const grpcAuthClient = new GrpcClient(path.join(PROTO_PATH), 'auth', 'AuthService');
+export const grpcAuthClient = new GrpcClient('AuthService');

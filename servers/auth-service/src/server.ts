@@ -29,6 +29,7 @@ export class AuthServer {
     this.securityMiddleware();
     this.routesMiddleware();
     await this.startQueues();
+
     await this.startElasticSearch();
     this.startRPCServer();
     this.errorHandler();

@@ -1,4 +1,4 @@
-import { CustomError, getErrorMessage, NotAuthorizedError, ServerError } from '@cngvc/shopi-shared';
+import { CustomError, NotAuthorizedError, ServerError } from '@cngvc/shopi-shared';
 import { grpcAuthClient } from '@gateway/grpc/clients/auth-client.grpc';
 import { NextFunction, Request, Response } from 'express';
 
@@ -23,7 +23,7 @@ export class AuthMiddleware {
       if (error instanceof CustomError) {
         return next(error);
       }
-      throw new ServerError(getErrorMessage(error), 'verifyUserJwt');
+      throw new ServerError('Internal error.', 'verifyUserJwt');
     }
     next();
   }

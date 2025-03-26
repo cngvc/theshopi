@@ -1,27 +1,17 @@
 import { SERVICE_NAME } from '@cart/constants';
 import { log } from '@cart/utils/logger.util';
+import { cartProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
 import { CartServiceGrpcHandler } from './cart.grpc-server.handler';
-const PROTO_PATH = path.join(__dirname, '../proto/cart.proto');
 
 class GrpcServer {
   private server: grpc.Server;
-  private proto: Record<string, any>;
   private serviceDefinition: grpc.ServiceDefinition<Record<string, any>>;
 
-  constructor(protoPath: string, packageName: string, service: string) {
+  constructor(service: string) {
+    const serviceConstructor = cartProto as grpc.GrpcObject;
     this.server = new grpc.Server();
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: false,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.serviceDefinition = this.proto[service].service;
+    this.serviceDefinition = (serviceConstructor[service] as grpc.ServiceClientConstructor).service;
     this.addService({
       GetCartItemsByAuthId: CartServiceGrpcHandler.findCachedCartItemsByAuthId
     });
@@ -58,4 +48,4 @@ process.on('SIGINT', () => {
   process.exit(1);
 });
 
-export const grpcCartServer = new GrpcServer(PROTO_PATH, 'cart', 'CartService');
+export const grpcCartServer = new GrpcServer('CartService');

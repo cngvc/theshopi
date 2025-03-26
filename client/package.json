@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cngvc/shopi-types": "0.0.13",
+    "@cngvc/shopi-types": "^0.0.15",
     "@fingerprintjs/fingerprintjs": "^4.6.1",
     "@hookform/resolvers": "^4.1.3",
     "@icons-pack/react-simple-icons": "^12.3.0",

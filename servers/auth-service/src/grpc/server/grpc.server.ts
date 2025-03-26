@@ -1,27 +1,17 @@
 import { SERVICE_NAME } from '@auth/constants';
 import { log } from '@auth/utils/logger.util';
+import { authProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
-import * as protoLoader from '@grpc/proto-loader';
-import path from 'path';
 import { AuthServiceGrpcHandler } from './auth.grpc-server.handler';
-const PROTO_PATH = path.join(__dirname, '../proto/auth.proto');
 
 class GrpcServer {
   private server: grpc.Server;
-  private proto: Record<string, any>;
   private serviceDefinition: grpc.ServiceDefinition<Record<string, any>>;
 
-  constructor(protoPath: string, packageName: string, service: string) {
+  constructor(service: string) {
+    const serviceConstructor = authProto as grpc.GrpcObject;
     this.server = new grpc.Server();
-    const packageDefinition = protoLoader.loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true
-    });
-    this.proto = grpc.loadPackageDefinition(packageDefinition)[packageName];
-    this.serviceDefinition = this.proto[service].service;
+    this.serviceDefinition = (serviceConstructor[service] as grpc.ServiceClientConstructor).service;
     this.addService({
       GetCurrentUserByJwt: AuthServiceGrpcHandler.findCurrentUserByToken,
       GetParticipantsByAuthIds: AuthServiceGrpcHandler.findParticipantsByAuthIds
@@ -59,4 +49,4 @@ process.on('SIGINT', () => {
   process.exit(1);
 });
 
-export const grpcAuthServer = new GrpcServer(PROTO_PATH, 'auth', 'AuthService');
+export const grpcAuthServer = new GrpcServer('AuthService');

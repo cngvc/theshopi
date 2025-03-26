@@ -1,6 +1,7 @@
 import 'express-async-errors';
 
 import { CustomError, IErrorResponse } from '@cngvc/shopi-shared';
+
 import { config } from '@gateway/config';
 import { DEFAULT_DEVICE, DEFAULT_ERROR_CODE, SERVER_PORT, SERVICE_NAME } from '@gateway/constants';
 import { elasticSearch } from '@gateway/elasticsearch';
