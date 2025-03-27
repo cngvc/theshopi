@@ -3,9 +3,11 @@
 import { IProductDocument, IStoreDocument } from '@cngvc/shopi-types';
 import axiosPublicInstance from '../axios-public';
 
-export async function getProductList() {
+export async function getProductList(filter?: Record<string, string | number | boolean | null>, from = 0, size = 20) {
   try {
-    const { data } = await axiosPublicInstance.get('/products/');
+    const { data } = await axiosPublicInstance.get(`/products/search/${from}/${size}`, {
+      params: filter
+    });
     const products: IProductDocument[] = data.metadata?.products || [];
     return products;
   } catch (error) {

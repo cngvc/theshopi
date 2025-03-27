@@ -13,7 +13,13 @@ class ProductController {
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
   async getProducts(req: Request, res: Response): Promise<void> {
-    const response: AxiosResponse = await productService.getProducts();
+    const { from, size } = req.params;
+    let query = '';
+    const objList = Object.entries(req.query);
+    objList.forEach(([key, value], index) => {
+      query += `${key}=${value}${index !== objList.length - 1 ? '&' : ''}`;
+    });
+    const response: AxiosResponse = await productService.getProducts(query, from, size);
     new OkRequestSuccess(response.data.message, response.data.metadata).send(res);
   }
   async getMoreProductsLikeThis(req: Request, res: Response): Promise<void> {

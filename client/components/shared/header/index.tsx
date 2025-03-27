@@ -3,6 +3,7 @@ import pages from '@/lib/constants/pages';
 import Image from 'next/image';
 import Link from 'next/link';
 import Menu from './menu';
+import Search from './search';
 
 const Header = () => {
   return (
@@ -19,6 +20,9 @@ const Header = () => {
               className="block flex-shrink-0 object-contain"
             />
           </Link>
+        </div>
+        <div className="hidden md:block">
+          <Search />
         </div>
         <Menu />
       </div>

@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
+import { Skeleton } from '@/components/ui/skeleton';
 import { MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
@@ -21,7 +22,7 @@ const ModeToggle = () => {
     $mounted(true);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted) return <Skeleton className="w-10 h-9 rounded-md" />;
 
   return (
     <DropdownMenu>

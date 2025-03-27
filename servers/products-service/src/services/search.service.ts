@@ -99,7 +99,6 @@ class SearchService {
         size: 5
       }
     );
-    console.log(result);
     const total: IHitsTotal = result.hits.total as IHitsTotal;
     return {
       total: total.value,

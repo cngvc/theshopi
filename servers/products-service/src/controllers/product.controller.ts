@@ -51,7 +51,8 @@ class ProductController {
   };
 
   getProducts = async (req: Request, res: Response): Promise<void> => {
-    const { query, min_price, max_price, from, size } = req.query;
+    const { from, size } = req.params;
+    const { query, min_price, max_price } = req.query;
     const products = await productService.getProducts(
       `${query || ''}`,
       { from: parseInt(`${from || DefaultSearchQuery.from}`), size: parseInt(`${size || DefaultSearchQuery.size}`, 10) },

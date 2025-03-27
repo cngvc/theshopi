@@ -8,7 +8,7 @@ class ProductPublicRoutes {
   }
 
   public routes(): Router {
-    this.router.get('/', productController.getProducts);
+    this.router.get('/search/:from/:size', productController.getProducts);
     this.router.get('/:productPublicId/more-like-this', productController.getMoreProductsLikeThis);
     this.router.get('/:productPublicId', productController.getProductByProductPublicId);
     this.router.get('/stores/:storePublicId', productController.getProductsByStorePublicId);

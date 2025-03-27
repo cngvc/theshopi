@@ -12,7 +12,6 @@ class OrderController {
     new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
   };
   getOrderByOrderPublicId = async (req: Request, res: Response) => {
-    console.log(req.params.orderPublicId);
     const response = await orderService.getOrderByOrderPublicId(req.params.orderPublicId);
     new CreatedRequestSuccess(response.data.message, response.data.metadata).send(res);
   };

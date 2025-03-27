@@ -16,7 +16,7 @@ const ProductCard = ({ product }: { product: IProductDocument }) => {
             height={320}
             priority={true}
             alt={product.name}
-            className="object-cover aspect-square flex-1"
+            className="object-cover aspect-square flex-1 w-full"
           />
         </CardHeader>
         <CardContent className="flex-1">
