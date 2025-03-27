@@ -22,3 +22,13 @@ export async function getProductByIdentifier(identifier: string) {
     return null;
   }
 }
+
+export async function getMoreProductsLikeThis(identifier: string) {
+  try {
+    const { data } = await axiosPublicInstance.get(`/products/${identifier}/more-like-this`);
+    const { products }: { products: IProductDocument[] } = data.metadata;
+    return products;
+  } catch (error) {
+    return [];
+  }
+}

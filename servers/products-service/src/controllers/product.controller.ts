@@ -51,7 +51,7 @@ class ProductController {
   };
 
   getProducts = async (req: Request, res: Response): Promise<void> => {
-    const { query, min_price, max_price, from, size, type } = req.query;
+    const { query, min_price, max_price, from, size } = req.query;
     const products = await productService.getProducts(
       `${query || ''}`,
       { from: parseInt(`${from || DefaultSearchQuery.from}`), size: parseInt(`${size || DefaultSearchQuery.size}`, 10) },
@@ -59,6 +59,11 @@ class ProductController {
       parseInt(`${max_price}`, 10)
     );
     new OkRequestSuccess('Get products.', { products }).send(res);
+  };
+
+  getMoreProductsLikeThis = async (req: Request, res: Response): Promise<void> => {
+    const products = await productService.getMoreProductsLikeThis(req.params.productPublicId);
+    new OkRequestSuccess(`Get more product like ${req.params.productPublicId}`, { products }).send(res);
   };
 
   getProductByProductPublicId = async (req: Request, res: Response): Promise<void> => {

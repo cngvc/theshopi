@@ -70,20 +70,20 @@ services:
     networks:
       - elastic
 
-  # kibana:
-  #   container_name: kibana_container
-  #   image: kibana:8.17.3
-  #   restart: unless-stopped
-  #   environment:
-  #     - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
-  #   ports:
-  #     - "5601:5601"
-  #   volumes:
-  #     - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-  #   networks:
-  #     - elastic
-  #   depends_on:
-  #     - elasticsearch
+  kibana:
+    container_name: kibana_container
+    image: kibana:8.17.3
+    restart: unless-stopped
+    environment:
+      - ELASTICSEARCH_HOSTS=["http://elasticsearch_container:9200"]
+    ports:
+      - "5601:5601"
+    volumes:
+      - ./kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
 
   # apm-server:
   #   image: elastic/apm-server:8.17.3
@@ -202,7 +202,7 @@ services:
       - ELASTIC_APM_SECRET_TOKEN=
     depends_on:
       - elasticsearch
-      - mysql
+      - mysql_auth
       - rabbitmq
 
   users:

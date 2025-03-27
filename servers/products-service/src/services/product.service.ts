@@ -47,7 +47,11 @@ class ProductService {
     let products: IProductDocument[] = [];
     if (useCaching) {
       const queryList = [{ terms: { 'productPublicId.keyword': productPublicIds } }];
-      const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
+      const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, {
+        bool: {
+          must: queryList
+        }
+      });
       for (const item of hits.hits) {
         products.push(item._source as IProductDocument);
       }
@@ -106,7 +110,7 @@ class ProductService {
     ];
     for (let i = 0; i < stores.length; i++) {
       const store = stores[i];
-      const name = faker.commerce.productName();
+      const name = faker.commerce.product();
       const description = faker.commerce.productDescription();
       const rating = sample(randomRatings);
 
@@ -131,6 +135,15 @@ class ProductService {
 
   getProducts = async (searchQuery: string, paginate: IPaginateProps, min?: number, max?: number): Promise<IProductDocument[]> => {
     const queryResults = await searchService.searchProducts(searchQuery, paginate, min, max);
+    const products: IProductDocument[] = [];
+    for (const item of queryResults.hits) {
+      products.push(item._source as IProductDocument);
+    }
+    return products;
+  };
+
+  getMoreProductsLikeThis = async (productPublicId: string): Promise<IProductDocument[]> => {
+    const queryResults = await searchService.searchMoreProductsLikeThis(productPublicId);
     const products: IProductDocument[] = [];
     for (const item of queryResults.hits) {
       products.push(item._source as IProductDocument);

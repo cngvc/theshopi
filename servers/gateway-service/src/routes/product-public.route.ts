@@ -10,6 +10,7 @@ class ProductPublicRoutes {
 
   public routes(): Router {
     this.router.get('/products/', productController.getProducts);
+    this.router.get('/products/:productPublicId/more-like-this', productController.getMoreProductsLikeThis);
     this.router.get('/products/:productPublicId', productController.getProductByProductPublicId);
     this.router.get('/products/stores/:storePublicId', productController.getProductsByStorePublicId);
 

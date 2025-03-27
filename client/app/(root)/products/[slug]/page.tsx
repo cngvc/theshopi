@@ -2,6 +2,7 @@ import ProductImages from '@/components/shared/product/product-images';
 import ProductPrice from '@/components/shared/product/product-price';
 import { getProductByIdentifier } from '@/lib/actions/product.action';
 import { notFound } from 'next/navigation';
+import MoreLikeThis from './components/more-like-this';
 import StockCard from './components/stock-card';
 import StoreCard from './components/store-card';
 
@@ -20,14 +21,7 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
       <section className="mb-10">
         <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-5 gap-5">
           <div className="col-span-1 sm:col-span-2">
-            <ProductImages
-              images={[
-                'https://placehold.co/1000x1000/png',
-                'https://placehold.co/1000x1000/png',
-                'https://placehold.co/1000x1000/png',
-                'https://placehold.co/1000x1000/png'
-              ]}
-            />
+            <ProductImages images={[data.product.thumb || 'https://placehold.co/1000x1000/png']} />
           </div>
 
           <div className="col-span-1 sm:col-span-2">
@@ -52,7 +46,12 @@ const ProductDetailsPage = async (props: { params: Promise<{ slug: string }> }) 
       </section>
 
       <section>
-        <h2 className="h2-bold mb-5">Customer Reviews</h2>
+        <h2 className="h3-bold mb-5">Customer Reviews</h2>
+      </section>
+
+      <section>
+        <h2 className="h3-bold mb-5">More Like This</h2>
+        <MoreLikeThis id={productPublicId} />
       </section>
     </>
   );

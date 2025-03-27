@@ -27,7 +27,11 @@ export class ProductServiceGrpcHandler {
       let products: IProductDocument[] = [];
       if (useCaching) {
         const queryList = [{ terms: { 'productPublicId.keyword': productPublicIds } }];
-        const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, queryList);
+        const { hits }: SearchResponse = await elasticSearch.search(ElasticsearchIndexes.products, {
+          bool: {
+            must: queryList
+          }
+        });
         for (const item of hits.hits) {
           products.push(item._source as IProductDocument);
         }
