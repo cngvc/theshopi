@@ -19,7 +19,7 @@ const ShippingCard = ({ shippingAddress }: { shippingAddress?: IShippingAddress 
               : 'N/A'}
           </div>
           <Button className="w-full md:w-auto" asChild>
-            <Link href={pages.account_shipping_address}>
+            <Link href={`${pages.account_shipping_address}?callbackUrl=${pages.checkout}`}>
               <ArrowRight className="w-4 h-4" /> Change
             </Link>
           </Button>

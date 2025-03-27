@@ -6,10 +6,11 @@ import { useUpdateBuyerPayment } from '@/lib/hooks/use-update-payment.hook';
 import { IBuyerPayment, PaymentMethod, paymentScheme } from '@cngvc/shopi-types';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ArrowRight, Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 const PaymentMethodForm = ({ payment }: { payment?: IBuyerPayment }) => {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { mutate: updateBuyerPayment, isPending } = useUpdateBuyerPayment();
 
@@ -23,7 +24,11 @@ const PaymentMethodForm = ({ payment }: { payment?: IBuyerPayment }) => {
   const onSubmit: SubmitHandler<IBuyerPayment> = async (values) => {
     updateBuyerPayment(values, {
       onSuccess: () => {
-        router.back();
+        const callbackUrl = searchParams.get('callbackUrl');
+        if (callbackUrl) {
+          return router.push(callbackUrl);
+        }
+        return router.back();
       },
       onError: (err) => {
         console.error('Failed to update payment:', err);

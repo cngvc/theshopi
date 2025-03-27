@@ -1,11 +1,12 @@
 'use client';
 
 import Loading from '@/components/shared/loading';
+import pages from '@/lib/constants/pages';
 import { useParamId } from '@/lib/hooks/use-id.hook';
 import { useOrder } from '@/lib/hooks/use-order.hook';
 import { ICartItem } from '@cngvc/shopi-types';
-import { notFound } from 'next/navigation';
-import { useMemo } from 'react';
+import { notFound, useRouter } from 'next/navigation';
+import { useEffect, useMemo } from 'react';
 import Bill from './components/bill';
 import OrderItem from './components/order-item';
 import PaymentAction from './components/payment-action';
@@ -15,7 +16,19 @@ import ShippingCard from './components/shipping-card';
 const Page = () => {
   const id = useParamId();
   if (!id) notFound();
+  const router = useRouter();
   const { data: order, isLoading: isFetchingOrder } = useOrder(id);
+
+  useEffect(() => {
+    const handleBack = () => {
+      router.replace(pages.home);
+    };
+    window.history.pushState(null, '', window.location.pathname);
+    window.addEventListener('popstate', handleBack);
+    return () => {
+      window.removeEventListener('popstate', handleBack);
+    };
+  }, [router]);
 
   const prices = useMemo(() => {
     const itemsPrice = order?.items?.reduce((a, c) => a + c.price! * c.quantity, 0) || 0;

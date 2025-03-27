@@ -7,11 +7,13 @@ import { useUpdateBuyerShippingAddress } from '@/lib/hooks/use-update-address.ho
 import { IShippingAddress, shippingAddressSchema } from '@cngvc/shopi-types';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { ArrowRight, Loader } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 const ShippingAddressForm = ({ address }: { address?: IShippingAddress }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const { mutate: updateBuyerShippingAddress, isPending, error } = useUpdateBuyerShippingAddress();
 
   const form = useForm<IShippingAddress>({
@@ -27,7 +29,11 @@ const ShippingAddressForm = ({ address }: { address?: IShippingAddress }) => {
   const onSubmit: SubmitHandler<IShippingAddress> = async (values) => {
     updateBuyerShippingAddress(values, {
       onSuccess: () => {
-        router.back();
+        const callbackUrl = searchParams.get('callbackUrl');
+        if (callbackUrl) {
+          return router.push(callbackUrl);
+        }
+        return router.back();
       }
     });
   };

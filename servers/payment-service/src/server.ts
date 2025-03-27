@@ -14,7 +14,6 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { grpcPaymentServer } from './grpc/server/grpc.server';
-import { paymentConsumes } from './queues/payment.consumer';
 
 export class UserServer {
   private app: Application;
@@ -59,8 +58,7 @@ export class UserServer {
   }
 
   private async startQueues() {
-    const channel = (await queueConnection.createConnection()) as Channel;
-    await paymentConsumes.consumeDeleteCart(channel);
+    (await queueConnection.createConnection()) as Channel;
   }
 
   private startRPCServer() {

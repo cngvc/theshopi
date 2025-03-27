@@ -45,19 +45,19 @@ class OrderService {
       totalAmount: order.totalAmount!
     });
 
-    console.log('payment', {
-      currency: 'USD',
-      method: order.payment.method,
-      orderPublicId: order.orderPublicId!,
-      email: email,
-      totalAmount: order.totalAmount!
-    });
     if (!payment) {
       throw new ServerError('Cannot create payment', 'createOrder');
     }
     order.payment.paymentPublicId = payment.paymentPublicId;
     order.payment.status = payment.status;
     await order.save();
+
+    await orderProducer.publishDirectMessage(
+      orderChannel,
+      ExchangeNames.DELETE_COMPLETED_CART,
+      RoutingKeys.DELETE_COMPLETED_CART,
+      JSON.stringify({ authId })
+    );
 
     // call payment service
     const createOrderMailObject: IEmailLocals = {
@@ -77,12 +77,7 @@ class OrderService {
       RoutingKeys.CREATE_ORDER_EMAIL,
       JSON.stringify(createOrderMailObject)
     );
-    await orderProducer.publishDirectMessage(
-      orderChannel,
-      ExchangeNames.DELETE_COMPLETED_CART,
-      RoutingKeys.DELETE_COMPLETED_CART,
-      JSON.stringify({ authId })
-    );
+
     return {
       orderPublicId: order.orderPublicId!,
       clientSecret: payment.clientSecret
