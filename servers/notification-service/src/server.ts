@@ -11,7 +11,7 @@ import http from 'http';
 import { authConsumes } from './queues/auth.consumer';
 import { orderConsumes } from './queues/order.consumer';
 
-export class NotificationServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

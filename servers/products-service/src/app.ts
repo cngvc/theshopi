@@ -1,11 +1,11 @@
 import { database } from '@product/database';
-import { ProductServer } from '@product/server';
+import { Server } from '@product/server';
 import express, { Express } from 'express';
 
 class Application {
   public initialize() {
     const app: Express = express();
-    const server = new ProductServer(app);
+    const server = new Server(app);
     database.connection();
     server.start();
   }

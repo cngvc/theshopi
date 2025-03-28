@@ -32,6 +32,19 @@ services:
       - "3306:3306"
     volumes:
       - mysql-data-auth:/var/lib/mysql
+  mysql_balance:
+    container_name: mysql_balance_container
+    image: mysql:oracle
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=Asdfgh123
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=Asdfgh123
+      - MYSQL_DATABASE=theshopi_auth
+    ports:
+      - "330613:3306"
+    volumes:
+      - mysql-data-balance:/var/lib/mysql
   rabbitmq:
     container_name: rabbitmq_container
     image: rabbitmq:3-management-alpine
@@ -387,6 +400,7 @@ networks:
     name: elastic
 volumes:
   mysql-data-auth:
+  mysql-data-balance:
   redis-data:
   mongodb-data:
   rabbitmq-data:

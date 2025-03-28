@@ -18,7 +18,7 @@ import http from 'http';
 import { elasticSearch } from './elasticsearch';
 import { grpcUserServer } from './grpc/server/grpc.server';
 
-export class UserServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

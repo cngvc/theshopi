@@ -18,7 +18,7 @@
   "description": "",
   "dependencies": {
     "@cngvc/shopi-shared": "^0.0.11",
-    "@cngvc/shopi-types": "^0.0.15",
+    "@cngvc/shopi-types": "^0.0.16",
     "@grpc/grpc-js": "^1.12.6",
     "@grpc/proto-loader": "^0.7.13",
     "@jest/types": "^29.6.3",

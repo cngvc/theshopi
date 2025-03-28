@@ -1,10 +1,10 @@
-import { NotificationServer } from '@notification/server';
+import { Server } from '@notification/server';
 import express, { Express } from 'express';
 
 class Application {
   public initialize() {
     const app: Express = express();
-    const server = new NotificationServer(app);
+    const server = new Server(app);
     server.start();
   }
 }

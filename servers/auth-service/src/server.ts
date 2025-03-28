@@ -18,7 +18,7 @@ import { grpcAuthServer } from './grpc/server/grpc.server';
 
 export let authChannel: Channel;
 
-export class AuthServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

@@ -16,7 +16,7 @@ import http from 'http';
 import { grpcCartServer } from './grpc/server/grpc.server';
 import { cartConsumes } from './queues/cart.consumer';
 
-export class UserServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

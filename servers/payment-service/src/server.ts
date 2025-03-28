@@ -15,7 +15,7 @@ import hpp from 'hpp';
 import http from 'http';
 import { grpcPaymentServer } from './grpc/server/grpc.server';
 
-export class UserServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

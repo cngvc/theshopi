@@ -14,7 +14,7 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 
-export class UserServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

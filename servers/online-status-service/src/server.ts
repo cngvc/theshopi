@@ -6,7 +6,7 @@ import { captureError, log } from '@online-status/utils/logger.util';
 import { Application } from 'express';
 import http from 'http';
 
-export class OnlineStatusServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

@@ -20,7 +20,7 @@ import { grpcProductsServer } from './grpc/server/grpc.server';
 
 export let productChannel: Channel;
 
-export class ProductServer {
+export class Server {
   private app: Application;
   constructor(app: Application) {
     this.app = app;

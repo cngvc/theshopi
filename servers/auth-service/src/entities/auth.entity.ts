@@ -1,7 +1,7 @@
 import { IAuthDocument, IUserProviderDocument } from '@cngvc/shopi-shared';
 
 import * as argon2 from 'argon2';
-import { BaseEntity, BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { UserProviderModel } from './user-provider.entity';
 
 export type UserRole = 'admin' | 'basic';
@@ -32,7 +32,7 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
   @Column({ nullable: true })
   passwordResetExpires?: Date;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt!: Date;
 
   @Column({ type: 'enum', enum: ['admin', 'basic'], default: 'basic', select: false })
