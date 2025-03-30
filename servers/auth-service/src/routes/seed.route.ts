@@ -1,4 +1,4 @@
-import { seedController } from '@auth/controllers/seed.controller';
+import { authSeedController } from '@auth/controllers/auth-seed.controller';
 import express, { Router } from 'express';
 
 class SeedRoutes {
@@ -8,7 +8,7 @@ class SeedRoutes {
   }
 
   public routes(): Router {
-    this.router.put('/seed/:count', seedController.createSeeds);
+    this.router.put('/seed/:count', authSeedController.createSeeds);
     return this.router;
   }
 }

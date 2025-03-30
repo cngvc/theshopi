@@ -32,6 +32,7 @@ class Config {
   public SOCKET_BASE_URL: string | undefined;
   public CART_BASE_URL: string | undefined;
   public ORDER_BASE_URL: string | undefined;
+  public BALANCE_BASE_URL: string | undefined;
   public AUTH_BASE_URL_GRPC: string | undefined;
 
   constructor() {
@@ -49,6 +50,7 @@ class Config {
     this.ONLINE_STATUS_BASE_URL = process.env.ONLINE_STATUS_BASE_URL || '';
     this.SOCKET_BASE_URL = process.env.SOCKET_BASE_URL || '';
     this.CART_BASE_URL = process.env.CART_BASE_URL || '';
+    this.BALANCE_BASE_URL = process.env.BALANCE_BASE_URL || '';
     this.ORDER_BASE_URL = process.env.ORDER_BASE_URL || '';
     this.AUTH_BASE_URL_GRPC = process.env.AUTH_BASE_URL_GRPC || '';
   }

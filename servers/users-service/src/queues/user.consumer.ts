@@ -73,7 +73,7 @@ class UserConsumes {
     }
   };
 
-  consumeGetUsersStore = async (channel: Channel): Promise<void> => {
+  consumeGetUsersForSeedChatStoreForSeedProduct = async (channel: Channel): Promise<void> => {
     try {
       if (!channel) {
         channel = (await queueConnection.createConnection()) as Channel;
@@ -93,11 +93,11 @@ class UserConsumes {
         channel.ack(msg!);
       });
     } catch (error) {
-      captureError(error, 'consumeGetUsersStore');
+      captureError(error, 'consumeGetUsersForSeedChatStoreForSeedProduct');
     }
   };
 
-  consumeGetUsers = async (channel: Channel): Promise<void> => {
+  consumeGetUsersForSeedChat = async (channel: Channel): Promise<void> => {
     try {
       if (!channel) {
         channel = (await queueConnection.createConnection()) as Channel;
@@ -106,18 +106,28 @@ class UserConsumes {
       const assertQueue = await channel.assertQueue(QueueNames.GET_USERS, { durable: true, autoDelete: false });
       await channel.bindQueue(assertQueue.queue, ExchangeNames.GET_USERS, RoutingKeys.GET_USERS);
       channel.consume(assertQueue.queue, async (msg: ConsumeMessage | null) => {
-        const { count } = JSON.parse(msg!.content.toString());
+        const { count, type } = JSON.parse(msg!.content.toString());
         const { stores, buyers } = await userService.getRandomUsers(parseInt(count, 10));
-        userProducer.publishDirectMessage(
-          channel,
-          ExchangeNames.CREATE_SEED_CHAT,
-          RoutingKeys.CREATE_SEED_CHAT,
-          JSON.stringify({ stores, buyers })
-        );
+        if (type === 'chat') {
+          userProducer.publishDirectMessage(
+            channel,
+            ExchangeNames.CREATE_SEED_CHAT,
+            RoutingKeys.CREATE_SEED_CHAT,
+            JSON.stringify({ stores, buyers })
+          );
+        } else if (type === 'balance') {
+          userProducer.publishDirectMessage(
+            channel,
+            ExchangeNames.CREATE_SEED_BALANCE,
+            RoutingKeys.CREATE_SEED_BALANCE,
+            JSON.stringify({ buyers })
+          );
+        }
+
         channel.ack(msg!);
       });
     } catch (error) {
-      captureError(error, 'consumeGetUsers');
+      captureError(error, 'consumeGetUsersForSeedChat');
     }
   };
 }

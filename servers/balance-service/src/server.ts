@@ -14,7 +14,9 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
 import { grpcCartServer } from './grpc/server/grpc.server';
+import { balanceConsumes } from './queues/balance.consumer';
 
+export let balanceChannel: Channel;
 export class Server {
   private app: Application;
   constructor(app: Application) {
@@ -58,7 +60,8 @@ export class Server {
   }
 
   private async startQueues() {
-    (await queueConnection.createConnection()) as Channel;
+    balanceChannel = (await queueConnection.createConnection()) as Channel;
+    await balanceConsumes.consumeCreateBalanceSeeds(balanceChannel);
   }
 
   private startRPCServer() {

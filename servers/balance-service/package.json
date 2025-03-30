@@ -17,8 +17,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@cngvc/shopi-shared": "^0.0.11",
-    "@cngvc/shopi-types": "^0.0.18",
+    "@cngvc/shopi-shared": "^0.0.19",
+    "@cngvc/shopi-types": "^0.0.21",
     "@grpc/grpc-js": "^1.12.6",
     "@grpc/proto-loader": "^0.7.13",
     "@jest/types": "^29.6.3",
@@ -34,6 +34,7 @@
     "hpp": "^0.2.3",
     "http-status-codes": "^2.3.0",
     "jest": "^29.7.0",
+    "mysql2": "^3.14.0",
     "pino-pretty": "^13.0.0",
     "ts-jest": "^29.2.6",
     "typeorm": "^0.3.21"

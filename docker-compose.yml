@@ -29,7 +29,7 @@ services:
       - MYSQL_PASSWORD=Asdfgh123
       - MYSQL_DATABASE=theshopi_auth
     ports:
-      - "3306:3306"
+      - "33060:3306"
     volumes:
       - mysql-data-auth:/var/lib/mysql
   mysql_balance:
@@ -40,9 +40,9 @@ services:
       - MYSQL_ROOT_PASSWORD=Asdfgh123
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=Asdfgh123
-      - MYSQL_DATABASE=theshopi_auth
+      - MYSQL_DATABASE=theshopi_balance
     ports:
-      - "330613:3306"
+      - "33061:3306"
     volumes:
       - mysql-data-balance:/var/lib/mysql
   rabbitmq:
@@ -165,6 +165,7 @@ services:
       - SOCKET_BASE_URL=http://socket_container:4010
       - CART_BASE_URL=http://cart_container:4011
       - ORDER_BASE_URL=http://order_container:4006
+      - BALANCE_BASE_URL=
       - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
       - ELASTIC_APM_SECRET_TOKEN=
     depends_on:
@@ -205,7 +206,7 @@ services:
       - ENABLE_APM=0
       - API_GATEWAY_URL=http://gateway_container:4000
       - CLIENT_URL=http://localhost:3000
-      - DATABASE_URL=mysql://admin:Asdfgh123@mysql_auth_container:3306/theshopi_auth
+      - DATABASE_URL=mysql://admin:Asdfgh123@mysql_auth_container:33060/theshopi_auth
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
       - GATEWAY_JWT_TOKEN_SECRET=9d9uaKBfV3FEhTNCgvaJZQ
       - NODE_ENV=development

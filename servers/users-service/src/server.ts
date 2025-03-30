@@ -71,8 +71,8 @@ export class Server {
     const channel = (await queueConnection.createConnection()) as Channel;
     await userConsumes.consumeUpdateUsersBuy(channel);
     await userConsumes.consumeUpdateUsersStore(channel);
-    await userConsumes.consumeGetUsersStore(channel);
-    await userConsumes.consumeGetUsers(channel);
+    await userConsumes.consumeGetUsersForSeedChatStoreForSeedProduct(channel);
+    await userConsumes.consumeGetUsersForSeedChat(channel);
   }
 
   private startRPCServer() {

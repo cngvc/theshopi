@@ -5,7 +5,7 @@ cd "$(dirname "$0")"
 
 # Start all services using concurrently
 npx concurrently \
---names "ga,au,us,pr,ca,or,pa,no,so,on,ch,re" \
+--names "" \
 --prefix-colors "blue,green,magenta,yellow,white,cyan,brown,indigo,beige,magenta,orange" \
 "cd ../servers/gateway-service && npm run dev" \
 "cd ../servers/auth-service && npm run dev" \
@@ -14,9 +14,10 @@ npx concurrently \
 "cd ../servers/cart-service && npm run dev" \
 "cd ../servers/orders-service && npm run dev" \
 "cd ../servers/payment-service && npm run dev" \
+"cd ../servers/balance-service && npm run dev" \
+"cd ../servers/chat-service && npm run dev" \
 # "cd ../servers/notification-service && npm run dev" \
 # "cd ../servers/socket-service && npm run dev" \
 # "cd ../servers/online-status-service && npm run dev" \
-# "cd ../servers/chat-service && npm run dev" \
 # "cd ../servers/reviews-service && npm run dev" \
 

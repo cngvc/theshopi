@@ -1,6 +1,8 @@
 import { BASE_PATH } from '@gateway/constants/path';
 import { authMiddleware } from '@gateway/middlewares/auth.middleware';
 import { authPublicRoute } from '@gateway/routes/auth-public.route';
+import { authRoute } from '@gateway/routes/auth.route';
+import { balanceRoutes } from '@gateway/routes/balance.route';
 import { buyerRoutes } from '@gateway/routes/buyer.route';
 import { cartRoutes } from '@gateway/routes/cart.route';
 import { chatRoutes } from '@gateway/routes/chat.route';
@@ -15,7 +17,6 @@ import { storePublicRoutes } from '@gateway/routes/store-public.route';
 import { storeRoutes } from '@gateway/routes/store.route';
 import { tokenRoutes } from '@gateway/routes/token.route';
 import { Application, Router } from 'express';
-import { authRoute } from './routes/auth.route';
 
 export const appRoutes = (app: Application) => {
   const publicRouter = Router();
@@ -38,6 +39,7 @@ export const appRoutes = (app: Application) => {
   privateRouter.use(chatRoutes.routes());
   privateRouter.use(cartRoutes.routes());
   privateRouter.use(orderRoutes.routes());
+  privateRouter.use(balanceRoutes.routes());
 
   // seeding data
   privateRouter.use(seedRoutes.routes());

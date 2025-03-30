@@ -10,7 +10,8 @@ class ChatSeedController {
       ExchangeNames.GET_USERS,
       RoutingKeys.GET_USERS,
       JSON.stringify({
-        count: req.params.count
+        count: req.params.count,
+        type: 'chat'
       })
     );
     new OkRequestSuccess('Chat creating was handled by message queue.', {}).send(res);

@@ -32,7 +32,7 @@ export class AuthModel extends BaseEntity implements IAuthDocument {
   @Column({ nullable: true })
   passwordResetExpires?: Date;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt!: Date;
 
   @Column({ type: 'enum', enum: ['admin', 'basic'], default: 'basic', select: false })

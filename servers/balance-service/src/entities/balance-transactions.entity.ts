@@ -1,4 +1,4 @@
-import { BalanceType, IBalanceTransaction } from '@cngvc/shopi-types';
+import { BalanceType, IBalance, IBalanceTransaction } from '@cngvc/shopi-types';
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BalanceModel } from './balance.entity';
 
@@ -10,8 +10,18 @@ export class BalanceTransactionModel extends BaseEntity implements IBalanceTrans
   @Column({ type: 'uuid' })
   authId!: string;
 
+  @Column({ type: 'uuid', nullable: true })
+  orderPublicId!: string;
+
+  @Column({ type: 'uuid', nullable: true })
+  paymentPublicId!: string;
+
   @ManyToOne(() => BalanceModel, (balance) => balance.transactions)
-  balance!: BalanceModel;
+  private _balance!: BalanceModel;
+
+  get balance(): IBalance {
+    return this._balance as IBalance;
+  }
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount!: number;
@@ -19,6 +29,6 @@ export class BalanceTransactionModel extends BaseEntity implements IBalanceTrans
   @Column({ type: 'enum', enum: BalanceType })
   transactionType!: BalanceType;
 
-  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt!: Date;
 }

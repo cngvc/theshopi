@@ -8,7 +8,7 @@ interface DepositBalanceResponse {
 }
 
 interface IClient extends grpc.Client {
-  DepositBalance: (
+  UpdateUserBalance: (
     request: { authId: string; amount: number; method: string },
     callback: (error: grpc.ServiceError | null, response: DepositBalanceResponse) => void
   ) => void;
@@ -24,16 +24,16 @@ class GrpcClient {
     ) as unknown as IClient;
   }
 
-  depositBalance = async (authId: string, amount: number, method: string): Promise<DepositBalanceResponse> => {
+  updateUserBalance = async (authId: string, amount: number, method: string): Promise<DepositBalanceResponse> => {
     try {
       return await new Promise((resolve, reject) => {
-        this.client.DepositBalance({ authId, amount, method }, (err, response) => {
+        this.client.UpdateUserBalance({ authId, amount, method }, (err, response) => {
           if (err) return reject(err);
           return resolve(response);
         });
       });
     } catch (error) {
-      captureError(error, 'depositBalance');
+      captureError(error, 'updateUserBalance');
     }
     return { status: 'error' };
   };

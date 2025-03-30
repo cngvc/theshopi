@@ -13,12 +13,12 @@ import { Application, json, NextFunction, Request, Response, urlencoded } from '
 import helmet from 'helmet';
 import hpp from 'hpp';
 import http from 'http';
-import { Server } from 'socket.io';
+import { Server as SocketServer } from 'socket.io';
 import { chatConsumes } from './queues/chat.consumer';
 import { SocketHandler } from './sockets/socket.handler';
 
 export let chatChannel: Channel;
-export let socketServer: Server;
+export let socketServer: SocketServer;
 
 export class Server {
   private app: Application;

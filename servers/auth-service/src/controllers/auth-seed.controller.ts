@@ -8,7 +8,7 @@ import { Request, Response } from 'express';
 import { sample } from 'lodash';
 import { generateUsername } from 'unique-username-generator';
 
-class SeedController {
+class AuthSeedController {
   async createSeeds(req: Request, res: Response): Promise<void> {
     const { count } = req.params;
     const usernames: string[] = [];
@@ -40,4 +40,4 @@ class SeedController {
   }
 }
 
-export const seedController = new SeedController();
+export const authSeedController = new AuthSeedController();

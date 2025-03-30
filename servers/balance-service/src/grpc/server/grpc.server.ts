@@ -1,19 +1,19 @@
 import { SERVICE_NAME } from '@balance/constants';
 import { log } from '@balance/utils/logger.util';
-import { cartProto } from '@cngvc/shopi-shared';
+import { balanceProto } from '@cngvc/shopi-shared';
 import * as grpc from '@grpc/grpc-js';
-import { BalanceServiceGrpcHandler } from './cart.grpc-server.handler';
+import { BalanceServiceGrpcHandler } from './balance.grpc-server.handler';
 
 class GrpcServer {
   private server: grpc.Server;
   private serviceDefinition: grpc.ServiceDefinition<Record<string, any>>;
 
   constructor(service: string) {
-    const serviceConstructor = cartProto as grpc.GrpcObject;
+    const serviceConstructor = balanceProto as grpc.GrpcObject;
     this.server = new grpc.Server();
     this.serviceDefinition = (serviceConstructor[service] as grpc.ServiceClientConstructor).service;
     this.addService({
-      UpdateUserBalance: BalanceServiceGrpcHandler.updateUserBalance
+      GetUserBalanceByAuthId: BalanceServiceGrpcHandler.getUserBalanceByAuthId
     });
   }
 
@@ -48,4 +48,4 @@ process.on('SIGINT', () => {
   process.exit(1);
 });
 
-export const grpcCartServer = new GrpcServer('CartService');
+export const grpcCartServer = new GrpcServer('BalanceService');

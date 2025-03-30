@@ -27,6 +27,7 @@ import { StatusCodes } from 'http-status-codes';
 import { authMiddleware } from './middlewares/auth.middleware';
 import { rateLimitMiddleware } from './middlewares/redis-rate-limit.middleware';
 import { userAgentMiddleware } from './middlewares/user-agent.middleware';
+import { balanceService } from './services/api/balance.service';
 
 export class GatewayServer {
   private app: Application;
@@ -62,14 +63,9 @@ export class GatewayServer {
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       const headerXUser = req.headers['x-user'] as string | undefined;
+      const services = [authService, buyerService, storeService, productService, chatService, cartService, orderService, balanceService];
       if (headerXUser) {
-        authService.setXUserHeader(headerXUser);
-        buyerService.setXUserHeader(headerXUser);
-        storeService.setXUserHeader(headerXUser);
-        productService.setXUserHeader(headerXUser);
-        chatService.setXUserHeader(headerXUser);
-        cartService.setXUserHeader(headerXUser);
-        orderService.setXUserHeader(headerXUser);
+        services.map((e) => e.setXUserHeader(headerXUser));
       }
       const headerXUserDeviceFP = (req.headers['x-device-fingerprint'] as string) || DEFAULT_DEVICE;
       if (headerXUserDeviceFP) {
