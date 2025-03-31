@@ -1,0 +1,41 @@
+version: '3.9'
+name: 'theshopi-client'
+services:
+  client:
+    container_name: client_container
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_SERVER_URL=http://host.docker.internal:4000
+        - NEXT_PUBLIC_GATEWAY_URL=http://host.docker.internal:4000/api/gateway/v1
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    env_file: ./.env
+    networks:
+      - next-network
+    volumes:
+      - bun_cache:/root/.bun/install/cache
+    environment:
+      - NEXTAUTH_SECRET=V1KbJZpgBfxeXJ1KdTciaQ
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_URL_INTERNAL=http://localhost:3000
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+  nginx:
+    container_name: nginx_container
+    build:
+      context: ./
+      dockerfile: Dockerfile.nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - client
+    networks:
+      - next-network
+networks:
+  next-network:
+    driver: bridge
+volumes:
+  bun_cache:

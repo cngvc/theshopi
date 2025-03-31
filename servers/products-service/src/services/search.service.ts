@@ -52,6 +52,7 @@ class SearchService {
       },
       {
         size,
+        sort: [{ createdAt: 'asc' }],
         ...(from != 0 && { search_after: [from] })
       }
     );

@@ -16,7 +16,7 @@ export class BalanceTransactionModel extends BaseEntity implements IBalanceTrans
   @Column({ type: 'uuid', nullable: true })
   paymentPublicId!: string;
 
-  @ManyToOne(() => BalanceModel, (balance) => balance.transactions)
+  @ManyToOne(() => BalanceModel, (balance) => balance.transactions, { nullable: true })
   private _balance!: BalanceModel;
 
   get balance(): IBalance {

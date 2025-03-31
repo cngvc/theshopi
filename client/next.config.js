@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   distDir: 'build',
-  debug: true,
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
+  },
+
   images: {
     remotePatterns: [
       {
@@ -11,7 +16,11 @@ const nextConfig = {
     ]
   },
   compiler: {},
-  experimental: {},
+  experimental: {
+    serverActions: {
+      allowedOrigins: ['*']
+    }
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.devtool = 'source-map';

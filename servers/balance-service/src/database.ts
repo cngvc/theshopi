@@ -22,6 +22,7 @@ export class Database {
       log.info(SERVICE_NAME + ' Mysql database connection has been established successfully');
     } catch (error) {
       captureError(error, 'connection');
+      process.exit(1);
     }
   }
 }

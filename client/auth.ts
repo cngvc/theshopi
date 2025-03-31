@@ -7,6 +7,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { DEFAULT_DEVICE } from './lib/constants';
 
 const config: NextAuthConfig = {
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: 'credentials',

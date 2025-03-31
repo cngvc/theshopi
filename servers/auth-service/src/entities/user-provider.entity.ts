@@ -13,7 +13,7 @@ export class UserProviderModel extends BaseEntity implements IUserProviderDocume
   @Column()
   providerId!: string;
 
-  @ManyToOne(() => AuthModel, (user) => user, { onDelete: 'CASCADE' })
+  @ManyToOne(() => AuthModel, (user) => user.providers, { onDelete: 'CASCADE' })
   private _user!: AuthModel;
 
   get user(): IAuthDocument {

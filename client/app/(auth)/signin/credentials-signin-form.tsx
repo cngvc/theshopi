@@ -43,7 +43,7 @@ const CredentialsSigninForm = () => {
             type="text"
             autoComplete="username"
             placeholder="Enter your email or username"
-            defaultValue={'thurman_hayes83@gmail.com'}
+            defaultValue={'brenden_hansen@gmail.com'}
           />
         </div>
         <div className="space-y-2">

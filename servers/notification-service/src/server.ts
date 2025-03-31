@@ -42,7 +42,7 @@ export class Server {
     try {
       const httpServer: http.Server = new http.Server(this.app);
       log.info(`Worker with process id of ${process.pid} on notification service has started`);
-      httpServer.listen(SERVER_PORT, () => {
+      httpServer.listen(SERVER_PORT, '0.0.0.0', () => {
         log.info(SERVICE_NAME + ` running on port ${SERVER_PORT}`);
       });
     } catch (error) {

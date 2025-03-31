@@ -157,7 +157,7 @@ export class GatewayServer {
 
   private async startHttpServer(httpServer: http.Server): Promise<void> {
     try {
-      httpServer.listen(SERVER_PORT, () => {
+      httpServer.listen(SERVER_PORT, '0.0.0.0', () => {
         log.info(SERVICE_NAME + ` has started on port ${SERVER_PORT}`);
       });
     } catch (error) {

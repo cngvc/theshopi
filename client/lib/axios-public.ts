@@ -9,4 +9,14 @@ const axiosPublicInstance = axios.create({
   id: 'public-instance'
 } as CreateAxiosDefaults & { id: string });
 
+axiosPublicInstance.interceptors.request.use((config) => {
+  if (process.env.NODE_ENV === 'development') {
+    console.log('➡️ Outgoing Request:', {
+      url: config.baseURL,
+      data: config.data
+    });
+  }
+  return config;
+});
+
 export default axiosPublicInstance;
