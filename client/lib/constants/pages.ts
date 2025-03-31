@@ -1,4 +1,4 @@
-export default {
+const pages = {
   signin: '/signin',
   signup: '/signup',
   home: '/',
@@ -11,3 +11,5 @@ export default {
   orders: '/orders',
   purchases_all: '/purchases/all'
 };
+
+export default pages;

@@ -20,7 +20,7 @@ const Page = () => {
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 gap-4">
         {orders.map((order) => (
-          <OrderItem order={order as IOrderDocument} />
+          <OrderItem key={order.orderPublicId} order={order as IOrderDocument} />
         ))}
         <div />
       </div>

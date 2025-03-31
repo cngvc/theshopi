@@ -1,4 +1,4 @@
-export default {
+const queryKey = {
   conversations: 'conversations',
   conversation: 'conversation',
   cart: 'cart',
@@ -9,3 +9,4 @@ export default {
   store: 'store',
   products: 'products'
 };
+export default queryKey;

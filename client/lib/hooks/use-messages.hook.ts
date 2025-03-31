@@ -36,7 +36,7 @@ export const useMessages = (id?: string | null) => {
     return () => {
       socketClient.socket.off(SocketEvents.MESSAGE_RECEIVED);
     };
-  }, [queryClient]);
+  }, [id, queryClient]);
 
   return { data, isLoading };
 };

@@ -379,7 +379,7 @@ services:
     env_file: ./servers/orders-service/.env
     environment:
       - ENABLE_APM=0
-      - API_GATEWAY_URL= http://gateway_container:4000
+      - API_GATEWAY_URL=http://gateway_container:4000
       - CLIENT_URL=http://localhost:3000
       - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_orders
       - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
@@ -389,6 +389,58 @@ services:
       - USERS_BASE_URL_GRPC=users_container:40030
       - CART_BASE_URL_GRPC=cart_container:40110
       - PRODUCT_BASE_URL_GRPC=product_container:40040
+      - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
+      - ELASTIC_APM_SECRET_TOKEN=
+    depends_on:
+      - elasticsearch
+      - mongodb
+      - rabbitmq
+  payment:
+    container_name: payment_container
+    build:
+      context: ./servers/payment-service
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - 4012:4012
+    env_file: ./servers/payment-service/.env
+    environment:
+      - ENABLE_APM=0
+      - API_GATEWAY_URL=http://gateway_container:4000
+      - CLIENT_URL=http://localhost:3000
+      - DATABASE_URL=mongodb://mongodb_container:27017/theshopi_payment
+      - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
+      - GATEWAY_JWT_TOKEN_SECRET=9d9uaKBfV3FEhTNCgvaJZQ
+      - NODE_ENV=development
+      - RABBITMQ_ENDPOINT=amqp://admin:Asdfgh123@rabbitmq_container:5672
+      - REDIS_HOST=redis://localhost:6379
+      - PRODUCT_BASE_URL_GRPC=product_container:40040
+      - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
+      - ELASTIC_APM_SECRET_TOKEN=
+      - STRIPE_API_KEY=sk_test_51R6lddQfhfMigkKhsKT1vJhhGOhocgFtpkgC7CjZJgQqHOI6Yen42RTTvI56apnhCvmCrFbcp4KpdTFBMBDCPwoe00xGim4jOf
+    depends_on:
+      - elasticsearch
+      - mongodb
+      - rabbitmq
+  balance:
+    container_name: balance_container
+    build:
+      context: ./servers/balance-service
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - 4013:4013
+    env_file: ./servers/balance-service/.env
+    environment:
+      - ENABLE_APM=0
+      - API_GATEWAY_URL=http://gateway_container:4000
+      - CLIENT_URL=http://localhost:3000
+      - DATABASE_URL=mysql://admin:Asdfgh123@mysql_balance_container:33061/theshopi_balance
+      - ELASTIC_SEARCH_URL=http://elastic:Asdfgh123@elasticsearch_container:9200
+      - GATEWAY_JWT_TOKEN_SECRET=9d9uaKBfV3FEhTNCgvaJZQ
+      - NODE_ENV=development
+      - RABBITMQ_ENDPOINT=amqp://admin:Asdfgh123@rabbitmq_container:5672
+      - PAYMENT_BASE_URL_GRPC=payment_container:40120
       - ELASTIC_APM_SERVER_URL=http://apm_server_container:8200
       - ELASTIC_APM_SECRET_TOKEN=
     depends_on:
